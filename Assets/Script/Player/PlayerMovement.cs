@@ -5,8 +5,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    InputAction Up, Down, Left, Right;
+    PlayerData playerData;
+    InputAction up, down, left, right;
     Rigidbody2D rb;
+
+    private void Awake()
+    {
+        playerData = GameManagerScript.instance.GetPlayerData();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -15,20 +21,20 @@ public class PlayerMovement : MonoBehaviour
         var playerInput = GetComponent<PlayerInput>();
         if (playerInput != null)
         {
-            Up = playerInput.actions["Up"];
-            Down = playerInput.actions["Down"];
-            Left = playerInput.actions["Left"];
-            Right = playerInput.actions["Right"];
+            up = playerInput.actions["Up"];
+            down = playerInput.actions["Down"];
+            left = playerInput.actions["Left"];
+            right = playerInput.actions["Right"];
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Left.IsPressed()) {
+        if (left.IsPressed()) {
             rb.AddForce(Vector2.left, ForceMode2D.Force);
             //rb.velocity = new Vector2(-1, 0);
-        }else if (Right.IsPressed())
+        }else if (right.IsPressed())
         {
             rb.AddForce(Vector2.right, ForceMode2D.Force);
             //rb.velocity = new Vector2(1, 0);
@@ -36,5 +42,10 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
         }
+    }
+
+    private void OnDestroy()
+    {
+        GameManagerScript.instance.SetPlayerData(playerData);
     }
 }
