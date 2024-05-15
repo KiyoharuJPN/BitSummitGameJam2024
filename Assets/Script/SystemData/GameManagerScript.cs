@@ -20,8 +20,8 @@ public struct PlayerData
 public struct GameControl
 {
     public bool isSkill;
-    public bool canUseSkill;
 }
+
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -123,14 +123,5 @@ public class GameManagerScript : MonoBehaviour
     public void SetIsSkill(bool b) 
     {  
         gameControl.isSkill = b; 
-    }
-    // åªç›ÉXÉLÉãégÇ¶ÇÈÇ©Ç«Ç§Ç©
-    public bool GetCanSkill()
-    {
-        return gameControl.canUseSkill;
-    }
-    public void SetCanSkill(bool b)
-    {
-        gameControl.canUseSkill = b;
     }
 }

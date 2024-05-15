@@ -12,8 +12,8 @@ public class EnemyBase : MonoBehaviour
     public string id;                   // idで敵の個体を識別する
     EnemyDataList eData;                // 敵のデータをリストから読み取ったもの（参照）
     Rigidbody2D enemyRb;                // 敵の鋼体
-    int maxSpeed = 100, minSpeed = 1;   // 最大速度と最小速度
-    float speedFix;                     // スピード修正
+    int maxSpeed = 200, minSpeed = 10;   // 最大速度と最小速度
+    float speedFix = 10;                     // スピード修正
 
     // 個体用変数
     SpriteRenderer spriteRenderer;
@@ -57,12 +57,6 @@ public class EnemyBase : MonoBehaviour
 
 
 
-    // Update is called once per frame
-    virtual protected void Update()
-    {
-
-    }
-
     virtual protected void FixedUpdate()
     {
         if (isKnockBacking)
@@ -105,11 +99,12 @@ public class EnemyBase : MonoBehaviour
     // スピード設定プロセス
     void SetSpeed()
     {
-        // スピード修正
+        // スピード修正 ModifySpeed
         var speed = baseSpeed / speedFix;
         if (speed < minSpeed) { speed = minSpeed; }
         else if (speed > maxSpeed) { speed = maxSpeed; }
         // スピードの再設定
+        Debug.Log(speed);
         enemyRb.velocity = Vector2.left * speed;
     }
     // 死亡チェック

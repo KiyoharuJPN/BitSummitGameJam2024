@@ -245,6 +245,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   testUI: {fileID: 1925917688}
+  minLanePower: 0.1
+  maxLanePower: 5
+  minLaneEffectPower: 1.1
 --- !u!114 &1502590871
 MonoBehaviour:
   m_ObjectHideFlags: 0

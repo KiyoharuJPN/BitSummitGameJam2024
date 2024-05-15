@@ -48,8 +48,8 @@ MonoBehaviour:
   - {fileID: 5209610549004239434, guid: 00ec2637af108bf41aba2e4d34b8db01, type: 3}
   - {fileID: 7119764205708713775, guid: 1af53ecfc053b3144badcd11fbfdf554, type: 3}
   - {fileID: 3454962128753616820, guid: bfe1c42dfdeac3a4e83f01a4bfc40e64, type: 3}
-  duration: 2
+  duration: 0.5
   mindur: 0
   maxdur: 0
-  summonType: 0
+  summonType: 1
   rightPosition: 200

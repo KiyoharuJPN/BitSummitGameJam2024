@@ -26,7 +26,16 @@ public class TestActionEnemyGenerator : MonoBehaviour
     private void FixedUpdate()
     {
         if (GameManagerScript.instance.GetIsSkill()) { return; }
-        RandomSummon();
+        if(summonType == 2) {
+            Timer -= Time.deltaTime;
+            if (Timer <= 0)
+            {
+                Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], new Vector2(rightPosition, 45), Quaternion.identity);
+                Timer = duration;
+            }
+        } 
+        else 
+        { RandomSummon(); }
     }
 
     void RandomSummon()
@@ -69,7 +78,7 @@ public class TestActionEnemyGenerator : MonoBehaviour
                 if (Timer <= 0)
                 {
                     Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
-                    summonPosNext = Random.Range(0, 2);
+                    summonPosNext = Random.Range(0, 3);
                     Timer = duration;
                 }
             }
@@ -112,7 +121,7 @@ public class TestActionEnemyGenerator : MonoBehaviour
                 if (Timer <= 0)
                 {
                     Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
-                    summonPosNext = Random.Range(0, 2);
+                    summonPosNext = Random.Range(0, 3);
                     Timer = Random.Range(mindur, maxdur);
                 }
             }

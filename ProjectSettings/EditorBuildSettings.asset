@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/KiyoharuTestStage.unity
     guid: b91dab57ddc7343449d6b5d3e12da43e
+  - enabled: 1
+    path: Assets/Scenes/TestFinishStage.unity
+    guid: 68a3210c3b489fb4cad7dd49ed023b88
   m_configObjects: {}

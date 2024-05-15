@@ -8,6 +8,7 @@ public class Attacker : MonoBehaviour
 {
     // éŒ¾•”•ª
     public int id;
+    public SpriteRenderer effectSpriteRenderer;
     PlayerActionMovement playerAM;
     Animator animator;
     private void Awake()
