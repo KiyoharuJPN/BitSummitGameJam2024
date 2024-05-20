@@ -12,19 +12,34 @@ public class EnemyBase : MonoBehaviour
     public string id;                   // idで敵の個体を識別する
     EnemyDataList eData;                // 敵のデータをリストから読み取ったもの（参照）
     Rigidbody2D enemyRb;                // 敵の鋼体
-    int maxSpeed = 200, minSpeed = 10;   // 最大速度と最小速度
-    float speedFix = 10;                     // スピード修正
+    int maxSpeed = 200, minSpeed = 10;  // 最大速度と最小速度
+    float speedFix = 10;                // スピード修正
 
     // 個体用変数
     SpriteRenderer spriteRenderer;
     int baseSpeed;                      // 内部計算用HP（攻撃力、スピード）
     float knockBackValue;               // KnockBack値
-    float knockBackStop, HitStop;                // 止まる長さ
+    float knockBackStop, HitStop;       // 止まる長さ
     bool isKnockBacking = false;        // ノックバックされている最中かどうか
     bool isStoping = false;             // ストップ中かどうか
     // ダメージ重複受けないように
     bool hadDamaged = false;            // 一回アタックされた
     float resetDamageTime;
+
+    // レーンの場所確認
+    Vector3 respawnPosition;
+    float laneStartPosition, laneEndPosition, laneMidPosition;
+    float lane5_1Position;
+    bool midPositionCheck = false, Position5_1Check = false;
+    int laneID = 0;
+
+
+    // 即死敵
+    [SerializeField]
+    bool isAttackDeathEnemy = false;
+    // 倒したらレーンおパワーが落ちる
+    [SerializeField]
+    bool isDownLanePowerEnemy = false;
 
     // 実行用関数
     virtual protected void Awake()
@@ -37,10 +52,17 @@ public class EnemyBase : MonoBehaviour
 
         enemyRb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        SetSpeed();         
+        SetSpeed();
+
+        // レーンの場所確認
+        respawnPosition = transform.position;
+        laneStartPosition = respawnPosition.x;         // 一応設定はしてありますが、大体respawnPositionを使うようにしてください。
+        laneEndPosition = GameManagerScript.instance.GetPlayerRightLimit();
+        laneMidPosition = (laneEndPosition + laneStartPosition) / 2;
+        lane5_1Position = (Mathf.Abs(laneEndPosition) + Mathf.Abs(laneStartPosition))/5 + laneEndPosition;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    virtual protected void OnTriggerEnter2D(Collider2D collision)
     {
         // 当たったものがプレイヤーの場合
         if (collision.CompareTag("Player"))
@@ -85,6 +107,11 @@ public class EnemyBase : MonoBehaviour
             }
         }
         ResetCanGetDamage();                    // 連続ダメージ受けないようにリセットかける
+
+        // 継承の敵ごとに作る内容にしたい
+        //HalfLaneMovement();                     // レーンの半分を動いた時の動き
+        //SetLaneMovement();                      // 個別にレーンの設定ができます
+
     }
 
 
@@ -104,16 +131,16 @@ public class EnemyBase : MonoBehaviour
         if (speed < minSpeed) { speed = minSpeed; }
         else if (speed > maxSpeed) { speed = maxSpeed; }
         // スピードの再設定
-        Debug.Log(speed);
+        //Debug.Log(speed);
         enemyRb.velocity = Vector2.left * speed;
     }
     // 死亡チェック
-    bool IsDead()
+    bool IsDead(PlayerActionMovement pamScript = null)
     {
         // もし死んだら直接死亡プロセスを実行する
         if (baseSpeed <= 0)
         {
-            Dead();
+            Dead(pamScript);
             return true;
         }
         else
@@ -122,8 +149,9 @@ public class EnemyBase : MonoBehaviour
         }
     }
     // 死亡プロセス
-    void Dead()
+    void Dead(PlayerActionMovement pamScript)
     {
+        if(isDownLanePowerEnemy && pamScript != null) { pamScript.LanePowerDown(laneID, -0.11f); }
         Destroy(gameObject);
     }
     // 連続ダメージ受けないように
@@ -138,12 +166,52 @@ public class EnemyBase : MonoBehaviour
             }
         }
     }
+    // レーンの半分を動いた時の動き
+    virtual protected void HalfLaneMovement()
+    {
+        // 半分を通ったら
+        if (!midPositionCheck && laneMidPosition > transform.position.x)
+        {
+            midPositionCheck = true;
+            //// 加速関連(HPが増えてくる)
+            //baseSpeed *= 2;
+            //SetSpeed();
+            //// 減速関連（HPが減ってくる）
+            //baseSpeed /= 2;
+            //SetSpeed();
+            //// レーン変更
+            //laneID++;
+            //if (laneID > 2) { laneID = 0; }
+            //transform.position = new Vector2(transform.position.x, GameManagerScript.instance.SetPosByLaneNum(laneID));
+            //// 色変更（消えるようにする）
+            //spriteRenderer.color = new Color(1, 1, 1, 0);       // 後で出現させるために色を戻す必要がある
+            //// 色変更（出現するようにする）
+            //spriteRenderer.color = new Color(1, 1, 1, 1);       // 後で出現させるために色を戻す必要がある
+
+        }
+    }
+    // 色んな状況でのレーンの動き
+    virtual protected void SetLaneMovement()
+    {
+        if(!Position5_1Check && lane5_1Position > transform.position.x)
+        {
+            Position5_1Check = true;
+            //// 加速関連(HPが増えてくる)
+            //baseSpeed *= 2;
+            //SetSpeed();
+            //// 減速関連（HPが減ってくる）
+            //baseSpeed /= 2;
+            //SetSpeed();
+        }
+    }
 
 
     // 外部関数
     // ダメージプロセス
-    public bool PlayerDamage(int damegespd,float force = 0, float knockbacktime = 0, float hitstoptime = 0)
+    public bool PlayerDamage(int damegespd,float force = 0, float knockbacktime = 0, float hitstoptime = 0, PlayerActionMovement pamScript = null)
     {
+        // 攻撃を受けたら終わり敵
+        if(isAttackDeathEnemy) { pamScript.PlayerDead(); }
         // 重複ダメージ受けないように
         if(hadDamaged) return false;
         hadDamaged = true;
@@ -155,7 +223,7 @@ public class EnemyBase : MonoBehaviour
         KnockBackTime(knockbacktime);
         HitStopTime(hitstoptime);
         HadDamage(damegespd);
-        return IsDead();
+        return IsDead(pamScript);
     }
     // 移動停止
     public void StopMoving()
@@ -198,6 +266,15 @@ public class EnemyBase : MonoBehaviour
         if(IsDead()) { return true; }
         SetSpeed();
         return false;
+    }
+    // 作成するときに自分のレーンをセットする
+    public void SetLaneID(int laneid)
+    {
+        laneID = laneid;
+    }
+    public int GetLaneID()
+    {
+        return laneID;
     }
 
 

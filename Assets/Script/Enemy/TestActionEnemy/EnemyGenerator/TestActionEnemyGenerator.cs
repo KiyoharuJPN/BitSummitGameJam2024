@@ -30,7 +30,7 @@ public class TestActionEnemyGenerator : MonoBehaviour
             Timer -= Time.deltaTime;
             if (Timer <= 0)
             {
-                Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], new Vector2(rightPosition, 45), Quaternion.identity);
+                Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], new Vector2(rightPosition, 45), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
                 Timer = duration;
             }
         } 
@@ -50,22 +50,22 @@ public class TestActionEnemyGenerator : MonoBehaviour
                     switch (summonPosNext)
                     {
                         default:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity);
+                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
                             summonPosNext += 2;
                             Timer = duration;
                             break;
                         case 0:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
+                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext++;
                             Timer = duration;
                             break;
                         case 1:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
+                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext++;
                             Timer = duration;
                             break;
                         case 2:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
+                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext = 0;
                             Timer = duration;
                             break;
@@ -77,7 +77,7 @@ public class TestActionEnemyGenerator : MonoBehaviour
                 Timer -= Time.deltaTime;
                 if (Timer <= 0)
                 {
-                    Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
+                    Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                     summonPosNext = Random.Range(0, 3);
                     Timer = duration;
                 }
@@ -93,22 +93,22 @@ public class TestActionEnemyGenerator : MonoBehaviour
                     switch (summonPosNext)
                     {
                         default:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity);
+                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
                             summonPosNext += 2;
                             Timer = Random.Range(mindur, maxdur);
                             break;
                         case 0:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
+                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext++;
                             Timer = Random.Range(mindur, maxdur);
                             break;
                         case 1:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
+                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext++;
                             Timer = Random.Range(mindur, maxdur);
                             break;
                         case 2:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
+                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext = 0;
                             Timer = Random.Range(mindur, maxdur);
                             break;
@@ -120,7 +120,7 @@ public class TestActionEnemyGenerator : MonoBehaviour
                 Timer -= Time.deltaTime;
                 if (Timer <= 0)
                 {
-                    Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity);
+                    Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                     summonPosNext = Random.Range(0, 3);
                     Timer = Random.Range(mindur, maxdur);
                 }

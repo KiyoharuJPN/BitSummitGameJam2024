@@ -41,7 +41,9 @@ public class PlayerActionMovement : MonoBehaviour
     // カメラワーク
     float cameraMinSize = 80, cameraMaxSize = 100;
     float minimumSpeed = 0, maximumSpeed = 10000;
+    float cameraMoveSpeed = 0.1f;                        // 1以上0以下に設定しないようにしてください
     Camera cam;
+
 
     // Start is called before the first frame update
     void Start()
@@ -49,6 +51,7 @@ public class PlayerActionMovement : MonoBehaviour
         // プレイヤー代入部分（違うシーンにいてもプレイヤーは共通であるために）
         playerData = GameManagerScript.instance.GetPlayerData();
         FinishKill = playerData.totalKill + 20;
+        GameManagerScript.instance.SetPlayerRightLimit(playerData.playerRightLimitOffset + transform.position.x);
 
         // inputActionの代入
         var playerInput = GetComponent<PlayerInput>();
@@ -84,6 +87,7 @@ public class PlayerActionMovement : MonoBehaviour
 
         // カメラワーク(スムーズにさせる)
         cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+        cam.orthographicSize = 100;
         CalcCameraSize();
 
         // レーンの演出
@@ -107,6 +111,9 @@ public class PlayerActionMovement : MonoBehaviour
 
         // テストUI
         UpdateUIText();
+
+        // カメラの大きさ調整
+        FixCameraSize();
     }
 
 
@@ -158,7 +165,7 @@ public class PlayerActionMovement : MonoBehaviour
             // 攻撃可能の全てのオブジェクトに対して攻撃する
             for (int i = 0; i < canAttackobj[id].Count; i++)
             {
-                if(canAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(power, 150, 1.2f, 2f))
+                if(canAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(power, 150, 1.2f, 2f, this))
                 {
                     playerData.totalKill++;                             // 敵を倒した
                     // レーンの攻撃力を増やす
@@ -173,7 +180,7 @@ public class PlayerActionMovement : MonoBehaviour
             // 攻撃不可のすべてオブジェクトに対して攻撃する
             for (int i = 0; i < cantAttackobj[id].Count; i++)
             {
-                if (cantAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(power, 150, 0.9f, 2f))
+                if (cantAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(power, 150, 0.9f, 2f, this))
                 {
                     playerData.totalKill++;                              // 敵を倒した
                     // レーンの攻撃力を増やす
@@ -191,7 +198,7 @@ public class PlayerActionMovement : MonoBehaviour
             // 攻撃不可のすべてオブジェクトに対してノックバック
             for (int i = 0; i < cantAttackobj[id].Count; i++)
             {
-                cantAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(0, 150, 0.6f, 2f);
+                cantAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(0, 150, 0.6f, 2f,this);
                 float downpower = -0.05f;
                 AdjustLanePower(id, downpower);
             }
@@ -365,6 +372,16 @@ public class PlayerActionMovement : MonoBehaviour
     {
         return playerData.totalKill >= FinishKill;
     }
+    // HP計算
+    bool ShieldCheck()
+    {
+        if(playerData.shieldCount > 0)
+        {
+            playerData.shieldCount--;
+            return true;
+        }
+        return false;
+    }
 
 
     // TestUI
@@ -411,23 +428,50 @@ public class PlayerActionMovement : MonoBehaviour
         // 変換可能のスピードに変換する
         var cameraSize = Mathf.Lerp(cameraMinSize, cameraMaxSize, normalizedSpeed);
         Debug.Log($"Camera size: {cameraSize}");
-        cam.orthographicSize = cameraSize;
+        playerData.targetCamSize = cameraSize;
     }
     void CalcHPWithCamera(int increment)
     {
         ModifyBaseSpeed(increment);
         CalcCameraSize();
     }
+    void FixCameraSize()
+    {
+        if(cam.orthographicSize != playerData.targetCamSize)
+        {
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, playerData.targetCamSize, cameraMoveSpeed);
+            if (Mathf.Abs(cam.orthographicSize - playerData.targetCamSize) < 0.05) cam.orthographicSize = playerData.targetCamSize;
+        }
+    }
 
 
     // 外部関数
+    // HP計算
     public void GetHit(int dmg, GameObject enemyObj = null)
     {
+        if (ShieldCheck()) return;
         ModifyBaseSpeed(-dmg);
         CalcCameraSize();
         // HPが0以下の時死亡判定で再開する
         if (GetBaseSpeed() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
     }
+    // レーンのパワーを低下させる
+    public void LanePowerDown(int id, float power)
+    {
+        AdjustLanePower(id, power);
+    }
+    // 即死コード
+    public void PlayerDead()
+    {
+        // シールドで攻撃を防げるパターン
+        GetHit(playerData.baseSpeed);
+        //// シールドで攻撃を防げられないパターン
+        //ModifyBaseSpeed(-playerData.baseSpeed);
+        //CalcCameraSize();
+        //// HPが0以下の時死亡判定で再開する
+        //if (GetBaseSpeed() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
+    }
+    
 
 
     // アタッカー用関数
