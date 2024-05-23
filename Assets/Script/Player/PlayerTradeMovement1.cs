@@ -16,9 +16,13 @@ public class PlayerTradeMovement : MonoBehaviour
     RawImage bgimg;
     bool startRollbgimg = false;
 
+    List<SkillList> skillLists;
+
+    int selectingLane; //0↑　１→　２↓　３←　４ニュートラル
+
     // テスト用のアタッカー関連
-    List<GameObject>[] canAttackobj, cantAttackobj;
-    public Attacker[] attacker;
+    //List<GameObject>[] canAttackobj, cantAttackobj;
+    //public Attacker[] attacker;
 
     // テストスキル用
     List<EnemyBase> enemyObjs;
@@ -30,13 +34,13 @@ public class PlayerTradeMovement : MonoBehaviour
     public Text testUI;
 
     // レーン攻撃力セッティング
-    public float minLanePower = 0.1f, maxLanePower = 5;
-    public float minLaneEffectPower = 1.1f;
-    float maxLaneEffectPower;
+    //public float minLanePower = 0.1f, maxLanePower = 5;
+    //public float minLaneEffectPower = 1.1f;
+    //float maxLaneEffectPower;
 
     // レーンステータス
-    int upLaneKill, rightLaneKill, downLaneKill;         // 上、右、下レーンがキルした敵の総数
-    int FinishKill;
+    //int upLaneKill, rightLaneKill, downLaneKill;         // 上、右、下レーンがキルした敵の総数
+    //int FinishKill;
 
     // カメラワーク
     float cameraMinSize = 80, cameraMaxSize = 100;
@@ -48,7 +52,7 @@ public class PlayerTradeMovement : MonoBehaviour
     {
         // プレイヤー代入部分（違うシーンにいてもプレイヤーは共通であるために）
         playerData = GameManagerScript.instance.GetPlayerData();
-        FinishKill = playerData.totalKill + 20;
+        //FinishKill = playerData.totalKill + 20;
 
         // inputActionの代入
         var playerInput = GetComponent<PlayerInput>();
@@ -65,22 +69,17 @@ public class PlayerTradeMovement : MonoBehaviour
 
         // レーンの代入
         var laneCount = 3;
-        canAttackobj = new List<GameObject>[laneCount];
-        cantAttackobj = new List<GameObject>[laneCount];
-        for (int i = 0; i < laneCount; i++)
-        {
-            canAttackobj[i] = new List<GameObject>();
-            cantAttackobj[i] = new List<GameObject>();
-        }
-
-        // スキル用敵オブジェクトリスト
-        enemyObjs = new List<EnemyBase>();
+        //canAttackobj = new List<GameObject>[laneCount];
+        //cantAttackobj = new List<GameObject>[laneCount];
+        
+        // スキル用リスト
+        skillLists = new List<SkillList>();
 
         // スキル用タイマー
-        resetIsSkillTimer = resetIsSkillTime;
+        //resetIsSkillTimer = resetIsSkillTime;
 
         // レーンの最大攻撃力の設定
-        maxLaneEffectPower = maxLanePower - minLaneEffectPower;
+        //maxLaneEffectPower = maxLanePower - minLaneEffectPower;
 
         // カメラワーク(スムーズにさせる)
         cam = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -118,73 +117,28 @@ public class PlayerTradeMovement : MonoBehaviour
     {
         if (up.WasPressedThisFrame())
         {
-            AttackLane(0);
+            SelectLane(0);
         }
         if (down.WasPressedThisFrame())
         {
-            AttackLane(2);
+            SelectLane(2);
         }
         if (left.WasPressedThisFrame())
         {
-            if (playerData.totalKill - hasKillSinceLastSkill >= playerData.skillCoolDownKill && SetEnemyObjects() > 0)
-            {
-                hasKillSinceLastSkill = playerData.totalKill;       // 前回スキル使った時の更新
-                if (GetBaseSpeed() > 100)
-                {
-                    SetBaseSpeed(GetBaseSpeed() - (int)(GetBaseSpeed() * 0.05f));   // HPを使ってスキルを使い、
-                    CalcCameraSize();                                               // カメラの大きさを調整する
-                }
-                SkillStopEnemy();
-                skillPressCount = 0;        // 左キーカウンターのリセット
-                GameManagerScript.instance.SetIsSkill(true);
-            }
-            if (GameManagerScript.instance.GetIsSkill())
-            {
-                skillPressCount++;
-            }
+            DecideTrade();
         }
         if (right.WasPressedThisFrame())
         {
-            AttackLane(1);
+            SelectLane(1);
         }
     }
     // レーンをidで区別して攻撃する
-    void AttackLane(int id)
+    void SelectLane(int id)
     {
-        if (canAttackobj[id].Count > 0)
+        if (selectingLane == id) 
         {
-            attacker[id].PlayATAnimOnce();                                  // アニメーションを一回流す
-            int power = (int)(GetBaseSpeed() * GetLanePower(id));     // 攻撃力を計算する
-            // 攻撃可能の全てのオブジェクトに対して攻撃する
-            for (int i = 0; i < canAttackobj[id].Count; i++)
-            {
-                if(canAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(power, 150, 1.2f, 2f))
-                {
-                    playerData.totalKill++;                             // 敵を倒した
-                    // レーンの攻撃力を増やす
-                    float downpower = 0.01f;
-                    AdjustLanePower(id, downpower);
-
-                    CalcLaneKill(id);                                   // レーンごとのキル計算
-
-                    if (CheckStageClear()) ActionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
-                }
-            }
-            // 攻撃不可のすべてオブジェクトに対して攻撃する
-            for (int i = 0; i < cantAttackobj[id].Count; i++)
-            {
-                if (cantAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(power, 150, 0.9f, 2f))
-                {
-                    playerData.totalKill++;                              // 敵を倒した
-                    // レーンの攻撃力を増やす
-                    float downpower = 0.01f;
-                    AdjustLanePower(id, downpower);
-
-                    CalcLaneKill(id);                                   // レーンごとのキル計算
-
-                    if (CheckStageClear()) ActionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
-                }
-            }
+            selectreset();
+            return;
         }
         else if (cantAttackobj[id].Count > 0)
         {
@@ -197,22 +151,23 @@ public class PlayerTradeMovement : MonoBehaviour
             }
         }
     }
-    // レーンパワーをゲット
-    float GetLanePower(int id)
+
+    void selectreset()
     {
-        switch (id)
-        {
-            case 0:
-                return playerData.upLanePower;
-            case 1:
-                return playerData.rightLanePower;
-            case 2:
-                return playerData.downLanePower;
-            default:
-                Debug.Log("ありえない数値が入りました。再確認してください。");
-                return 0;
-        }
+        selectingLane = 4;
     }
+
+    void DecideTrade()
+    {
+
+    }
+
+    // レーンパワーをゲット
+    void RandamSetSkill(int id)
+    {
+        
+    }
+
     // レーンパワーをセット
     void AdjustLanePower(int id, float Power)
     {
