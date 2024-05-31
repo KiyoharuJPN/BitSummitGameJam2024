@@ -128,17 +128,13 @@ public class PlayerTradeMovement : MonoBehaviour
 
     public void OnLeft() //Input ActionのLeft　仕様上publicにしてます　基本呼ばないでください
     {
-
+        
     }
 
-    void selectreset()
+    void Selectreset()
     {
 
 
-        void DecideTrade()
-        {
-
-        }
 
         void displaySkill(int id) //idのレーンにあるスキルを表示
         {
