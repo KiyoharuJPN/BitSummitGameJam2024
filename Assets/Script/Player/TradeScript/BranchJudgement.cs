@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class BranchJudgement : MonoBehaviour
 {
+    //PlayerTradeMovementと同じGameObjectにつけることにします
 
-    enum SelectionLane //状態
+    enum SelectState //状態
     {
         Up, Right, Down, Left, Neutral //Neutralは初期化
     }
@@ -13,79 +14,88 @@ public class BranchJudgement : MonoBehaviour
     [SerializeField] I_SelectedLane UpLane;
     [SerializeField] I_SelectedLane RightLane;
     [SerializeField] I_SelectedLane DownLane;
+    [SerializeField] I_SelectedLane LeftLane;
 
 
-    SelectionLane LastSelect; //保持用
-    SelectionLane SelectingLane; //今の選択
+    SelectState LastSelect; //保持用
+    SelectState SelectingLane; //今の選択
 
-    I_SelectedLane InterfaceLane; //インターフェース
+    I_SelectedLane I_ExcudeLane; //実行先を入れる変数
 
-    private void Start()
+    Dictionary<SelectState, I_SelectedLane> Dic_StateInterface; //状態とLaneをつなぐ
+
+    void Start()
     {
-        LastSelect = SelectionLane.Neutral; //初期化
+        LastSelect = SelectState.Neutral; //初期化
+
+        Dic_StateInterface = new Dictionary<SelectState, I_SelectedLane>()
+        {
+            {SelectState.Left, LeftLane}, 
+            {SelectState.Right, RightLane}, 
+            {SelectState.Down, DownLane}, 
+            {SelectState.Left, LeftLane}
+        };   
     }
 
     public void SelectUp()
     {
-        SelectingLane = SelectionLane.Up;
-        BranchSameSelect();
+        SelectingLane = SelectState.Up;
+        SelectExecute();
     }
 
     public void SelectRight()
     {
-        SelectingLane = SelectionLane.Right;
-        BranchSameSelect();
+        SelectingLane = SelectState.Right;
+        SelectExecute();
     }
 
     public void SelectDown()
     {
-        SelectingLane = SelectionLane.Down;
-        BranchSameSelect();
+        SelectingLane = SelectState.Down;
+        SelectExecute();
     }    
 
     public void SelectLeft()
     {
-        SelectingLane = SelectionLane.Left;
-        BranchSameSelect();
+        SelectingLane = SelectState.Left;
+        SelectExecute();
     }
 
-   
+    void SelectExecute()
+    {
+        BranchSameSelect();
+        SetLastSelect();
+    }
+
     void BranchSameSelect()　//同じなら決定 違うなら別を選択
     {
         if(SelectingLane == LastSelect)
         {
-            DicadeLane();
+            I_ExcudeLane.DecadedAction();
         } else
         {
-            SelectLane();
-            UnSelectLane();
+            I_ExcudeLane.SelectedAction();
+            I_ExcudeLane.UnSelectedAction();
         }
-    }
-
-    void SelectLane()
-    {
-        InterfaceLane.SelectedAction();
-    }
-
-    void UnSelectLane()
-    {
-        InterfaceLane.UnSelectedAction();
-        //if(SelectingLane == SelectionLane.Neutral) { return; }
-    }
-
-    void DicadeLane()
-    {
-        InterfaceLane.DicadedAction();
     }
 
     void SetLastSelect()
     {
-        LastSelect = SelectingLane;
+        LastSelect = SelectingLane; //状態保持を行う
+
+        if(!Dic_StateInterface.TryGetValue(LastSelect, out var i_SelectedLane)) 
+        {
+            Debug.Log("Error　このState  " + LastSelect + "に対応するLaneは存在しません");
+            return;
+        }　else
+        {
+            SetI_ExcudeLane(i_SelectedLane);
+        }
     }
 
-    void SetInterface(I_SelectedLane i_SelectedLane)
+    void SetI_ExcudeLane(I_SelectedLane i_SelectedLane) //次に備えてインターフェースをセット
     {
-        InterfaceLane = i_SelectedLane;
+        I_ExcudeLane = i_SelectedLane;
     }
 
 }

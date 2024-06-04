@@ -17,7 +17,7 @@ public class Skill
 
     public int rarity;  //仮で数値でレアリティ
 
-    public Image Image;
+    public Image Icon;   //アイコン
 
 
 

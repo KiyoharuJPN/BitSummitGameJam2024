@@ -20,7 +20,7 @@ public class PlayerTradeMovement : MonoBehaviour
 
     List<Skill> skillLists;
 
-
+    BranchJudgement branchJudgement;
 
 
     // テスト用のアタッカー関連
@@ -57,23 +57,12 @@ public class PlayerTradeMovement : MonoBehaviour
         playerData = GameManagerScript.instance.GetPlayerData();
         //FinishKill = playerData.totalKill + 20;
 
-        // inputActionの代入
-        var playerInput = GetComponent<PlayerInput>();
-        if (playerInput != null)
-        {
-            up = playerInput.actions["Up"];
-            down = playerInput.actions["Down"];
-            left = playerInput.actions["Left"];
-            right = playerInput.actions["Right"];
-        }
+        // inputの先を入れる
+        branchJudgement = GetComponent<BranchJudgement>();
+        if (branchJudgement == null){ Debug.Log("BranchJudgementを" + this + "につけてください"); }
 
         // 背景の検索と代入
         bgimg = GameObject.Find("BackgroundImage").GetComponent<RawImage>();
-
-        // レーンの代入
-        var laneCount = 3;
-        //canAttackobj = new List<GameObject>[laneCount];
-        //cantAttackobj = new List<GameObject>[laneCount];
 
         // スキル用リスト
         skillLists = new List<Skill>();
@@ -113,22 +102,22 @@ public class PlayerTradeMovement : MonoBehaviour
     
     public void OnUp() //Input Actionの Up 仕様上publicにしてます　基本呼ばないでください
     {
-        
+        branchJudgement.SelectUp();
     }
 
     public void OnRight() //Input Actionの Right　仕様上publicにしてます　基本呼ばないでください
     {
-
+        branchJudgement.SelectRight();
     }
 
     public void OnDown() //Input ActionのDown　仕様上publicにしてます　基本呼ばないでください
     {
-
+        branchJudgement.SelectDown();
     }
 
     public void OnLeft() //Input ActionのLeft　仕様上publicにしてます　基本呼ばないでください
     {
-        
+        branchJudgement.SelectLeft();
     }
 
     void Selectreset()

@@ -9,5 +9,5 @@ public interface I_SelectedLane
 
     void UnSelectedAction();
 
-    void DicadedAction();
+    void DecadedAction();
 }
