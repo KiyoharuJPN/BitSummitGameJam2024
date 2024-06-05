@@ -29,6 +29,6 @@ public class Skill
         this.skillexlantion = skillexlantion;
         this.cost = cost;
         this.rarity = rarity;
-        Image = image;  
+        this.Icon = image;  
     }
 }
