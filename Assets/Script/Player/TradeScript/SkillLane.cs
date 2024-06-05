@@ -89,14 +89,14 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
     }
 
 
-    public async void MoveImage(Vector2 start, Vector2 end, float duration)
+    public async void MoveImage(Vector2 start, Vector2 end, float duration, RectTransform recttransform)
     {
         // 既存の移動アニメーションをキャンセル
         if (_currentTask != null && !_currentTask.IsCompleted)
         {
             _cancellationTokenSource?.Cancel();
             await _currentTask; // キャンセル完了を待つ
-            await MoveRectTransformToPosition(imageRectTransform, imageRectTransform.anchoredPosition, start, duration); // 逆再生
+            await MoveRectTransformToPosition(recttransform, recttransform.anchoredPosition, start, duration); // 逆再生
         }
         else
         {
@@ -107,14 +107,14 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
 
             try
             {
-                _currentTask = MoveRectTransformToPosition(imageRectTransform, start, end, duration, _cancellationTokenSource.Token);
+                _currentTask = MoveRectTransformToPosition(recttransform, start, end, duration, _cancellationTokenSource.Token);
                 await _currentTask;
             }
             catch (TaskCanceledException)
             {
                 // アニメーションがキャンセルされた場合の処理
                 Debug.Log("Image movement was canceled.");
-                await MoveRectTransformToPosition(imageRectTransform, imageRectTransform.anchoredPosition, start, duration);
+                await MoveRectTransformToPosition(recttransform, recttransform.anchoredPosition, start, duration);
             }
         }
     }
@@ -148,11 +148,11 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
 
     void HighlightEffect()
     {
-        MoveImage(defaultposi, HighLightposi, 0.5f);
+        MoveImage(defaultposi, HighLightposi, 0.5f, imageRectTransform);
     }
 
     void UnHighlightEffect()
     {
-        MoveImage(HighLightposi, defaultposi, 0.5f);
+        MoveImage(HighLightposi, defaultposi, 0.5f, imageRectTransform);
     }
 }
