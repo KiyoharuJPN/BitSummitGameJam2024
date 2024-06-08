@@ -54,6 +54,8 @@ public class GameManagerScript : MonoBehaviour
     // どこでも接続できるように
     static public GameManagerScript instance;
 
+    //プレイヤーとなるゲームオブジェクトを保持
+    static public GameObject playerGameObject;
 
     // GameManager本番のコード-----------------------------------------------------------------
 
