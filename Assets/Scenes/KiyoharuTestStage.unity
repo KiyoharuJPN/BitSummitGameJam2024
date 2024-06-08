@@ -889,10 +889,6 @@ PrefabInstance:
       value: EnemyGenerator
       objectReference: {fileID: 0}
     - target: {fileID: 8552597586549185774, guid: 8b2256c5fa0e52a44891031b4ecf74dd, type: 3}
-      propertyPath: duration
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8552597586549185774, guid: 8b2256c5fa0e52a44891031b4ecf74dd, type: 3}
       propertyPath: summonType
       value: 2
       objectReference: {fileID: 0}

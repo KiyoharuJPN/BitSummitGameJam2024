@@ -21,7 +21,6 @@ public class PlayerActionMovement : MonoBehaviour
     public Attacker[] attacker;
 
     // テストスキル用
-    List<EnemyBase> enemyObjs;
     float resetIsSkillTimer;
     float resetIsSkillTime = 2;
     int hasKillSinceLastSkill = 0, skillPressCount = 0;
@@ -51,6 +50,7 @@ public class PlayerActionMovement : MonoBehaviour
         // プレイヤー代入部分（違うシーンにいてもプレイヤーは共通であるために）
         playerData = GameManagerScript.instance.GetPlayerData();
         FinishKill = playerData.totalKill + 20;
+        hasKillSinceLastSkill = playerData.totalKill;           // キル数リセット
         GameManagerScript.instance.SetPlayerRightLimit(playerData.playerRightLimitOffset + transform.position.x);
 
         // inputActionの代入
@@ -75,9 +75,6 @@ public class PlayerActionMovement : MonoBehaviour
             canAttackobj[i] = new List<GameObject>();
             cantAttackobj[i] = new List<GameObject>();
         }
-
-        // スキル用敵オブジェクトリスト
-        enemyObjs = new List<EnemyBase>();
 
         // スキル用タイマー
         resetIsSkillTimer = resetIsSkillTime;
@@ -133,7 +130,7 @@ public class PlayerActionMovement : MonoBehaviour
         }
         if (left.WasPressedThisFrame())
         {
-            if (playerData.totalKill - hasKillSinceLastSkill >= playerData.skillCoolDownKill && SetEnemyObjects() > 0)
+            if (playerData.totalKill - hasKillSinceLastSkill >= playerData.skillCoolDownKill && GameManagerScript.instance.SetEnemyObjects() > 0)
             {
                 hasKillSinceLastSkill = playerData.totalKill;       // 前回スキル使った時の更新
                 if (GetBaseSpeed() > 100)
@@ -141,7 +138,7 @@ public class PlayerActionMovement : MonoBehaviour
                     SetBaseSpeed(GetBaseSpeed() - (int)(GetBaseSpeed() * 0.05f));   // HPを使ってスキルを使い、
                     CalcCameraSize();                                               // カメラの大きさを調整する
                 }
-                SkillStopEnemy();
+                GameManagerScript.instance.SkillStopEnemy();
                 skillPressCount = 0;        // 左キーカウンターのリセット
                 GameManagerScript.instance.SetIsSkill(true);
             }
@@ -321,32 +318,6 @@ public class PlayerActionMovement : MonoBehaviour
         }
     }
     // スキル関連
-    // 敵をリストに集める
-    int SetEnemyObjects()
-    {
-        enemyObjs.Clear();
-        enemyObjs.AddRange(GameObject.FindObjectsOfType<EnemyBase>());
-        return enemyObjs.Count;
-    }
-    // 敵スピード設定
-    void SkillStopEnemy()
-    {
-        for(int i = 0; i < enemyObjs.Count; i++)
-        {
-            enemyObjs[i].StopMoving();
-        }
-    }
-    void SkillStartEnemy()
-    {
-        for (int i = 0; i < enemyObjs.Count; i++)
-        {
-            if(enemyObjs[i].SkillDamagedFinish(GetBaseSpeed() * skillPressCount))
-            {
-                playerData.totalKill++;                             // 敵を倒した
-                if(CheckStageClear()) ActionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
-            }
-        }
-    }
     // スキルリセット
     void ResetIsSkill()
     {
@@ -355,7 +326,7 @@ public class PlayerActionMovement : MonoBehaviour
             resetIsSkillTimer-= Time.deltaTime;
             if(resetIsSkillTimer <= 0)
             {
-                SkillStartEnemy();
+                GameManagerScript.instance.SkillStartEnemy(GetBaseSpeed(), skillPressCount, ref playerData.totalKill, CheckStageClear, ActionStageClear);
                 GameManagerScript.instance.SetIsSkill(false);
                 resetIsSkillTimer = resetIsSkillTime;
             }
@@ -397,7 +368,8 @@ public class PlayerActionMovement : MonoBehaviour
             + "BG Move Speed : " + playerData.bgMoveSpeed + "\n"
             + "Up Lane Kill : " + upLaneKill + '\n'
             + "Right Lane Kill : " + rightLaneKill + '\n'
-            + "Down Lane Kill : " + downLaneKill;// + '\n';
+            + "Down Lane Kill : " + downLaneKill + '\n'
+            + "Player Shield Count : " + playerData.shieldCount;// + '\n'
     }
     // レーン別キル計算(左キーで敵を倒した時にレーン別キルに加算される？)
     void CalcLaneKill(int id)
@@ -456,20 +428,33 @@ public class PlayerActionMovement : MonoBehaviour
         if (GetBaseSpeed() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
     }
     // レーンのパワーを低下させる
-    public void LanePowerDown(int id, float power)
+    public void AdjustLanePowerByScript(int id, float power)
     {
         AdjustLanePower(id, power);
     }
     // 即死コード
-    public void PlayerDead()
+    public void PlayerDead(bool canGuard = true)
     {
-        // シールドで攻撃を防げるパターン
-        GetHit(playerData.baseSpeed);
-        //// シールドで攻撃を防げられないパターン
-        //ModifyBaseSpeed(-playerData.baseSpeed);
-        //CalcCameraSize();
-        //// HPが0以下の時死亡判定で再開する
-        //if (GetBaseSpeed() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
+        if (canGuard)
+        {
+            // シールドで攻撃を防げるパターン
+            GetHit(playerData.baseSpeed);
+        }
+        else
+        {
+            // シールドで攻撃を防げられないパターン
+            ModifyBaseSpeed(-playerData.baseSpeed);
+            CalcCameraSize();
+            // HPが0以下の時死亡判定で再開する
+            if (GetBaseSpeed() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
+        }
+
+    }
+    // スキルキル時キルした敵数の加算
+    public void AdjustPlayerKilledEnemy(int killedCount)
+    {
+        playerData.totalKill += killedCount;
+        if (CheckStageClear()) ActionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
     }
     
 

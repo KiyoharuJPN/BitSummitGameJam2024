@@ -71,7 +71,11 @@ public class GameManagerScript : MonoBehaviour
     // 調整用コード
     public int skillCoolDownKillCount;
 
-    
+
+    // スキル用敵リスト保存データ
+    List<EnemyBase> enemyObjs;
+
+
     // 実行用関数
     private void Awake()
     {
@@ -90,7 +94,9 @@ public class GameManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        // スキル用敵オブジェクトリスト
+        enemyObjs = new List<EnemyBase>();
+
     }
 
     // Update is called once per frame
@@ -152,4 +158,50 @@ public class GameManagerScript : MonoBehaviour
     {
         gameControl.playerRightLimit = rightlmt;
     }
+    // 敵をリストに集める
+    public int SetEnemyObjects()
+    {
+        enemyObjs.Clear();
+        enemyObjs.AddRange(GameObject.FindObjectsOfType<EnemyBase>());
+        return enemyObjs.Count;
+    }
+    // 敵スピード設定
+    public void SkillStopEnemy()
+    {
+        for (int i = 0; i < enemyObjs.Count; i++)
+        {
+            enemyObjs[i].StopMoving();
+        }
+    }
+    public void SkillStartEnemy(int baseSpeed, int skillPressCount, ref int totalKill, Func<bool> checkStageClear, Action actionStageClear)
+    {
+        for (int i = 0; i < enemyObjs.Count; i++)
+        {
+            if (enemyObjs[i].SkillDamagedFinish(baseSpeed * skillPressCount))
+            {
+                totalKill++;                                         // 敵を倒した
+                if (checkStageClear()) actionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
+            }
+        }
+    }
+    // これで今生成された敵全員を一気に倒す
+    public void KillAllEnemy()
+    {
+        for (int i = 0; i < enemyObjs.Count; i++)
+        {
+            enemyObjs[i].BeKilled();
+        }
+    }
+    //public int KillAllEnemy()
+    //{
+    //    int killCount = 0;
+    //    for (int i = 0; i < enemyObjs.Count; i++)
+    //    {
+    //        if (enemyObjs[i].BeKilled())
+    //        {
+    //            killCount++;                                         // 敵を倒した
+    //        }
+    //    }
+    //    return killCount;
+    //}
 }

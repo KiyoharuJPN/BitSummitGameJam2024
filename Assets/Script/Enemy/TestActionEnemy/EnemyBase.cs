@@ -67,13 +67,15 @@ public class EnemyBase : MonoBehaviour
         // 当たったものがプレイヤーの場合
         if (collision.CompareTag("Player"))
         {
-            // プレイヤーに当たったらHPを減らす
-            collision.gameObject.GetComponent<PlayerActionMovement>().GetHit(baseSpeed, gameObject);
+            // 特殊敵な場合は特殊の処理をする(プレイヤー本体に当たった時)
+            HitPlayer(collision);
+
+            // 最後に自分を消す
             Destroy(gameObject);
         }
     }
 
-    
+
 
 
 
@@ -106,7 +108,7 @@ public class EnemyBase : MonoBehaviour
                 spriteRenderer.sortingOrder = 1;
             }
         }
-        ResetCanGetDamage();                    // 連続ダメージ受けないようにリセットかける
+        ResetCanGetDamage();                      // 連続ダメージ受けないようにリセットかける
 
         // 継承の敵ごとに作る内容にしたい
         //HalfLaneMovement();                     // レーンの半分を動いた時の動き
@@ -151,7 +153,7 @@ public class EnemyBase : MonoBehaviour
     // 死亡プロセス
     void Dead(PlayerActionMovement pamScript)
     {
-        if(isDownLanePowerEnemy && pamScript != null) { pamScript.LanePowerDown(laneID, -0.11f); }
+        if(isDownLanePowerEnemy && pamScript != null) { pamScript.AdjustLanePowerByScript(laneID, -0.11f); }
         Destroy(gameObject);
     }
     // 連続ダメージ受けないように
@@ -166,6 +168,35 @@ public class EnemyBase : MonoBehaviour
             }
         }
     }
+    // 一回ヒットで全部の敵を倒す
+    void AttackDeathEnemyProcess(PlayerActionMovement pam)
+    {
+        StopMoving();
+        // 敵全員に対してオーバーヒットをする
+        ExcessPower(pam);
+    }
+    void ExcessPower(PlayerActionMovement pam)
+    {
+        var enemyCount = GameManagerScript.instance.SetEnemyObjects();
+        GameManagerScript.instance.KillAllEnemy();
+        pam.AdjustLanePowerByScript(laneID, (float)enemyCount * 0.01f);
+        pam.AdjustPlayerKilledEnemy(enemyCount);
+
+
+        //var enemyCount = GameManagerScript.instance.SetEnemyObjects();
+        //if (enemyCount > 0)
+        //{
+        //    int killCount = GameManagerScript.instance.KillAllEnemy();
+        //    pam.AdjustLanePowerByScript(laneID, (float)killCount * 0.01f);
+        //    pam.AdjustPlayerKilledEnemy(killCount);
+        //}
+        //else
+        //{
+        //    HadDamage(baseSpeed);
+        //    Dead(null/*pam*/);
+        //}
+    }
+
     // レーンの半分を動いた時の動き
     virtual protected void HalfLaneMovement()
     {
@@ -204,6 +235,22 @@ public class EnemyBase : MonoBehaviour
             //SetSpeed();
         }
     }
+    // プレイヤー本体に当たった場合
+    virtual protected void HitPlayer(Collider2D collision)
+    {
+        if (isAttackDeathEnemy)
+        {
+            // ガード不可能の攻撃でプレイヤーを倒す
+            collision.gameObject.GetComponent<PlayerActionMovement>().PlayerDead(false);
+        }
+
+        // ヒットしてもダメージがない敵
+        if (isDownLanePowerEnemy) return;
+
+        // プレイヤーに当たったらHPを減らす
+        collision.gameObject.GetComponent<PlayerActionMovement>().GetHit(baseSpeed, gameObject);
+    }
+
 
 
     // 外部関数
@@ -211,7 +258,11 @@ public class EnemyBase : MonoBehaviour
     public bool PlayerDamage(int damegespd,float force = 0, float knockbacktime = 0, float hitstoptime = 0, PlayerActionMovement pamScript = null)
     {
         // 攻撃を受けたら終わり敵
-        if(isAttackDeathEnemy) { pamScript.PlayerDead(); }
+        if (isAttackDeathEnemy)
+        {
+            AttackDeathEnemyProcess(pamScript);
+            return true;
+        }
         // 重複ダメージ受けないように
         if(hadDamaged) return false;
         hadDamaged = true;
@@ -275,6 +326,12 @@ public class EnemyBase : MonoBehaviour
     public int GetLaneID()
     {
         return laneID;
+    }
+    public void BeKilled()
+    {
+        HadDamage(baseSpeed);
+        Dead(null);
+        //return true;
     }
 
 
