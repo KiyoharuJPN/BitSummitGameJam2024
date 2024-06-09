@@ -5,7 +5,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkillLane : MonoBehaviour ,I_SelectedLane
+public class SkillLane : MonoBehaviour 
 {
     Skill TradeSkill; //選択肢用スキルの保持用
     Skill NullSkill; //Error用,空用のスキル
@@ -18,39 +18,56 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
     private CancellationTokenSource _cancellationTokenSource;
     private Task _currentTask;
 
+    [SerializeField] SkillManage skillManage;
+
     void Start()
     {
-        SkillIcon = TradeSkill.Icon;
-        imageRectTransform = SkillIcon.rectTransform;
-        SkillContext = SkillContext.ToString();
+        //SkillIcon = TradeSkill.Icon;
+        //imageRectTransform = SkillIcon.rectTransform;
+        //SkillContext = SkillContext.ToString();
+
+        skillManage = GetComponent<SkillManage>();
+        if (skillManage == null)
+        {
+            Debug.Log(this + "にSkillManageをアタッチしてください");
+        }
     }
 
-    void SetSkill(Skill skill)
+    public void SetSkill()
     {
-        TradeSkill = skill;
-        SetEffect();
+        TradeSkill = skillManage.RandomSelectSkill();
+        //SetEffect();
     }
 
-    void ReSetSkill(Skill skill)
+    public void ReSetSkill()
     {
         TradeSkill = NullSkill;
-        ReSetEffect();
+        //ReSetEffect();
     }
 
     public void SelectedAction() //選択された時のAction
     {
-        ReverseOrMoveBack();
+        //ReverseOrMoveBack();
+        Debug.Log(TradeSkill + "を選択");
     }
 
-    public void UnSelectedAction ()  //選択が外された時のAction
+    public void UnSelectedAction()  //選択が外された時のAction
     {
-        ReverseOrMoveBack();
+        //ReverseOrMoveBack();
+        Debug.Log(TradeSkill + "を選択解除");
     }
 
     public void DecadedAction()
     {
         Debug.Log(TradeSkill + "が選ばれました");
         Debug.Log(TradeSkill.cost + "がsppedから引かれます");
+        //DecadeEffect
+    }
+
+    public void UnDecadedAction() //選ばれなかったとき
+    {
+        skillManage.ReAddSkill(TradeSkill);
+        //UnDecadeEffext
     }
 
     void SetEffect()
@@ -155,4 +172,5 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
     {
         MoveImage(HighLightposi, defaultposi, 0.5f, imageRectTransform);
     }
+
 }

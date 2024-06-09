@@ -8,7 +8,7 @@ public class Skill
 
     //とりあえず仮で作りました
 
-    public string id;          //登録ID
+    public int id;          //登録ID
 
     public string skillName;    //スキルの名前
 　　public string skillexlantion;     //スキルの説明文
@@ -22,7 +22,7 @@ public class Skill
 
 
 
-    public Skill(string id, string skillName, string skillexlantion, int cost, int rarity, Image image)
+    public Skill(int id, string skillName, string skillexlantion, int cost, int rarity, Image image)
     {
         this.id = id;
         this.skillName = skillName;
