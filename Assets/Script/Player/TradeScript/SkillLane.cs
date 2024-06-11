@@ -18,13 +18,17 @@ public class SkillLane : MonoBehaviour
     private CancellationTokenSource _cancellationTokenSource;
     private Task _currentTask;
 
+    Vector3 imagePosi;
+
     [SerializeField] SkillManage skillManage;
 
     void Start()
     {
-        //SkillIcon = TradeSkill.Icon;
+        SkillIcon = TradeSkill.Icon;
         //imageRectTransform = SkillIcon.rectTransform;
         //SkillContext = SkillContext.ToString();
+
+        imagePosi = transform.position; //テスト用仮
 
         skillManage = GetComponent<SkillManage>();
         if (skillManage == null)
@@ -36,13 +40,13 @@ public class SkillLane : MonoBehaviour
     public void SetSkill()
     {
         TradeSkill = skillManage.RandomSelectSkill();
-        //SetEffect();
+        SetEffect();
     }
 
     public void ReSetSkill()
     {
         TradeSkill = NullSkill;
-        //ReSetEffect();
+        ReSetEffect();
     }
 
     public void SelectedAction() //選択された時のAction
@@ -72,12 +76,13 @@ public class SkillLane : MonoBehaviour
 
     void SetEffect()
     {
-
+        SkillIcon.transform.position = imagePosi;
+        SkillIcon.enabled = true;
     }
 
     void ReSetEffect()
     {
-
+        SkillIcon.enabled = false;
     }
 
     void DecadeEffect()
