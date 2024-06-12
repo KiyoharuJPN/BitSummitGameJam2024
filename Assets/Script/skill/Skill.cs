@@ -17,18 +17,18 @@ public class Skill
 
     public int rarity;  //仮で数値でレアリティ
 
-    public Image Icon;   //アイコン
+    public Sprite Icon;   //アイコン
 
 
 
 
-    public Skill(int id, string skillName, string skillexlantion, int cost, int rarity, Image image)
+    public Skill(int id, string skillName, string skillexlantion, int cost, int rarity, Sprite sprite)
     {
         this.id = id;
         this.skillName = skillName;
         this.skillexlantion = skillexlantion;
         this.cost = cost;
         this.rarity = rarity;
-        this.Icon = image;  
+        this.Icon = sprite;  
     }
 }

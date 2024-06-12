@@ -13,15 +13,15 @@ public class TestSkillMaker : MonoBehaviour
     public Skill E_Skill;
     public Skill F_Skill;
 
-    [SerializeField] Image A_Image;
-    [SerializeField] Image B_Image;
-    [SerializeField] Image C_Image;
-    [SerializeField] Image D_Image;
-    [SerializeField] Image E_Image;
-    [SerializeField] Image F_Image;
+    [SerializeField] Sprite A_Image;
+    [SerializeField] Sprite B_Image;
+    [SerializeField] Sprite C_Image;
+    [SerializeField] Sprite D_Image;
+    [SerializeField] Sprite E_Image;
+    [SerializeField] Sprite F_Image;
 
-    public Skill N_Skill;
-    [SerializeField] Image N_Image;
+
+    [SerializeField] Sprite N_Image;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,10 +32,9 @@ public class TestSkillMaker : MonoBehaviour
         E_Skill = new Skill(5, "E", "Skill E", 50, 2, E_Image);
         F_Skill = new Skill(6, "F", "Skill F", 60, 3, F_Image);
 
-        N_Skill = new Skill(0, "Null Skill", "スキルがありません", 0, 0, N_Image);
 
         SkillManage skillManage = GetComponent<SkillManage>();
-        if (skillManage = null)
+        if (skillManage == null)
         {
             Debug.Log(this + "に SkillManage をアタッチしてください");
         } else

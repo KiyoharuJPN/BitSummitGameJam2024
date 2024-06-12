@@ -21,6 +21,7 @@ public class Administer_TradeScene : MonoBehaviour
 
     }
 
+    [ContextMenu("StartTradeAction")]
     public void Preparation_Trade() //TradeScene‚ÉˆÚs‚·‚é‚Æ‚«‚É‚±‚ê‚ğŒÄ‚Ño‚·
     {
         SetSkillRandom();

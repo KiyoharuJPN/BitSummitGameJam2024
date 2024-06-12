@@ -1,29 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
+[DefaultExecutionOrder(-5)]
 public class SkillManage : MonoBehaviour
 {
     List<Skill> AllSkillList; //全スキルのリスト
 
     List<List <Skill>> TradeSkillList; //Tradeで出すSkillのList
     List<Skill> Rare1_SkillList;  //SkillListは中でレアリティごとに分けるのでそれ用のList
-    List <Skill> Rare2_SkillList;  //Rareの横の数字がレアリティ
+    List<Skill> Rare2_SkillList;  //Rareの横の数字がレアリティ
     List<Skill> Rare3_SkillList;  //
 
     int[] RaretyArray;
 
+    public Skill NullSkill; //エラー用のスキル
+    [SerializeField] Sprite nullSkillSprite; //それ用のアイコン
+
     // Start is called before the first frame update
-    void Start() //テスト用
+    void Start()
     {
-        
+        Rare1_SkillList = new List<Skill>();
+        Rare2_SkillList = new List<Skill>();
+        Rare3_SkillList = new List<Skill>();
+
+
         TradeSkillList = new List<List <Skill>> 
         {
             Rare1_SkillList,
             Rare2_SkillList,
             Rare3_SkillList,
         };
-        
+
+        AllSkillList = new List<Skill>();
 
         RaretyArray = new int[]  //確率は個数で決める　数字はレアリティ
         {
@@ -31,6 +41,8 @@ public class SkillManage : MonoBehaviour
             2,2,2,2,
             3,3
         };
+
+        NullSkill = new Skill(0, "Null Skill", "スキルがありません", 0, 0, nullSkillSprite);
     }
 
 
@@ -74,9 +86,10 @@ public class SkillManage : MonoBehaviour
     void AddTradeSkillList(Skill skill)
     {
         int Rarity = skill.rarity; //引数のレアリティ
+        //Debug.Log(string.Join(",",TradeSkillList.Select(obj => obj.ToString())));
 
         List<Skill> AddedList = TradeSkillList[Rarity - 1];  //レアリティで分類
-        if (AddedList.Contains(skill)) //重複阻止
+        if (!AddedList.Contains(skill)) //重複阻止
         {
             AddedList.Add(skill);　//追加
         }

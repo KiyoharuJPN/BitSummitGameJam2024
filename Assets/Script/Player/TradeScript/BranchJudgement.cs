@@ -13,27 +13,37 @@ public class BranchJudgement : MonoBehaviour
         Up, Right, Down, Left, Neutral //Neutralは初期化
     }
 
-    [SerializeField] SkillLane UpLane;
-    [SerializeField] SkillLane RightLane;
-    [SerializeField] SkillLane DownLane;
+    [SerializeField] GameObject GUpLane;
+    [SerializeField] GameObject GRightLane;
+    [SerializeField] GameObject GDownLane;
+    [SerializeField] GameObject GLeftLane;
+
+    I_SelectedLane UpLane;
+    I_SelectedLane RightLane;
+    I_SelectedLane DownLane;
+    I_SelectedLane LeftLane;
 
 
     SelectState LastSelect; //保持用
     SelectState SelectingLane; //今の選択
 
-    SkillLane ExcudeLane; //実行先を入れる変数
-
-    Dictionary<SelectState, SkillLane> Dic_StateInterface; //状態とLaneをつなぐ
+    Dictionary<SelectState, I_SelectedLane> Dic_StateInterface; //状態とLaneをつなぐ
 
     void Start()
     {
+        UpLane = GUpLane.GetComponent<SkillLane>();
+        RightLane = GRightLane.GetComponent<I_SelectedLane>();
+        DownLane = GDownLane.GetComponent<I_SelectedLane>();
+        LeftLane = GLeftLane.GetComponent<I_SelectedLane>();
+
         LastSelect = SelectState.Neutral; //初期化
 
-        Dic_StateInterface = new Dictionary<SelectState, SkillLane>()
+        Dic_StateInterface = new Dictionary<SelectState, I_SelectedLane>()
         {
             {SelectState.Up, UpLane}, 
             {SelectState.Right, RightLane}, 
-            {SelectState.Down, DownLane}
+            {SelectState.Down, DownLane},
+            {SelectState.Left, LeftLane}
         };   
     }
 
@@ -71,14 +81,15 @@ public class BranchJudgement : MonoBehaviour
     {
         if (SelectingLane == LastSelect)
         {
-            ExcudeLane.DecadedAction();
+            StateToSkillLane(SelectingLane).DecadedAction();
             UnDecadeAction();
 
             tradeAdim.DecadeTrade();
         } else
         {
-            ExcudeLane.SelectedAction();
-            ExcudeLane.UnSelectedAction();
+            StateToSkillLane(SelectingLane).SelectedAction();
+            if(LastSelect == SelectState.Neutral) return;
+            StateToSkillLane(LastSelect).UnSelectedAction();
         }
     }
 
@@ -86,36 +97,43 @@ public class BranchJudgement : MonoBehaviour
     {
         LastSelect = SelectingLane; //状態保持を行う
 
-        if(!Dic_StateInterface.TryGetValue(LastSelect, out var skillLane)) 
-        {
-            Debug.Log("Error　このState  " + LastSelect + "に対応するLaneは存在しません");
-            return;
-        }　else
-        {
-            SetI_ExcudeLane(skillLane);
-        }
     }
 
-    void SetI_ExcudeLane(SkillLane skillLane) //次に備えてインターフェースをセット
+    I_SelectedLane StateToSkillLane(SelectState selectState) //StateからSkillLaneに変更
     {
-        ExcudeLane = skillLane;
+        if (!Dic_StateInterface.TryGetValue(selectState, out var skillLane))
+        {
+            Debug.Log("Error　このState  " + selectState + "に対応するLaneは存在しません");
+            return null;
+        }
+        else
+        {
+            return skillLane;
+        }
     }
 
     void UnDecadeAction()
     {
-        if(ExcudeLane != UpLane)
+        I_SelectedLane Selecting = StateToSkillLane(SelectingLane);
+
+        if (Selecting != UpLane)
         {
             UpLane.UnDecadedAction();
         }
 
-        if(ExcudeLane != RightLane)
+        if(Selecting != RightLane)
         {
             RightLane.UnDecadedAction();
         }
 
-        if(ExcudeLane != DownLane)
+        if(Selecting != DownLane)
         {
             DownLane.UnDecadedAction();
+        }
+
+        if(Selecting != LeftLane)
+        {
+            LeftLane.UnDecadedAction();
         }
     }
 }
