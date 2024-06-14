@@ -8,7 +8,7 @@ public class Skill
 
     //とりあえず仮で作りました
 
-    public string id;          //登録ID
+    public int id;          //登録ID
 
     public string skillName;    //スキルの名前
 　　public string skillexlantion;     //スキルの説明文
@@ -17,18 +17,18 @@ public class Skill
 
     public int rarity;  //仮で数値でレアリティ
 
-    public Image Icon;   //アイコン
+    public Sprite Icon;   //アイコン
 
 
 
 
-    public Skill(string id, string skillName, string skillexlantion, int cost, int rarity, Image image)
+    public Skill(int id, string skillName, string skillexlantion, int cost, int rarity, Sprite sprite)
     {
         this.id = id;
         this.skillName = skillName;
         this.skillexlantion = skillexlantion;
         this.cost = cost;
         this.rarity = rarity;
-        this.Icon = image;  
+        this.Icon = sprite;  
     }
 }

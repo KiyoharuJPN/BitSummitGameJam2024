@@ -5,12 +5,14 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(SpriteRenderer))]
+
 public class SkillLane : MonoBehaviour ,I_SelectedLane
 {
     Skill TradeSkill; //選択肢用スキルの保持用
     Skill NullSkill; //Error用,空用のスキル
 
-    Image SkillIcon;
+    Sprite SkillIcon;
     string SkillContext;
     RectTransform imageRectTransform; // 移動させるImageのRectTransform
     public Vector2 defaultposi; // 移動開始位置
@@ -18,20 +20,34 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
     private CancellationTokenSource _cancellationTokenSource;
     private Task _currentTask;
 
+    Vector3 imagePosi;
+
+    SpriteRenderer spriteRenderer;
+
+    [SerializeField] SkillManage skillManage;
+
     void Start()
     {
-        SkillIcon = TradeSkill.Icon;
-        imageRectTransform = SkillIcon.rectTransform;
-        SkillContext = SkillContext.ToString();
+        NullSkill = skillManage.NullSkill;
+
+        TradeSkill = NullSkill;
+
+        //imageRectTransform = SkillIcon.rectTransform;
+        //SkillContext = SkillContext.ToString();
+
+        imagePosi = transform.position; //テスト用仮
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.enabled = false;
     }
 
-    void SetSkill(Skill skill)
+    public void SetSkill()
     {
-        TradeSkill = skill;
+        TradeSkill = skillManage.RandomSelectSkill();
         SetEffect();
     }
 
-    void ReSetSkill(Skill skill)
+    public void ReSetSkill()
     {
         TradeSkill = NullSkill;
         ReSetEffect();
@@ -39,28 +55,39 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
 
     public void SelectedAction() //選択された時のAction
     {
-        ReverseOrMoveBack();
+        //ReverseOrMoveBack();
+        Debug.Log(TradeSkill.skillName + "を選択");
     }
 
-    public void UnSelectedAction ()  //選択が外された時のAction
+    public void UnSelectedAction()  //選択が外された時のAction
     {
-        ReverseOrMoveBack();
+        //ReverseOrMoveBack();
+        Debug.Log(TradeSkill.skillName + "を選択解除");
     }
 
     public void DecadedAction()
     {
-        Debug.Log(TradeSkill + "が選ばれました");
+        Debug.Log(TradeSkill.skillName + "が選ばれました");
         Debug.Log(TradeSkill.cost + "がsppedから引かれます");
+        //DecadeEffect
+    }
+
+    public void UnDecadedAction() //選ばれなかったとき
+    {
+        skillManage.ReAddSkill(TradeSkill);
+        //UnDecadeEffext
     }
 
     void SetEffect()
     {
-
+        spriteRenderer.sprite = TradeSkill.Icon;
+        spriteRenderer.enabled = true;
     }
 
     void ReSetEffect()
     {
-
+        spriteRenderer.sprite = null;
+        spriteRenderer.enabled = false;
     }
 
     void DecadeEffect()
@@ -155,4 +182,5 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
     {
         MoveImage(HighLightposi, defaultposi, 0.5f, imageRectTransform);
     }
+
 }
