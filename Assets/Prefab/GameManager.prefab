@@ -57,4 +57,5 @@ MonoBehaviour:
     shieldCount: 3
     targetCamSize: 100
     playerRightLimitOffset: 60
+    ChargeRatio: 1
   skillCoolDownKillCount: 0

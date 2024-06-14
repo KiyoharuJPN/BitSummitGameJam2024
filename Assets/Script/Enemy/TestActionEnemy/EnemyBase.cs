@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -125,11 +126,12 @@ public class EnemyBase : MonoBehaviour
     {
         Destroy(gameObject);
     }
-    virtual protected void IsBossDead()
+    virtual protected void IsBossDead(Action actionStageClear)
     {
         if (enemyHP <= 0)
         {
             Dead();
+            actionStageClear();
         }
     }
 
@@ -204,10 +206,10 @@ public class EnemyBase : MonoBehaviour
         IsDead();
         return chargePower;
     }
-    virtual public void PlayerDamageBoss(int dmg)
+    virtual public void PlayerDamageBoss(int dmg, Action actionStageClear)
     {
         HadDamage(dmg);
-        IsBossDead();
+        IsBossDead(actionStageClear);
     }
     // ˆÚ“®’âŽ~
     public void StopMoving()

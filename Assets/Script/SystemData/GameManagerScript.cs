@@ -175,14 +175,14 @@ public class GameManagerScript : MonoBehaviour
             enemyObjs[i].StopMoving();
         }
     }
-    public void SkillStartEnemy(int baseDmg, int skillPressCount, ref int totalKill, Func<bool> checkStageClear, Action actionStageClear) // bdmgとskillcntは万が一のために残しますが使われてはいない
+    public void SkillStartEnemy(/*int baseDmg, int skillPressCount, */ref int totalKill/*, Func<bool> checkStageClear, Action actionStageClear*/) // bdmgとskillcntは万が一のために残しますが使われてはいない
     {
         for (int i = 0; i < enemyObjs.Count; i++)
         {
             if (enemyObjs[i].SkillDamagedFinish())
             {
                 totalKill++;                                         // 敵を倒した
-                if (checkStageClear()) actionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
+                //if (checkStageClear()) actionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
             }
         }
     }

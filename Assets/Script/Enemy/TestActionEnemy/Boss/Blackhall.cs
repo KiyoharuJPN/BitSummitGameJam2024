@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -45,25 +46,12 @@ public class Blackhall : EnemyBase
 
 
         if (duration != 0) { Timer = duration; }
-        else { Timer = Random.Range(mindur, maxdur); }
-        if (summonType != 0) { summonPosNext = Random.Range(0, 2); }
+        else { Timer = UnityEngine.Random.Range(mindur, maxdur); }
+        if (summonType != 0) { summonPosNext = UnityEngine.Random.Range(0, 2); }
     }
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
         
-    }
-    private void Update()
-    {
-        if (enemyHP <= 0)
-        {
-            Timer -= Time.unscaledDeltaTime;
-            Debug.Log(Timer);
-            if (Timer < 0)
-            {
-                SceneManager.LoadScene("TestFinishStage");
-                Time.timeScale = 1.0f;
-            }
-        }
     }
 
     protected override void FixedUpdate()
@@ -77,7 +65,7 @@ public class Blackhall : EnemyBase
             Timer -= Time.deltaTime;
             if (Timer <= 0)
             {
-                Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], new Vector2(rightPosition, 45), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
+                Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], new Vector2(rightPosition, 45), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
                 Timer = duration;
             }
         }
@@ -97,22 +85,22 @@ public class Blackhall : EnemyBase
                     switch (summonPosNext)
                     {
                         default:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
                             summonPosNext += 2;
                             Timer = duration;
                             break;
                         case 0:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext++;
                             Timer = duration;
                             break;
                         case 1:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext++;
                             Timer = duration;
                             break;
                         case 2:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext = 0;
                             Timer = duration;
                             break;
@@ -124,8 +112,8 @@ public class Blackhall : EnemyBase
                 Timer -= Time.deltaTime;
                 if (Timer <= 0)
                 {
-                    Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                    summonPosNext = Random.Range(0, 3);
+                    Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
+                    summonPosNext = UnityEngine.Random.Range(0, 3);
                     Timer = duration;
                 }
             }
@@ -140,24 +128,24 @@ public class Blackhall : EnemyBase
                     switch (summonPosNext)
                     {
                         default:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
                             summonPosNext += 2;
-                            Timer = Random.Range(mindur, maxdur);
+                            Timer = UnityEngine.Random.Range(mindur, maxdur);
                             break;
                         case 0:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext++;
-                            Timer = Random.Range(mindur, maxdur);
+                            Timer = UnityEngine.Random.Range(mindur, maxdur);
                             break;
                         case 1:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext++;
-                            Timer = Random.Range(mindur, maxdur);
+                            Timer = UnityEngine.Random.Range(mindur, maxdur);
                             break;
                         case 2:
-                            Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
                             summonPosNext = 0;
-                            Timer = Random.Range(mindur, maxdur);
+                            Timer = UnityEngine.Random.Range(mindur, maxdur);
                             break;
                     }
                 }
@@ -167,9 +155,9 @@ public class Blackhall : EnemyBase
                 Timer -= Time.deltaTime;
                 if (Timer <= 0)
                 {
-                    Instantiate(enemyObj[Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                    summonPosNext = Random.Range(0, 3);
-                    Timer = Random.Range(mindur, maxdur);
+                    Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
+                    summonPosNext = UnityEngine.Random.Range(0, 3);
+                    Timer = UnityEngine.Random.Range(mindur, maxdur);
                 }
             }
         }
@@ -192,7 +180,7 @@ public class Blackhall : EnemyBase
     }
 
 
-    override protected void IsBossDead()
+    override protected void IsBossDead(Action actionStageClear)
     {
         if (enemyHP <= 0)
         {
@@ -200,9 +188,8 @@ public class Blackhall : EnemyBase
             //SceneManager.LoadScene("KiyoharuTestStage");
 
             spriteRenderer.sprite = spr;
-            Time.timeScale = 0;
-            Timer = 5;
         }
+        base.IsBossDead(actionStageClear);
     }
 
 }

@@ -158,12 +158,12 @@ public class PlayerActionMovement : MonoBehaviour
             if (chargePower >= 100 && GameManagerScript.instance.SetEnemyObjects() > 0)// チャージチェック
             {
                 chargePower = 0;                                    // チャージリセット
-                GameObject.Find("BlackHole").GetComponent<EnemyBase>().PlayerDamageBoss(100);
+                GameObject.Find("BlackHole").GetComponent<EnemyBase>().PlayerDamageBoss(100, ActionStageClear);
 
 
 
                 // 一時実装用
-                playerSpr.sprite = spr[4];
+                playerSpr.sprite = spr[3];
 
 
 
@@ -224,7 +224,7 @@ public class PlayerActionMovement : MonoBehaviour
 
                     CalcLaneKill(id);                                       // レーンごとのキル計算
 
-                    if (CheckStageClear()) ActionStageClear();              // ステージ相応の敵を倒したならステージ終了にする
+                    //if (CheckStageClear()) ActionStageClear();              // ステージ相応の敵を倒したならステージ終了にする
                 }
             }
             // 攻撃不可のすべてオブジェクトに対して攻撃する
@@ -237,7 +237,6 @@ public class PlayerActionMovement : MonoBehaviour
                     //// レーンの攻撃力を増やす
                     //float downpower = 0.01f;
                     //AdjustLanePower(id, downpower);
-                    
                     chargePower += (int)Mathf.Ceil(getCharge * playerData.ChargeRatio);                               // パワーチャージ
 
                     if (spr != null)
@@ -258,7 +257,7 @@ public class PlayerActionMovement : MonoBehaviour
 
                     CalcLaneKill(id);                                       // レーンごとのキル計算
 
-                    if (CheckStageClear()) ActionStageClear();              // ステージ相応の敵を倒したならステージ終了にする
+                    //if (CheckStageClear()) ActionStageClear();              // ステージ相応の敵を倒したならステージ終了にする
                 }
             }
         }
@@ -402,7 +401,8 @@ public class PlayerActionMovement : MonoBehaviour
 
             if(resetIsSkillTimer <= 0)
             {
-                GameManagerScript.instance.SkillStartEnemy(GetBaseHP(), skillPressCount, ref playerData.totalKill, CheckStageClear, ActionStageClear);
+                //GameManagerScript.instance.SkillStartEnemy(GetBaseHP(), skillPressCount, ref playerData.totalKill, CheckStageClear, ActionStageClear);
+                GameManagerScript.instance.SkillStartEnemy(ref playerData.totalKill);
                 GameManagerScript.instance.SetIsSkill(false);
                 resetIsSkillTimer = resetIsSkillTime;
             }
@@ -412,14 +412,14 @@ public class PlayerActionMovement : MonoBehaviour
     void ActionStageClear()
     {
         // testのために削除しておく
-        //ModifyBaseHP(500);
-        //GameManagerScript.instance.SetPlayerData(playerData);
-        //SceneManager.LoadScene("TestFinishStage");
+        ModifyBaseHP(500);
+        GameManagerScript.instance.SetPlayerData(playerData);
+        SceneManager.LoadScene("TestFinishStage");
     }
-    bool CheckStageClear()
-    {
-        return playerData.totalKill >= FinishKill;
-    }
+    //bool CheckStageClear()
+    //{
+    //    return playerData.totalKill >= FinishKill;
+    //}
     // HP計算
     bool ShieldCheck()
     {
@@ -532,7 +532,7 @@ public class PlayerActionMovement : MonoBehaviour
     public void AdjustPlayerKilledEnemy(int killedCount)
     {
         playerData.totalKill += killedCount;
-        if (CheckStageClear()) ActionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
+        //if (CheckStageClear()) ActionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
     }
     
 
