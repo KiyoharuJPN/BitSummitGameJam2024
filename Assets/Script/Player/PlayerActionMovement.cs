@@ -128,7 +128,7 @@ public class PlayerActionMovement : MonoBehaviour
 
 
         // ˆêŽžŽÀ‘•
-        if(playerSpr.sprite == spr[4])
+        if(playerSpr.sprite == spr[3])
         {
             testTimer =- Time.deltaTime;
             if(testTimer < 0) {
@@ -565,7 +565,7 @@ public class PlayerActionMovement : MonoBehaviour
     {
         playerData.baseHP = speed;
     }
-    void ModifyBaseHP(int increment)    // [Difference] of BaseSpeed(if it is a negative number it will be [decrement])
+    void ModifyBaseHP(int increment)    // [Difference] of baseHP(if it is a negative number it will be [decrement])
     {
         playerData.baseHP += increment;
     }

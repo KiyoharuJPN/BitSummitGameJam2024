@@ -29,7 +29,7 @@ public class Boomer : EnemyBase
         //}
         //else
         //{
-        //    HadDamage(baseSpeed);
+        //    HadDamage(baseHP);
         //    Dead(null/*pam*/);
         //}
     }

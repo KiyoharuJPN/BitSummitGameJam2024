@@ -141,10 +141,10 @@ public class EnemyBase : MonoBehaviour
         //{
         //    midPositionCheck = true;
         //    //// 加速関連(HPが増えてくる)
-        //    //baseSpeed *= 2;
+        //    //baseHP *= 2;
         //    //SetSpeed();
         //    //// 減速関連（HPが減ってくる）
-        //    //baseSpeed /= 2;
+        //    //baseHP /= 2;
         //    //SetSpeed();
         //    //// レーン変更
         //    //laneID++;
@@ -164,10 +164,10 @@ public class EnemyBase : MonoBehaviour
         //{
         //    Position5_1Check = true;
         //    //// 加速関連(HPが増えてくる)
-        //    //baseSpeed *= 2;
+        //    //baseHP *= 2;
         //    //SetSpeed();
         //    //// 減速関連（HPが減ってくる）
-        //    //baseSpeed /= 2;
+        //    //baseHP /= 2;
         //    //SetSpeed();
         //}
     }
