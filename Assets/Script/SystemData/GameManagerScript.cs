@@ -18,6 +18,7 @@ public struct PlayerData
     public int shieldCount;             // 攻撃を防げる残りのシールド数
     public float targetCamSize;         // 目標のカメラの大きさ（今と同じだったら変わらない＆HPによって変わる）
     public float playerRightLimitOffset;// 中間地点計算用
+    public float ChargeRatio;           // チャージの比率
 }                                       // Structsに移動する予定。
 // GameManagerControl用構造
 public struct GameControl
@@ -63,7 +64,7 @@ public class GameManagerScript : MonoBehaviour
     public PlayerData playerData = new PlayerData() { baseHP = 1000, attackPower = 1000,
         upLanePower = 1, rightLanePower = 1, downLanePower = 1, bgMoveSpeed = 0.001f,
         skillCoolDownKill = 5, totalKill = 0, shieldCount = 3, targetCamSize = 100,
-        playerRightLimitOffset = 60};
+        playerRightLimitOffset = 60, ChargeRatio = 1 };
     // GameManagerControl用
     GameControl gameControl = new GameControl() { isSkill = false, playerRightLimit = -70f };
 

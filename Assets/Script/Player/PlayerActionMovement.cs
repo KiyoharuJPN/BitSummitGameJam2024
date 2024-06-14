@@ -205,7 +205,7 @@ public class PlayerActionMovement : MonoBehaviour
                     //float downpower = 0.01f;
                     //AdjustLanePower(id, downpower);
 
-                    chargePower += getCharge;                               // パワーチャージ
+                    chargePower += (int)Mathf.Ceil(getCharge * playerData.ChargeRatio);                               // パワーチャージ
 
                     if (spr != null)                                        // スプライトの切り替え
                     {
@@ -237,8 +237,8 @@ public class PlayerActionMovement : MonoBehaviour
                     //// レーンの攻撃力を増やす
                     //float downpower = 0.01f;
                     //AdjustLanePower(id, downpower);
-
-                    chargePower += getCharge;                               // パワーチャージ
+                    
+                    chargePower += (int)Mathf.Ceil(getCharge * playerData.ChargeRatio);                               // パワーチャージ
 
                     if (spr != null)
                     {
@@ -555,7 +555,6 @@ public class PlayerActionMovement : MonoBehaviour
         cantAttackobj[id].Remove(obj);
     }
 
-
     // ゲッターセッター
     int GetBaseHP()
     {
@@ -565,7 +564,7 @@ public class PlayerActionMovement : MonoBehaviour
     {
         playerData.baseHP = speed;
     }
-    void ModifyBaseHP(int increment)    // [Difference] of baseHP(if it is a negative number it will be [decrement])
+    void ModifyBaseHP(int increment)    // [Difference] of BaseSpeed(if it is a negative number it will be [decrement])
     {
         playerData.baseHP += increment;
     }
