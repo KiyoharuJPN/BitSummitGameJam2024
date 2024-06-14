@@ -7,7 +7,7 @@ using UnityEngine;
 [Serializable]
 public struct PlayerData
 {
-    public int baseSpeed;               // 体力、お金、スピード
+    public int baseHP;               // 体力、お金、スピード
     public int attackPower;             // 攻撃力
     public float upLanePower;           // 上レーンの攻撃力(変動による)
     public float rightLanePower;        // 右レーンの攻撃力(変動による)
@@ -18,7 +18,7 @@ public struct PlayerData
     public int shieldCount;             // 攻撃を防げる残りのシールド数
     public float targetCamSize;         // 目標のカメラの大きさ（今と同じだったら変わらない＆HPによって変わる）
     public float playerRightLimitOffset;// 中間地点計算用
-}                                       //Structsに移動する予定。
+}                                       // Structsに移動する予定。
 // GameManagerControl用構造
 public struct GameControl
 {
@@ -40,11 +40,10 @@ public class GameManagerScript : MonoBehaviour
             if (entity.id == id)
             {
                 return new EnemyDataList(
-                    entity.baseSpeed, 
-                    entity.upSpeed, 
+                    entity.enemyHP, 
+                    entity.chargePower, 
                     entity.attackPower, 
-                    entity.knockBackStop,
-                    entity.knockBackValue,
+                    entity.enemySpeed,
                     entity.type);
             }
         }
@@ -61,8 +60,8 @@ public class GameManagerScript : MonoBehaviour
 
     // プレイヤーのデータを常にGameManagerが持つように
     [SerializeField]
-    public PlayerData playerData = new PlayerData() { baseSpeed = 1000, attackPower = 1000,
-        upLanePower = 1, rightLanePower = 1, downLanePower = 1, bgMoveSpeed = 0.0001f,
+    public PlayerData playerData = new PlayerData() { baseHP = 1000, attackPower = 1000,
+        upLanePower = 1, rightLanePower = 1, downLanePower = 1, bgMoveSpeed = 0.001f,
         skillCoolDownKill = 5, totalKill = 0, shieldCount = 3, targetCamSize = 100,
         playerRightLimitOffset = 60};
     // GameManagerControl用
@@ -175,11 +174,11 @@ public class GameManagerScript : MonoBehaviour
             enemyObjs[i].StopMoving();
         }
     }
-    public void SkillStartEnemy(int baseSpeed, int skillPressCount, ref int totalKill, Func<bool> checkStageClear, Action actionStageClear)
+    public void SkillStartEnemy(int baseDmg, int skillPressCount, ref int totalKill, Func<bool> checkStageClear, Action actionStageClear) // bdmgとskillcntは万が一のために残しますが使われてはいない
     {
         for (int i = 0; i < enemyObjs.Count; i++)
         {
-            if (enemyObjs[i].SkillDamagedFinish(baseSpeed * skillPressCount))
+            if (enemyObjs[i].SkillDamagedFinish())
             {
                 totalKill++;                                         // 敵を倒した
                 if (checkStageClear()) actionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
@@ -191,9 +190,22 @@ public class GameManagerScript : MonoBehaviour
     {
         for (int i = 0; i < enemyObjs.Count; i++)
         {
-            enemyObjs[i].BeKilled();
+            enemyObjs[i].PlayerDamage();             // 適当に直接キルするように仕様を変えたので、こちらはパラメーターを渡さないようにしました。
         }
     }
+
+
+    // ベクターの計算
+    public Vector3 CalculateDirection(Vector3 StartPos, Vector3 EndPos)
+    {
+        //方向の計算
+        Vector3 direction = EndPos - StartPos;
+        // 正規化
+        direction.Normalize();
+        return direction;
+    }
+
+
     //public int KillAllEnemy()
     //{
     //    int killCount = 0;

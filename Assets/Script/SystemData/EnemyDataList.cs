@@ -4,33 +4,31 @@ using UnityEngine;
 [Serializable]
 public class EnemyDataList
 {
-    public string id;          //登録ID
+    public string id;          // 登録ID
 
-    public string charName;    //キャラクターの名前
+    public string charName;    // キャラクターの名前
 
-    public enum ObjectType     //使う可能性があるので作ったけど、最後に使わないときに削除すれば大丈夫です。
+    public enum ObjectType     // 敵の種類
     {
-        Grund,    //動く
-        Fly　     //飛ぶ
+        Boss,    // ボス敵
+        Normal   // 雑魚敵
     }
 
-    public int baseSpeed;         //体力、お金、スピード
-    public int upSpeed;             //入手スピード（敵として殺された場合もらえるスピード）
-    public int attackPower;         //攻撃力
-    public float knockBackValue;    //ノックバック値
-    public float knockBackStop;     //止まる長さ
+    public int enemyHP;             // 敵のHP
+    public int chargePower;         // 入手チャージの量
+    public int attackPower;         // 攻撃力
+    public int enemySpeed;          // 敵のスピード
 
-    public ObjectType type;         //行動種類
+    public ObjectType type;         // 行動種類
 
 
-    public EnemyDataList(int baseSpeed, int upSpeed, int attackPower, float knockBackStop,
-                     float knockBackValue, ObjectType type)
+    public EnemyDataList(int enemyHP, int chargePower, int attackPower, int enemySpeed,
+                         ObjectType type)
     {
-        this.baseSpeed = baseSpeed;
-        this.upSpeed = upSpeed;
+        this.enemyHP = enemyHP;
+        this.chargePower = chargePower;
         this.attackPower = attackPower;
-        this.knockBackStop = knockBackStop;
-        this.knockBackValue = knockBackValue;
+        this.enemySpeed = enemySpeed;
         this.type = type;
     }
 }

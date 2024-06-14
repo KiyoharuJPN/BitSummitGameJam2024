@@ -11,6 +11,7 @@ using UnityEngine.UI;
 public class PlayerActionMovement : MonoBehaviour
 {
     PlayerData playerData;                  // 現在ゲームのゲームデータを受け取る（実体です）
+    int chargePower;                        // チャージ用
     InputAction up, down, left, right;      // 入力関連
     // 背景関連
     RawImage bgimg;
@@ -39,9 +40,17 @@ public class PlayerActionMovement : MonoBehaviour
 
     // カメラワーク
     float cameraMinSize = 80, cameraMaxSize = 100;
-    float minimumSpeed = 0, maximumSpeed = 10000;
+    float minimumSpeed = 0, maximumSpeed = 1000;
     float cameraMoveSpeed = 0.1f;                        // 1以上0以下に設定しないようにしてください
     Camera cam;
+
+
+
+
+    // test
+    float testTimer = 3;
+    public Sprite[] spr;
+    SpriteRenderer playerSpr;
 
 
     // Start is called before the first frame update
@@ -49,6 +58,7 @@ public class PlayerActionMovement : MonoBehaviour
     {
         // プレイヤー代入部分（違うシーンにいてもプレイヤーは共通であるために）
         playerData = GameManagerScript.instance.GetPlayerData();
+        chargePower = 0;                                        // チャージリセット
         FinishKill = playerData.totalKill + 20;
         hasKillSinceLastSkill = playerData.totalKill;           // キル数リセット
         GameManagerScript.instance.SetPlayerRightLimit(playerData.playerRightLimitOffset + transform.position.x);
@@ -89,6 +99,10 @@ public class PlayerActionMovement : MonoBehaviour
 
         // レーンの演出
         LanePerformanceReset();
+
+        // test
+        playerSpr = GetComponent<SpriteRenderer>();
+        StartRollBGImage();
     }
 
     // Update is called once per frame
@@ -111,6 +125,17 @@ public class PlayerActionMovement : MonoBehaviour
 
         // カメラの大きさ調整
         FixCameraSize();
+
+
+        // 一時実装
+        if(playerSpr.sprite == spr[4])
+        {
+            testTimer =- Time.deltaTime;
+            if(testTimer < 0) {
+                testTimer = 3;
+                playerSpr.sprite = spr[0];
+            }
+        }
     }
 
 
@@ -130,17 +155,27 @@ public class PlayerActionMovement : MonoBehaviour
         }
         if (left.WasPressedThisFrame())
         {
-            if (playerData.totalKill - hasKillSinceLastSkill >= playerData.skillCoolDownKill && GameManagerScript.instance.SetEnemyObjects() > 0)
+            if (chargePower >= 100 && GameManagerScript.instance.SetEnemyObjects() > 0)// チャージチェック
             {
-                hasKillSinceLastSkill = playerData.totalKill;       // 前回スキル使った時の更新
-                if (GetBaseSpeed() > 100)
-                {
-                    SetBaseSpeed(GetBaseSpeed() - (int)(GetBaseSpeed() * 0.05f));   // HPを使ってスキルを使い、
-                    CalcCameraSize();                                               // カメラの大きさを調整する
-                }
-                GameManagerScript.instance.SkillStopEnemy();
-                skillPressCount = 0;        // 左キーカウンターのリセット
-                GameManagerScript.instance.SetIsSkill(true);
+                chargePower = 0;                                    // チャージリセット
+                GameObject.Find("BlackHole").GetComponent<EnemyBase>().PlayerDamageBoss(100);
+
+
+
+                // 一時実装用
+                playerSpr.sprite = spr[4];
+
+
+
+                //hasKillSinceLastSkill = playerData.totalKill;       // 前回スキル使った時の更新
+                //if (GetBaseHP() > 100)
+                //{
+                //    SetBaseHP(GetBaseHP() - (int)(GetBaseHP() * 0.05f));   // HPを使ってスキルを使い、
+                //    CalcCameraSize();                                               // カメラの大きさを調整する
+                //}
+                //GameManagerScript.instance.SkillStopEnemy();
+                //skillPressCount = 0;        // 左キーカウンターのリセット
+                //GameManagerScript.instance.SetIsSkill(true);
             }
             if (GameManagerScript.instance.GetIsSkill())
             {
@@ -158,47 +193,85 @@ public class PlayerActionMovement : MonoBehaviour
         if (canAttackobj[id].Count > 0)
         {
             attacker[id].PlayATAnimOnce();                                  // アニメーションを一回流す
-            int power = (int)(GetBaseSpeed() * GetLanePower(id));     // 攻撃力を計算する
+            int power = (int)(GetBaseHP() * GetLanePower(id));           // 攻撃力を計算する
             // 攻撃可能の全てのオブジェクトに対して攻撃する
             for (int i = 0; i < canAttackobj[id].Count; i++)
             {
-                if(canAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(power, 150, 1.2f, 2f, this))
+                var getCharge = canAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(2f, this);
+                if (getCharge != 0)
                 {
-                    playerData.totalKill++;                             // 敵を倒した
-                    // レーンの攻撃力を増やす
-                    float downpower = 0.01f;
-                    AdjustLanePower(id, downpower);
+                    playerData.totalKill++;                                 // 敵を倒した
+                    //// レーンの攻撃力を増やす
+                    //float downpower = 0.01f;
+                    //AdjustLanePower(id, downpower);
 
-                    CalcLaneKill(id);                                   // レーンごとのキル計算
+                    chargePower += getCharge;                               // パワーチャージ
 
-                    if (CheckStageClear()) ActionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
+                    if (spr != null)                                        // スプライトの切り替え
+                    {
+                        if (chargePower < 50)
+                        {
+                            playerSpr.sprite = spr[0];
+                        }else if( chargePower < 80)
+                        {
+                            playerSpr.sprite = spr[1];
+                        }
+                        else
+                        {
+                            playerSpr.sprite = spr[2];
+                        }
+                    }
+
+                    CalcLaneKill(id);                                       // レーンごとのキル計算
+
+                    if (CheckStageClear()) ActionStageClear();              // ステージ相応の敵を倒したならステージ終了にする
                 }
             }
             // 攻撃不可のすべてオブジェクトに対して攻撃する
             for (int i = 0; i < cantAttackobj[id].Count; i++)
             {
-                if (cantAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(power, 150, 0.9f, 2f, this))
+                var getCharge = cantAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(2f, this);
+                if (getCharge != 0)
                 {
-                    playerData.totalKill++;                              // 敵を倒した
-                    // レーンの攻撃力を増やす
-                    float downpower = 0.01f;
-                    AdjustLanePower(id, downpower);
+                    playerData.totalKill++;                                 // 敵を倒した
+                    //// レーンの攻撃力を増やす
+                    //float downpower = 0.01f;
+                    //AdjustLanePower(id, downpower);
 
-                    CalcLaneKill(id);                                   // レーンごとのキル計算
+                    chargePower += getCharge;                               // パワーチャージ
 
-                    if (CheckStageClear()) ActionStageClear();           // ステージ相応の敵を倒したならステージ終了にする
+                    if (spr != null)
+                    {
+                        if (chargePower < 50)
+                        {
+                            playerSpr.sprite = spr[0];
+                        }
+                        else if (chargePower < 80)
+                        {
+                            playerSpr.sprite = spr[1];
+                        }
+                        else
+                        {
+                            playerSpr.sprite = spr[2];
+                        }
+                    }
+
+                    CalcLaneKill(id);                                       // レーンごとのキル計算
+
+                    if (CheckStageClear()) ActionStageClear();              // ステージ相応の敵を倒したならステージ終了にする
                 }
             }
         }
         else if (cantAttackobj[id].Count > 0)
         {
-            // 攻撃不可のすべてオブジェクトに対してノックバック
-            for (int i = 0; i < cantAttackobj[id].Count; i++)
-            {
-                cantAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(0, 150, 0.6f, 2f,this);
-                float downpower = -0.05f;
-                AdjustLanePower(id, downpower);
-            }
+            //// 攻撃不可のすべてオブジェクトに対してノックバック
+            //for (int i = 0; i < cantAttackobj[id].Count; i++)
+            //{
+            //    cantAttackobj[id][i].GetComponent<EnemyBase>().PlayerDamage(2f, this);
+            //    //// レーンの攻撃力を減らす
+            //    //float downpower = -0.05f;
+            //    //AdjustLanePower(id, downpower);
+            //}
         }
     }
     // レーンパワーをゲット
@@ -311,7 +384,7 @@ public class PlayerActionMovement : MonoBehaviour
     {
         if (startRollbgimg)
         {
-            var rollSpeed = GetBaseSpeed() * playerData.bgMoveSpeed;
+            var rollSpeed = GetBaseHP() * playerData.bgMoveSpeed;
             if (rollSpeed > 10) rollSpeed = 10;
             if (rollSpeed < 0.1) rollSpeed = 0.1f;
             bgimg.uvRect = new Rect(new Vector2(bgimg.uvRect.x + rollSpeed * Time.deltaTime, bgimg.uvRect.y), new Vector2(bgimg.uvRect.width, bgimg.uvRect.height));
@@ -323,10 +396,13 @@ public class PlayerActionMovement : MonoBehaviour
     {
         if (GameManagerScript.instance.GetIsSkill())
         {
-            resetIsSkillTimer-= Time.deltaTime;
+            // 一旦必要中あったので直接ジャンプにする 
+            // resetIsSkillTimer -= Time.deltaTime;
+            resetIsSkillTimer = 0;
+
             if(resetIsSkillTimer <= 0)
             {
-                GameManagerScript.instance.SkillStartEnemy(GetBaseSpeed(), skillPressCount, ref playerData.totalKill, CheckStageClear, ActionStageClear);
+                GameManagerScript.instance.SkillStartEnemy(GetBaseHP(), skillPressCount, ref playerData.totalKill, CheckStageClear, ActionStageClear);
                 GameManagerScript.instance.SetIsSkill(false);
                 resetIsSkillTimer = resetIsSkillTime;
             }
@@ -335,9 +411,10 @@ public class PlayerActionMovement : MonoBehaviour
     // ステージクリアの時に自分のデータをゲームマネージャに返還する（今は使われていない）
     void ActionStageClear()
     {
-        ModifyBaseSpeed(500);
-        GameManagerScript.instance.SetPlayerData(playerData);
-        SceneManager.LoadScene("TestFinishStage");
+        // testのために削除しておく
+        //ModifyBaseHP(500);
+        //GameManagerScript.instance.SetPlayerData(playerData);
+        //SceneManager.LoadScene("TestFinishStage");
     }
     bool CheckStageClear()
     {
@@ -358,18 +435,19 @@ public class PlayerActionMovement : MonoBehaviour
     // TestUI
     void UpdateUIText()
     {
-        testUI.text = "HP Speed : " + playerData.baseSpeed + '\n'
+        testUI.text = "HP Speed : " + playerData.baseHP + '\n'
             + "Killed Enemy : " + playerData.totalKill + '\n'
-            + "Cool Down Kill : " + (playerData.totalKill - hasKillSinceLastSkill) + "\n"
-            + "Up Lane Power : " + playerData.upLanePower + "\n"
-            + "Right Lane Power : " + playerData.rightLanePower + "\n"
-            + "Down Lane Power : " + playerData.downLanePower + "\n"
-            + "Skill Press Count : " + skillPressCount + "\n"
-            + "BG Move Speed : " + playerData.bgMoveSpeed + "\n"
+            //+ "Cool Down Kill : " + (playerData.totalKill - hasKillSinceLastSkill) + "\n"
+            //+ "Up Lane Power : " + playerData.upLanePower + "\n"
+            //+ "Right Lane Power : " + playerData.rightLanePower + "\n"
+            //+ "Down Lane Power : " + playerData.downLanePower + "\n"
+            //+ "Skill Press Count : " + skillPressCount + "\n"
+            //+ "BG Move Speed : " + playerData.bgMoveSpeed + "\n"
             + "Up Lane Kill : " + upLaneKill + '\n'
             + "Right Lane Kill : " + rightLaneKill + '\n'
             + "Down Lane Kill : " + downLaneKill + '\n'
-            + "Player Shield Count : " + playerData.shieldCount;// + '\n'
+            + "Player Shield Count : " + playerData.shieldCount + '\n'
+            + "PlayerCharge : " + chargePower;// + '\n'
     }
     // レーン別キル計算(左キーで敵を倒した時にレーン別キルに加算される？)
     void CalcLaneKill(int id)
@@ -396,7 +474,7 @@ public class PlayerActionMovement : MonoBehaviour
     void CalcCameraSize()
     {
         // 今のスピードを正規化する
-        var normalizedSpeed = Mathf.InverseLerp(minimumSpeed, maximumSpeed, GetBaseSpeed());
+        var normalizedSpeed = Mathf.InverseLerp(minimumSpeed, maximumSpeed, GetBaseHP());
         // 変換可能のスピードに変換する
         var cameraSize = Mathf.Lerp(cameraMinSize, cameraMaxSize, normalizedSpeed);
         Debug.Log($"Camera size: {cameraSize}");
@@ -404,7 +482,7 @@ public class PlayerActionMovement : MonoBehaviour
     }
     void CalcHPWithCamera(int increment)
     {
-        ModifyBaseSpeed(increment);
+        ModifyBaseHP(increment);
         CalcCameraSize();
     }
     void FixCameraSize()
@@ -419,13 +497,13 @@ public class PlayerActionMovement : MonoBehaviour
 
     // 外部関数
     // HP計算
-    public void GetHit(int dmg, GameObject enemyObj = null)
+    public void GetHit(int dmg, bool canGuard = true, GameObject enemyObj = null)
     {
-        if (ShieldCheck()) return;
-        ModifyBaseSpeed(-dmg);
+        if (canGuard && ShieldCheck()) return;
+        ModifyBaseHP(-dmg);
         CalcCameraSize();
         // HPが0以下の時死亡判定で再開する
-        if (GetBaseSpeed() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
+        if (GetBaseHP() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
     }
     // レーンのパワーを低下させる
     public void AdjustLanePowerByScript(int id, float power)
@@ -438,15 +516,15 @@ public class PlayerActionMovement : MonoBehaviour
         if (canGuard)
         {
             // シールドで攻撃を防げるパターン
-            GetHit(playerData.baseSpeed);
+            GetHit(playerData.baseHP, canGuard);
         }
         else
         {
             // シールドで攻撃を防げられないパターン
-            ModifyBaseSpeed(-playerData.baseSpeed);
+            ModifyBaseHP(-playerData.baseHP);
             CalcCameraSize();
             // HPが0以下の時死亡判定で再開する
-            if (GetBaseSpeed() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
+            if (GetBaseHP() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
         }
 
     }
@@ -479,17 +557,17 @@ public class PlayerActionMovement : MonoBehaviour
 
 
     // ゲッターセッター
-    int GetBaseSpeed()
+    int GetBaseHP()
     {
-        return playerData.baseSpeed;
+        return playerData.baseHP;
     }
-    void SetBaseSpeed(int speed)
+    void SetBaseHP(int speed)
     {
-        playerData.baseSpeed = speed;
+        playerData.baseHP = speed;
     }
-    void ModifyBaseSpeed(int increment)    // [Difference] of BaseSpeed(if it is a negative number it will be [decrement])
+    void ModifyBaseHP(int increment)    // [Difference] of BaseSpeed(if it is a negative number it will be [decrement])
     {
-        playerData.baseSpeed += increment;
+        playerData.baseHP += increment;
     }
 
 }

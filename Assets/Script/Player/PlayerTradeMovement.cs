@@ -375,15 +375,15 @@ public class PlayerTradeMovement : MonoBehaviour
         // ゲッターセッター
         int GetBaseSpeed()
         {
-            return playerData.baseSpeed;
+            return playerData.baseHP;
         }
         void SetBaseSpeed(int speed)
         {
-            playerData.baseSpeed = speed;
+            playerData.baseHP = speed;
         }
         void ModifyBaseSpeed(int increment)    // [Difference] of BaseSpeed(if it is a negative number it will be [decrement])
         {
-            playerData.baseSpeed += increment;
+            playerData.baseHP += increment;
         }
 
     }

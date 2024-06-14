@@ -15,25 +15,50 @@ MonoBehaviour:
   DataList:
   - id: 1
     charName: A
-    baseSpeed: 500
-    upSpeed: 500
-    attackPower: 500
-    knockBackValue: 50
-    knockBackStop: 10
+    enemyHP: 1
+    chargePower: 5
+    attackPower: 100
+    enemySpeed: 80
     type: 1
   - id: 2
     charName: B
-    baseSpeed: 1000
-    upSpeed: 1000
-    attackPower: 1000
-    knockBackValue: 50
-    knockBackStop: 10
+    enemyHP: 1
+    chargePower: 5
+    attackPower: 100
+    enemySpeed: 150
     type: 1
   - id: 3
     charName: C
-    baseSpeed: 1500
-    upSpeed: 1500
-    attackPower: 1500
-    knockBackValue: 50
-    knockBackStop: 10
+    enemyHP: 1
+    chargePower: 5
+    attackPower: 100
+    enemySpeed: 200
     type: 1
+  - id: 4
+    charName: Boomer
+    enemyHP: 1
+    chargePower: 5
+    attackPower: 100
+    enemySpeed: 70
+    type: 1
+  - id: 5
+    charName: SpeedBooster
+    enemyHP: 1
+    chargePower: 5
+    attackPower: 100
+    enemySpeed: 70
+    type: 1
+  - id: 6
+    charName: LaneChanger
+    enemyHP: 1
+    chargePower: 5
+    attackPower: 100
+    enemySpeed: 70
+    type: 1
+  - id: 7
+    charName: BlackHole
+    enemyHP: 100
+    chargePower: 0
+    attackPower: 0
+    enemySpeed: 0
+    type: 0

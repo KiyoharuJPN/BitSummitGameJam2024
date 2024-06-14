@@ -147,5 +147,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 2
-  isAttackDeathEnemy: 1
-  isDownLanePowerEnemy: 0
+  hitStopDefultTime: 5
+  isAttackDeathEnemy: 0
