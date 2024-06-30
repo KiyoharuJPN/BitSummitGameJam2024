@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class PlayerActionMovement : MonoBehaviour
 {
     PlayerData playerData;                  // 現在ゲームのゲームデータを受け取る（実体です）
-    int chargePower;                        // チャージ用
+    float chargePower;                      // チャージ用
     InputAction up, down, left, right;      // 入力関連
     // 背景関連
     RawImage bgimg;
@@ -36,30 +36,36 @@ public class PlayerActionMovement : MonoBehaviour
 
     // レーンステータス
     int upLaneKill, rightLaneKill, downLaneKill;         // 上、右、下レーンがキルした敵の総数
-    int FinishKill;
 
     // カメラワーク
-    float cameraMinSize = 80, cameraMaxSize = 100;
+    float cameraMinSize = 90, cameraMaxSize = 100;
     float minimumSpeed = 0, maximumSpeed = 1000;
     float cameraMoveSpeed = 0.1f;                        // 1以上0以下に設定しないようにしてください
     Camera cam;
 
+    // アニメーション関連
+    Animator animator;
 
+    // UI関連
+    SpeedGaugeUI HPGauge;
+    float MaxHP = 2000; 
 
-
-    // test
-    float testTimer = 3;
-    public Sprite[] spr;
-    SpriteRenderer playerSpr;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        // アニメーション関連
+        animator = GetComponent<Animator>();
+
+        // カメラワーク(スムーズにさせる)
+        cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+        cam.orthographicSize = 100;
+        CalcCameraSize();
+
         // プレイヤー代入部分（違うシーンにいてもプレイヤーは共通であるために）
         playerData = GameManagerScript.instance.GetPlayerData();
-        chargePower = 0;                                        // チャージリセット
-        FinishKill = playerData.totalKill + 20;
+        ModifyChargePower(0);                                   // チャージリセット
         hasKillSinceLastSkill = playerData.totalKill;           // キル数リセット
         GameManagerScript.instance.SetPlayerRightLimit(playerData.playerRightLimitOffset + transform.position.x);
 
@@ -92,24 +98,20 @@ public class PlayerActionMovement : MonoBehaviour
         // レーンの最大攻撃力の設定
         maxLaneEffectPower = maxLanePower - minLaneEffectPower;
 
-        // カメラワーク(スムーズにさせる)
-        cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-        cam.orthographicSize = 100;
-        CalcCameraSize();
-
         // レーンの演出
         LanePerformanceReset();
 
-        // test
-        playerSpr = GetComponent<SpriteRenderer>();
-        StartRollBGImage();
+        // UI関連
+        HPGauge = GetComponentInChildren<SpeedGaugeUI>();
+        MaxHP = GetBaseHP();
+        SetHPUI();
+
     }
 
     // Update is called once per frame
     void Update()
     {
         Movement();
-
     }
 
     private void FixedUpdate()
@@ -125,17 +127,6 @@ public class PlayerActionMovement : MonoBehaviour
 
         // カメラの大きさ調整
         FixCameraSize();
-
-
-        // 一時実装
-        if(playerSpr.sprite == spr[3])
-        {
-            testTimer =- Time.deltaTime;
-            if(testTimer < 0) {
-                testTimer = 3;
-                playerSpr.sprite = spr[0];
-            }
-        }
     }
 
 
@@ -155,27 +146,21 @@ public class PlayerActionMovement : MonoBehaviour
         }
         if (left.WasPressedThisFrame())
         {
-            if (chargePower >= 100 && GameManagerScript.instance.SetEnemyObjects() > 0)// チャージチェック
+            if (chargePower > 0 && chargePower < 130/* && GameManagerScript.instance.SetEnemyObjects() > 0*/)// チャージチェック
             {
-                chargePower = 0;                                    // チャージリセット
+                ModifyChargePower(0);                                                   // チャージリセット
                 GameObject.Find("BlackHole").GetComponent<EnemyBase>().PlayerDamageBoss(100, ActionStageClear);
 
-
-
-                // 一時実装用
-                playerSpr.sprite = spr[3];
-
-
-
-                //hasKillSinceLastSkill = playerData.totalKill;       // 前回スキル使った時の更新
+                //hasKillSinceLastSkill = playerData.totalKill;                         // 前回スキル使った時の更新
                 //if (GetBaseHP() > 100)
                 //{
-                //    SetBaseHP(GetBaseHP() - (int)(GetBaseHP() * 0.05f));   // HPを使ってスキルを使い、
-                //    CalcCameraSize();                                               // カメラの大きさを調整する
+                //    SetBaseHP(GetBaseHP() - (int)(GetBaseHP() * 0.05f));              // HPを使ってスキルを使い、
+                //    CalcCameraSize();                                                 // カメラの大きさを調整する
                 //}
                 //GameManagerScript.instance.SkillStopEnemy();
                 //skillPressCount = 0;        // 左キーカウンターのリセット
                 //GameManagerScript.instance.SetIsSkill(true);
+
             }
             if (GameManagerScript.instance.GetIsSkill())
             {
@@ -205,22 +190,7 @@ public class PlayerActionMovement : MonoBehaviour
                     //float downpower = 0.01f;
                     //AdjustLanePower(id, downpower);
 
-                    chargePower += (int)Mathf.Ceil(getCharge * playerData.ChargeRatio);                               // パワーチャージ
-
-                    if (spr != null)                                        // スプライトの切り替え
-                    {
-                        if (chargePower < 50)
-                        {
-                            playerSpr.sprite = spr[0];
-                        }else if( chargePower < 80)
-                        {
-                            playerSpr.sprite = spr[1];
-                        }
-                        else
-                        {
-                            playerSpr.sprite = spr[2];
-                        }
-                    }
+                    AdjustChargePower(Mathf.Ceil(getCharge * playerData.ChargeRatio));                               // パワーチャージ
 
                     CalcLaneKill(id);                                       // レーンごとのキル計算
 
@@ -237,23 +207,7 @@ public class PlayerActionMovement : MonoBehaviour
                     //// レーンの攻撃力を増やす
                     //float downpower = 0.01f;
                     //AdjustLanePower(id, downpower);
-                    chargePower += (int)Mathf.Ceil(getCharge * playerData.ChargeRatio);                               // パワーチャージ
-
-                    if (spr != null)
-                    {
-                        if (chargePower < 50)
-                        {
-                            playerSpr.sprite = spr[0];
-                        }
-                        else if (chargePower < 80)
-                        {
-                            playerSpr.sprite = spr[1];
-                        }
-                        else
-                        {
-                            playerSpr.sprite = spr[2];
-                        }
-                    }
+                    AdjustChargePower(Mathf.Ceil(getCharge * playerData.ChargeRatio));                               // パワーチャージ
 
                     CalcLaneKill(id);                                       // レーンごとのキル計算
 
@@ -378,6 +332,8 @@ public class PlayerActionMovement : MonoBehaviour
     void StartRollBGImage()
     {
         startRollbgimg = true;
+        // アニメーション関連
+        animator.SetBool("InAnim", true);
     }
     void RollBGImage()
     {
@@ -408,11 +364,42 @@ public class PlayerActionMovement : MonoBehaviour
             }
         }
     }
+    // アニメーターでのスキル修正
+    void AdjustChargePower(float incrementChangePower)             // 追加されるデータが元のデータに加算される
+    {
+        chargePower += incrementChangePower;
+        if(chargePower > 129)
+            chargePower = 130;  // 最大チャージに超えないように
+        // アニメーターに更新
+        animator.SetFloat("ChargeValue", chargePower);
+    }
+    void ModifyChargePower(float changePower)             // 追加されるデータが元のデータを上書きする
+    {
+        chargePower = changePower;
+        animator.SetFloat("ChargeValue", chargePower);
+    }
+    void ResetChargePower()
+    {
+        chargePower = 0;
+        animator.SetFloat("ChargeValue", chargePower);
+    }
+    void SetSkillAnim(bool isSkill = false)
+    {
+        GameManagerScript.instance.SetIsSkill(isSkill);
+        // アニメーターに更新
+        animator.SetBool("IsSkill", isSkill);
+    }
+    void AnimPlayed()
+    {
+        ResetChargePower();
+        GameManagerScript.instance.SetIsSkill(false);
+        animator.SetBool("IsSkill", false);
+    }
     // ステージクリアの時に自分のデータをゲームマネージャに返還する（今は使われていない）
     void ActionStageClear()
     {
         // testのために削除しておく
-        ModifyBaseHP(500);
+        AdjustBaseHP(500);
         GameManagerScript.instance.SetPlayerData(playerData);
         SceneManager.LoadScene("TestFinishStage");
     }
@@ -432,10 +419,17 @@ public class PlayerActionMovement : MonoBehaviour
     }
 
 
+    // UI
+    // HPUI
+    void SetHPUI()
+    {
+        HPGauge.SetHPUI(GetBaseHP(), MaxHP);
+    }
+
     // TestUI
     void UpdateUIText()
     {
-        testUI.text = "HP Speed : " + playerData.baseHP + '\n'
+        testUI.text = "HP Speed : " + GetBaseHP() + '\n'
             + "Killed Enemy : " + playerData.totalKill + '\n'
             //+ "Cool Down Kill : " + (playerData.totalKill - hasKillSinceLastSkill) + "\n"
             //+ "Up Lane Power : " + playerData.upLanePower + "\n"
@@ -482,7 +476,7 @@ public class PlayerActionMovement : MonoBehaviour
     }
     void CalcHPWithCamera(int increment)
     {
-        ModifyBaseHP(increment);
+        AdjustBaseHP(increment);
         CalcCameraSize();
     }
     void FixCameraSize()
@@ -500,7 +494,7 @@ public class PlayerActionMovement : MonoBehaviour
     public void GetHit(int dmg, bool canGuard = true, GameObject enemyObj = null)
     {
         if (canGuard && ShieldCheck()) return;
-        ModifyBaseHP(-dmg);
+        AdjustBaseHP(-dmg);
         CalcCameraSize();
         // HPが0以下の時死亡判定で再開する
         if (GetBaseHP() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
@@ -516,12 +510,12 @@ public class PlayerActionMovement : MonoBehaviour
         if (canGuard)
         {
             // シールドで攻撃を防げるパターン
-            GetHit(playerData.baseHP, canGuard);
+            GetHit(GetBaseHP(), canGuard);
         }
         else
         {
             // シールドで攻撃を防げられないパターン
-            ModifyBaseHP(-playerData.baseHP);
+            AdjustBaseHP(-GetBaseHP());
             CalcCameraSize();
             // HPが0以下の時死亡判定で再開する
             if (GetBaseHP() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
@@ -560,13 +554,15 @@ public class PlayerActionMovement : MonoBehaviour
     {
         return playerData.baseHP;
     }
-    void SetBaseHP(int speed)
+    void SetBaseHP(int speed)           // 一応ゲットセットで作っていますが、UIの表示上こちらの関数を直接使わないでください。
     {
         playerData.baseHP = speed;
     }
-    void ModifyBaseHP(int increment)    // [Difference] of BaseSpeed(if it is a negative number it will be [decrement])
+    void AdjustBaseHP(int increment)    // [Difference] of BaseSpeed(if it is a negative number it will be [decrement])
     {
         playerData.baseHP += increment;
+        // HPの表示UI
+        if (playerData.baseHP > 0) SetHPUI();
     }
 
 }

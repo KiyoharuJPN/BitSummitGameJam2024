@@ -5,10 +5,10 @@ using UnityEngine;
 public class SetSingletonPlayer : MonoBehaviour
 {
 
-    void Start()
-    {
-        //ゲームマネージャーにあるプレイヤー保持用の変数にいれる
-        GameManagerScript.playerGameObject = gameObject;
-    }
+    //void Start()
+    //{
+    //    //ゲームマネージャーにあるプレイヤー保持用の変数にいれる
+    //    GameManagerScript.playerGameObject = gameObject;
+    //}
 
 }

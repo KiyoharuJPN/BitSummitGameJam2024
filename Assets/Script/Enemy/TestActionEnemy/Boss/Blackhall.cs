@@ -7,18 +7,24 @@ using UnityEngine.SceneManagement;
 public class Blackhall : EnemyBase
 {
     public GameObject[] enemyObj;
-    // 召喚される間隔 0の時にmindurとmaxdurの中に時間をランダムに決めて召喚する
-    public float duration;
-    public float mindur, maxdur;
-    // 召喚Type：0順番で召喚　1ランダムレーン召喚
-    public int summonType;
+    public struct EnemySummonStatus
+    {
+        // 召喚される間隔 0の時にmindurとmaxdurの中に時間をランダムに決めて召喚する
+        public float duration;
+        public float mindur, maxdur;
+        // 召喚Type：0順番で召喚　1ランダムレーン召喚
+        public int summonType;
+        public float rightPosition;
+        public Sprite spr;
+        public float Timer;
+        public int summonPosNext;              // 一回前召喚した場所
+    }
+    public EnemySummonStatus EnemySS = new EnemySummonStatus() { rightPosition = 200, summonPosNext = -1 };
 
-    public float rightPosition = 200;
+    // UI関連
+    EnemyHPUI BossHPUI;
 
-    public Sprite spr;
 
-    float Timer;
-    int summonPosNext = -1;              // 一回前召喚した場所
 
     protected override void Awake()
     {
@@ -45,9 +51,11 @@ public class Blackhall : EnemyBase
         laneMidPosition = (laneEndPosition + laneStartPosition) / 2;
 
 
-        if (duration != 0) { Timer = duration; }
-        else { Timer = UnityEngine.Random.Range(mindur, maxdur); }
-        if (summonType != 0) { summonPosNext = UnityEngine.Random.Range(0, 2); }
+        if (EnemySS.duration != 0) { EnemySS.Timer = EnemySS.duration; }
+        else { EnemySS.Timer = UnityEngine.Random.Range(EnemySS.mindur, EnemySS.maxdur); }
+        if (EnemySS.summonType != 0) { EnemySS.summonPosNext = UnityEngine.Random.Range(0, 2); }
+
+        BossHPUI = GetComponentInChildren<EnemyHPUI>();
     }
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
@@ -60,13 +68,13 @@ public class Blackhall : EnemyBase
 
         // BlackHole
         //if (GameManagerScript.instance.GetIsSkill()) { return; }
-        if (summonType == 2)
+        if (EnemySS.summonType == 2)
         {
-            Timer -= Time.deltaTime;
-            if (Timer <= 0)
+            EnemySS.Timer -= Time.deltaTime;
+            if (EnemySS.Timer <= 0)
             {
-                Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], new Vector2(rightPosition, 45), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
-                Timer = duration;
+                Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], new Vector2(EnemySS.rightPosition, 45), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
+                EnemySS.Timer = EnemySS.duration;
             }
         }
         else
@@ -75,89 +83,89 @@ public class Blackhall : EnemyBase
     // 内部関数
     void RandomSummon()
     {
-        if (duration != 0)
+        if (EnemySS.duration != 0)
         {
-            if (summonType == 0)
+            if (EnemySS.summonType == 0)
             {
-                Timer -= Time.deltaTime;
-                if (Timer <= 0)
+                EnemySS.Timer -= Time.deltaTime;
+                if (EnemySS.Timer <= 0)
                 {
-                    switch (summonPosNext)
+                    switch (EnemySS.summonPosNext)
                     {
                         default:
                             Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
-                            summonPosNext += 2;
-                            Timer = duration;
+                            EnemySS.summonPosNext += 2;
+                            EnemySS.Timer = EnemySS.duration;
                             break;
                         case 0:
-                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                            summonPosNext++;
-                            Timer = duration;
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(EnemySS.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(EnemySS.summonPosNext);
+                            EnemySS.summonPosNext++;
+                            EnemySS.Timer = EnemySS.duration;
                             break;
                         case 1:
-                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                            summonPosNext++;
-                            Timer = duration;
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(EnemySS.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(EnemySS.summonPosNext);
+                            EnemySS.summonPosNext++;
+                            EnemySS.Timer = EnemySS.duration;
                             break;
                         case 2:
-                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                            summonPosNext = 0;
-                            Timer = duration;
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(EnemySS.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(EnemySS.summonPosNext);
+                            EnemySS.summonPosNext = 0;
+                            EnemySS.Timer = EnemySS.duration;
                             break;
                     }
                 }
             }
             else
             {
-                Timer -= Time.deltaTime;
-                if (Timer <= 0)
+                EnemySS.Timer -= Time.deltaTime;
+                if (EnemySS.Timer <= 0)
                 {
-                    Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                    summonPosNext = UnityEngine.Random.Range(0, 3);
-                    Timer = duration;
+                    Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(EnemySS.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(EnemySS.summonPosNext);
+                    EnemySS.summonPosNext = UnityEngine.Random.Range(0, 3);
+                    EnemySS.Timer = EnemySS.duration;
                 }
             }
         }
         else
         {
-            if (summonType == 0)
+            if (EnemySS.summonType == 0)
             {
-                Timer -= Time.deltaTime;
-                if (Timer <= 0)
+                EnemySS.Timer -= Time.deltaTime;
+                if (EnemySS.Timer <= 0)
                 {
-                    switch (summonPosNext)
+                    switch (EnemySS.summonPosNext)
                     {
                         default:
                             Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
-                            summonPosNext += 2;
-                            Timer = UnityEngine.Random.Range(mindur, maxdur);
+                            EnemySS.summonPosNext += 2;
+                            EnemySS.Timer = UnityEngine.Random.Range(EnemySS.mindur, EnemySS.maxdur);
                             break;
                         case 0:
-                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                            summonPosNext++;
-                            Timer = UnityEngine.Random.Range(mindur, maxdur);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(EnemySS.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(EnemySS.summonPosNext);
+                            EnemySS.summonPosNext++;
+                            EnemySS.Timer = UnityEngine.Random.Range(EnemySS.mindur, EnemySS.maxdur);
                             break;
                         case 1:
-                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                            summonPosNext++;
-                            Timer = UnityEngine.Random.Range(mindur, maxdur);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(EnemySS.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(EnemySS.summonPosNext);
+                            EnemySS.summonPosNext++;
+                            EnemySS.Timer = UnityEngine.Random.Range(EnemySS.mindur, EnemySS.maxdur);
                             break;
                         case 2:
-                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                            summonPosNext = 0;
-                            Timer = UnityEngine.Random.Range(mindur, maxdur);
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(EnemySS.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(EnemySS.summonPosNext);
+                            EnemySS.summonPosNext = 0;
+                            EnemySS.Timer = UnityEngine.Random.Range(EnemySS.mindur, EnemySS.maxdur);
                             break;
                     }
                 }
             }
             else
             {
-                Timer -= Time.deltaTime;
-                if (Timer <= 0)
+                EnemySS.Timer -= Time.deltaTime;
+                if (EnemySS.Timer <= 0)
                 {
-                    Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(summonPosNext);
-                    summonPosNext = UnityEngine.Random.Range(0, 3);
-                    Timer = UnityEngine.Random.Range(mindur, maxdur);
+                    Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], SetPosByLaneNum(EnemySS.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(EnemySS.summonPosNext);
+                    EnemySS.summonPosNext = UnityEngine.Random.Range(0, 3);
+                    EnemySS.Timer = UnityEngine.Random.Range(EnemySS.mindur, EnemySS.maxdur);
                 }
             }
         }
@@ -168,15 +176,23 @@ public class Blackhall : EnemyBase
         switch (num)
         {
             case 0:
-                return new Vector2(rightPosition, 45);
+                return new Vector2(EnemySS.rightPosition, 45);
             case 1:
-                return new Vector2(rightPosition, 0);
+                return new Vector2(EnemySS.rightPosition, 0);
             case 2:
-                return new Vector2(rightPosition, -45);
+                return new Vector2(EnemySS.rightPosition, -45);
             default:
                 Debug.Log("ありえないレーンが入力されました");
-                return new Vector2(rightPosition, 0);
+                return new Vector2(EnemySS.rightPosition, 0);
         }
+    }
+
+    // HP計算
+    virtual public void PlayerDamageBoss(int dmg, Action actionStageClear)
+    {
+        HadDamage(dmg);
+        BossHPUI.SetHPGauge(enemyHP, eData.enemyHP);
+        IsBossDead(actionStageClear);
     }
 
 
@@ -187,9 +203,10 @@ public class Blackhall : EnemyBase
             //Dead();
             //SceneManager.LoadScene("KiyoharuTestStage");
 
-            spriteRenderer.sprite = spr;
+            spriteRenderer.sprite = EnemySS.spr;
+            Dead();
+            actionStageClear();
         }
-        base.IsBossDead(actionStageClear);
     }
 
 }

@@ -209,7 +209,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 80
+  orthographic size: 90
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -276,23 +276,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 471176ffdfc60c640b9bd05d57974066, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &1473523806 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4940863636939515970, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
-  m_PrefabInstance: {fileID: 4940863635990978515}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1473523813
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1473523806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 343fd935c6fc8774b8591456a7e2ca6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1814004547 stripped
@@ -366,7 +349,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 83a7699a5b4ee7a40965a27234898013, type: 3}
+  m_Texture: {fileID: 2800000, guid: 90f006e6c7d0b1149a3dfe74f2907305, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -827,13 +810,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1502590869, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
-      propertyPath: m_Size.x
-      value: 0.95834804
+    - target: {fileID: 207738375, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1502590869, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
-      propertyPath: m_Offset.x
-      value: 1.673484
+    - target: {fileID: 207738375, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1502590870, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
       propertyPath: attacker.Array.data[0]
@@ -904,6 +887,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2488449164353285766, guid: 0b6ca819b63268c49a41a8ed004cf107, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2488449164353285766, guid: 0b6ca819b63268c49a41a8ed004cf107, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6674616565990888620, guid: 0b6ca819b63268c49a41a8ed004cf107, type: 3}
       propertyPath: m_Name
       value: BlackHole
