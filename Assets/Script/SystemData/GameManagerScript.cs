@@ -22,6 +22,7 @@ public struct PlayerData
 }                                       // Structsに移動する予定。
 // GameManagerControl用構造
 public struct GameControl
+    
 {
     public bool isSkill;                // スキル中かどうかの確認
     public float playerRightLimit;       // レーンの最終地の判定
@@ -54,8 +55,8 @@ public class GameManagerScript : MonoBehaviour
     // どこでも接続できるように
     static public GameManagerScript instance;
 
-    ////プレイヤーとなるゲームオブジェクトを保持
-    //static public GameObject playerGameObject;
+    //プレイヤーとなるゲームオブジェクトを保持
+    static public GameObject playerGameObject;
 
     // GameManager本番のコード-----------------------------------------------------------------
 

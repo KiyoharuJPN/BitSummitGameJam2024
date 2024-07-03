@@ -17,6 +17,7 @@ public class BranchJudgement : MonoBehaviour
     [SerializeField] GameObject GRightLane;
     [SerializeField] GameObject GDownLane;
     [SerializeField] GameObject GLeftLane;
+     
 
     I_SelectedLane UpLane;
     I_SelectedLane RightLane;

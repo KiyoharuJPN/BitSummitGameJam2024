@@ -7,74 +7,93 @@ using UnityEngine.UI;
 
 public class FadeInOut : MonoBehaviour
 {
-    TMP_Text fade;
-    Image fadeImage;
+    private TMP_Text fadeTMPText;
+    private Image fadeImage;
 
     void Start()
     {
-        fade
-            = GetComponent<TMP_Text>();
+        fadeTMPText = GetComponent<TMP_Text>();
+        fadeImage = GetComponent<Image>();
     }
-
 
     public IEnumerator Color_FadeOut(UnityAction callback, bool DoFadeIn, float waitin)
     {
-        //var fade = 
+        if (fadeTMPText != null)
+        {
+            fadeTMPText.color = new Color(0f, 0f, 0f, 0f);
+        }
+        else if (fadeImage != null)
+        {
+            fadeImage.color = new Color(0f, 0f, 0f, 0f);
+        }
 
-        fade.color = new Color((0.0f / 255.0f), (0.0f / 255.0f), (0.0f / 0.0f), (0.0f / 255.0f)); //わかりやすいように /255してる
+        const float fade_time = 0.5f;
+        const int loop_count = 10;
+        float wait_time = fade_time / loop_count;
+        float alpha_interval = 255.0f / loop_count;
 
-        const float fade_time = 0.5f;　//フェードにかかる時間
-        const int loop_count = 10; // ループ回数（0はエラー）
+        Color new_color = fadeTMPText != null ? fadeTMPText.color : fadeImage.color;
 
-        float wait_time = fade_time / loop_count;// ウェイト時間算出
-        float alpha_interval = 255.0f / loop_count;// 色の間隔を算出
-
-        Color new_color = fade.color;
-
-        // 色を徐々に変えるループ
         for (float alpha = 0.0f; alpha <= 255.0f; alpha += alpha_interval)
         {
-            // 待ち時間
-            //Debug.Log(wait_time);
             yield return new WaitForSeconds(wait_time);
 
             new_color.a = alpha / 255.0f;
-            fade.color = new_color;
+            if (fadeTMPText != null)
+            {
+                fadeTMPText.color = new_color;
+            }
+            else if (fadeImage != null)
+            {
+                fadeImage.color = new_color;
+            }
         }
-
 
         callback();
         if (DoFadeIn) { StartCoroutine(Color_FadeIn(waitin)); }
-        //else { fade.color = new Color((0.0f / 255.0f), (0.0f / 255.0f), (0.0f / 0.0f), (0.0f / 255.0f)); }
-
     }
 
     public IEnumerator Color_FadeIn(float waitstart)
     {
-        fade.color = new Color((0.0f / 255.0f), (0.0f / 255.0f), (0.0f / 0.0f), (255.0f / 255.0f));
+        if (fadeTMPText != null)
+        {
+            fadeTMPText.color = new Color(0f, 0f, 0f, 1f);
+        }
+        else if (fadeImage != null)
+        {
+            fadeImage.color = new Color(0f, 0f, 0f, 1f);
+        }
 
-        //Debug.Log("DoFedeIn");
-        const float fade_time = 0.5f;　//フェードにかかる時間
-        const int loop_count = 10; // ループ回数（0はエラー）
+        const float fade_time = 0.5f;
+        const int loop_count = 10;
+        float wait_time = fade_time / loop_count;
+        float alpha_interval = 255.0f / loop_count;
 
-        float wait_time = fade_time / loop_count;// ウェイト時間算出
-        float alpha_interval = 255.0f / loop_count;// 色の間隔を算出
-
-        Color new_color = fade.color;
+        Color new_color = fadeTMPText != null ? fadeTMPText.color : fadeImage.color;
 
         yield return new WaitForSeconds(waitstart);
-        // 色を徐々に変えるループ
         for (float alpha = 255.0f; alpha >= 0f; alpha -= alpha_interval)
         {
-            // 待ち時間
-            //Debug.Log(wait_time);
             yield return new WaitForSeconds(wait_time);
 
             new_color.a = alpha / 255.0f;
-            fade.color = new_color;
+            if (fadeTMPText != null)
+            {
+                fadeTMPText.color = new_color;
+            }
+            else if (fadeImage != null)
+            {
+                fadeImage.color = new_color;
+            }
         }
 
-        fade.color = new Color((0.0f / 255.0f), (0.0f / 255.0f), (0.0f / 0.0f), (0.0f / 255.0f));
-
+        if (fadeTMPText != null)
+        {
+            fadeTMPText.color = new Color(0f, 0f, 0f, 0f);
+        }
+        else if (fadeImage != null)
+        {
+            fadeImage.color = new Color(0f, 0f, 0f, 0f);
+        }
     }
 }
