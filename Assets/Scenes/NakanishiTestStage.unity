@@ -243,7 +243,7 @@ MonoBehaviour:
   D_Image: {fileID: 21300000, guid: 0d720143692b04447b9cb6e2c3caadda, type: 3}
   E_Image: {fileID: 21300000, guid: 19ab80ecfd5ba2942a330a905ead205f, type: 3}
   F_Image: {fileID: 21300000, guid: b1c95c3a359596a42bc7aa1102b5ea69, type: 3}
-  N_Image: {fileID: 0}
+  N_Image: {fileID: 21300000, guid: 648cd0b81f299f642baf281e7b3000b7, type: 3}
 --- !u!4 &122295812
 Transform:
   m_ObjectHideFlags: 0
