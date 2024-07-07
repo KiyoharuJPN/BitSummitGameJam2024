@@ -1117,6 +1117,10 @@ PrefabInstance:
       propertyPath: attacker.Array.data[2]
       value: 
       objectReference: {fileID: 925116893}
+    - target: {fileID: 1925917687, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4940863636939515968, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
       propertyPath: m_RootOrder
       value: 4

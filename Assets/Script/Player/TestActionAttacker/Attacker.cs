@@ -16,11 +16,9 @@ public class Attacker : MonoBehaviour
     bool canAttack = true;
 
     // アニメーション関連
-    [SerializeField]
     protected bool enemyEnterArea = false, getHit = false;
     //attackresult : 0 none, 1 success, 2 fail,
     //animationPlayed : 0 Idle, 1 EnemyClose, 2 Failure, 3 GetHit, 4 Success, 5 ECAF, 6 ECAS
-    [SerializeField]
     protected int attackResult = 0, animationPlayed = -1;     
 
     protected void Awake()
