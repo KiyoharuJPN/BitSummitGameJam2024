@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -67,7 +68,7 @@ public class PlayerActionMovement : MonoBehaviour
         playerData = GameManagerScript.instance.GetPlayerData();
         ModifyChargePower(0);                                   // チャージリセット
         hasKillSinceLastSkill = playerData.totalKill;           // キル数リセット
-        GameManagerScript.instance.SetPlayerRightLimit(playerData.playerRightLimitOffset + transform.position.x);
+        //GameManagerScript.instance.SetPlayerRightLimit(GameManagerScript.instance.actionOption.playerRightLimitOffset + transform.position.x);
 
         // inputActionの代入
         var playerInput = GetComponent<PlayerInput>();
@@ -98,8 +99,8 @@ public class PlayerActionMovement : MonoBehaviour
         // レーンの最大攻撃力の設定
         maxLaneEffectPower = maxLanePower - minLaneEffectPower;
 
-        // レーンの演出
-        LanePerformanceReset();
+        //// レーンの演出
+        //LanePerformanceReset();
 
         // UI関連
         HPGauge = GetComponentInChildren<SpeedGaugeUI>();
@@ -146,10 +147,15 @@ public class PlayerActionMovement : MonoBehaviour
         }
         if (left.WasPressedThisFrame())
         {
-            if (chargePower > 0 && chargePower < 130/* && GameManagerScript.instance.SetEnemyObjects() > 0*/)// チャージチェック
+            if (GetChargePower() > 0 && GetChargePower() < 130/* && GameManagerScript.instance.SetEnemyObjects() > 0*/)// チャージチェック
             {
+                GameManagerScript.instance.AttackBoss((int)Mathf.Round(playerData.attackPower * CalcChargePower()), ActionStageClear);
+
+                // パワーの計算をするのに攻撃してからゼロクリアする必要がある
                 ModifyChargePower(0);                                                   // チャージリセット
-                GameObject.Find("BlackHole").GetComponent<EnemyBase>().PlayerDamageBoss(100, ActionStageClear);
+
+
+                //GameObject.Find("BlackHole").GetComponent<EnemyBase>().PlayerDamageBoss(100, ActionStageClear);
 
                 //hasKillSinceLastSkill = playerData.totalKill;                         // 前回スキル使った時の更新
                 //if (GetBaseHP() > 100)
@@ -160,7 +166,6 @@ public class PlayerActionMovement : MonoBehaviour
                 //GameManagerScript.instance.SkillStopEnemy();
                 //skillPressCount = 0;        // 左キーカウンターのリセット
                 //GameManagerScript.instance.SetIsSkill(true);
-
             }
             if (GameManagerScript.instance.GetIsSkill())
             {
@@ -177,7 +182,7 @@ public class PlayerActionMovement : MonoBehaviour
     {
         if (canAttackobj[id].Count > 0)
         {
-            attacker[id].PlayATAnimOnce();                                  // アニメーションを一回流す
+            //attacker[id].PlayATAnimOnce();                                  // アニメーションを一回流す
             int power = (int)(GetBaseHP() * GetLanePower(id));           // 攻撃力を計算する
             // 攻撃可能の全てのオブジェクトに対して攻撃する
             for (int i = 0; i < canAttackobj[id].Count; i++)
@@ -226,6 +231,7 @@ public class PlayerActionMovement : MonoBehaviour
             //    //AdjustLanePower(id, downpower);
             //}
         }
+        //Debug.Log(CalcChargePower());
     }
     // レーンパワーをゲット
     float GetLanePower(int id)
@@ -275,20 +281,20 @@ public class PlayerActionMovement : MonoBehaviour
             LanePower = maxLanePower;
         }
 
-        // 演出関連
-        if (LanePower >= minLaneEffectPower)
-        {
-            // 演出を調整する
-            var g = (LanePower - minLaneEffectPower) / maxLaneEffectPower;
-            attacker[id].effectSpriteRenderer.color = new Color(1, 1 - g, 0, 1);
-        }
-        else
-        {
-            // 演出を閉じる
-            attacker[id].effectSpriteRenderer.color = new Color(1, 1, 1, 0);
-        }
+        //// 演出関連
+        //if (LanePower >= minLaneEffectPower)
+        //{
+        //    // 演出を調整する
+        //    var g = (LanePower - minLaneEffectPower) / maxLaneEffectPower;
+        //    attacker[id].effectSpriteRenderer.color = new Color(1, 1 - g, 0, 1);
+        //}
+        //else
+        //{
+        //    // 演出を閉じる
+        //    attacker[id].effectSpriteRenderer.color = new Color(1, 1, 1, 0);
+        //}
     }
-    void LanePerformanceReset()
+    void LanePerformanceReset() // スタートで呼ばれたが、今は使われていないので一時停止
     {
         // 演出関連
         var id = 0;
@@ -364,6 +370,28 @@ public class PlayerActionMovement : MonoBehaviour
             }
         }
     }
+    // 攻撃力計算
+    float CalcChargePower()
+    {
+        float res = 0;
+        if (chargePower < 80)
+        {
+            res = Mathf.Lerp(0f, 0.5f, chargePower / 80f);
+        }
+        else if (chargePower < 100)
+        {
+            var val = chargePower - 80;
+            res = Mathf.Lerp(0.5f, 1f, val / 20f);
+        }
+        else if (chargePower < 129)
+        {
+            var val = chargePower - 100;
+            res = Mathf.Lerp(1f, 1.1f, val / 29);
+        }
+        else res = 1.1f;
+
+        return res;
+    }
     // アニメーターでのスキル修正
     void AdjustChargePower(float incrementChangePower)             // 追加されるデータが元のデータに加算される
     {
@@ -399,7 +427,7 @@ public class PlayerActionMovement : MonoBehaviour
     void ActionStageClear()
     {
         // testのために削除しておく
-        AdjustBaseHP(500);
+        // AdjustBaseHP(500);
         GameManagerScript.instance.SetPlayerData(playerData);
         SceneManager.LoadScene("TestFinishStage");
     }
@@ -441,7 +469,7 @@ public class PlayerActionMovement : MonoBehaviour
             + "Right Lane Kill : " + rightLaneKill + '\n'
             + "Down Lane Kill : " + downLaneKill + '\n'
             + "Player Shield Count : " + playerData.shieldCount + '\n'
-            + "PlayerCharge : " + chargePower;// + '\n'
+            + "PlayerCharge : " + GetChargePower();// + '\n'
     }
     // レーン別キル計算(左キーで敵を倒した時にレーン別キルに加算される？)
     void CalcLaneKill(int id)
@@ -491,9 +519,16 @@ public class PlayerActionMovement : MonoBehaviour
 
     // 外部関数
     // HP計算
-    public void GetHit(int dmg, bool canGuard = true, GameObject enemyObj = null)
+    public void GetHit(int dmg, int lane, bool canGuard = true, GameObject enemyObj = null)
     {
         if (canGuard && ShieldCheck()) return;
+        
+        // 攻撃を受ける時のアニメーション
+        if (lane != -1)
+        {
+            attackerGetHit(lane);
+        }
+
         AdjustBaseHP(-dmg);
         CalcCameraSize();
         // HPが0以下の時死亡判定で再開する
@@ -510,7 +545,7 @@ public class PlayerActionMovement : MonoBehaviour
         if (canGuard)
         {
             // シールドで攻撃を防げるパターン
-            GetHit(GetBaseHP(), canGuard);
+            GetHit(GetBaseHP(), -1, canGuard);
         }
         else
         {
@@ -548,6 +583,10 @@ public class PlayerActionMovement : MonoBehaviour
     {
         cantAttackobj[id].Remove(obj);
     }
+    public float GetChargePower()
+    {
+        return chargePower;
+    }
 
     // ゲッターセッター
     int GetBaseHP()
@@ -565,4 +604,24 @@ public class PlayerActionMovement : MonoBehaviour
         if (playerData.baseHP > 0) SetHPUI();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // アタッカーアニメーション用関数
+    void attackerGetHit(int lane)
+    {
+        
+    }
 }

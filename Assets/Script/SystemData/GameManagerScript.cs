@@ -8,7 +8,7 @@ using UnityEngine;
 public struct PlayerData
 {
     public int baseHP;               // 体力、お金、スピード
-    public int attackPower;             // 攻撃力
+    public float attackPower;           // 攻撃力
     public float upLanePower;           // 上レーンの攻撃力(変動による)
     public float rightLanePower;        // 右レーンの攻撃力(変動による)
     public float downLanePower;         // 下レーンの攻撃力(変動による)
@@ -17,7 +17,6 @@ public struct PlayerData
     public int totalKill;               // キル総数
     public int shieldCount;             // 攻撃を防げる残りのシールド数
     public float targetCamSize;         // 目標のカメラの大きさ（今と同じだったら変わらない＆HPによって変わる）
-    public float playerRightLimitOffset;// 中間地点計算用
     public float ChargeRatio;           // チャージの比率
 }                                       // Structsに移動する予定。
 // GameManagerControl用構造
@@ -25,9 +24,32 @@ public struct GameControl
     
 {
     public bool isSkill;                // スキル中かどうかの確認
-    public float playerRightLimit;       // レーンの最終地の判定
+    public float LaneLeftLimit;         // レーンの最終地の判定
+    public float LaneRightLimit;        // 敵のリスポーンポイント
+}
+// Action用構造
+[Serializable]
+public struct ActionOption
+{
+    [Tooltip("UpLaneに到達させたい場所")]
+    public Vector3 UplaneEnemyTargetPoint;
+    [Tooltip("RightLaneに到達させたい場所")]
+    public Vector3 RightlaneEnemyTargetPoint;
+    [Tooltip("DownLaneに到達させたい場所")]
+    public Vector3 DownlaneEnemyTargetPoint;
 }
 
+// 適ポジション計算用構造
+[Serializable]
+public struct EnemyStartPosHeight       // 横直線で移動するときは45、斜め移動の場合は大体27
+{
+    [Tooltip("Default 横の時：45 斜めの時：27")]
+    public float UpLanePos;             // Default 横の時：45 斜めの時：27
+    [Tooltip("Default 0")]
+    public float RightLanePos;          // Default 0
+    [Tooltip("Default 横の時：-45 斜めの時：-27")]
+    public float DownLanePos;           // Default 横の時：-45 斜めの時：-27
+}
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -56,7 +78,8 @@ public class GameManagerScript : MonoBehaviour
     static public GameManagerScript instance;
 
     //プレイヤーとなるゲームオブジェクトを保持
-    static public GameObject playerGameObject;
+    //static public GameObject playerGameObject;
+
 
     // GameManager本番のコード-----------------------------------------------------------------
 
@@ -65,11 +88,13 @@ public class GameManagerScript : MonoBehaviour
     public PlayerData playerData = new PlayerData() { baseHP = 1000, attackPower = 1000,
         upLanePower = 1, rightLanePower = 1, downLanePower = 1, bgMoveSpeed = 0.001f,
         skillCoolDownKill = 5, totalKill = 0, shieldCount = 3, targetCamSize = 100,
-        playerRightLimitOffset = 60, ChargeRatio = 1 };
+        ChargeRatio = 1 };
     // GameManagerControl用
-    GameControl gameControl = new GameControl() { isSkill = false, playerRightLimit = -70f };
+    GameControl gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f };
 
+    public ActionOption actionOption = new ActionOption() { };
 
+    public EnemyStartPosHeight enemyStartPosHeight = new EnemyStartPosHeight() {UpLanePos = 45, RightLanePos = 0, DownLanePos = -45 };
 
     // 調整用コード
     public int skillCoolDownKillCount;
@@ -77,6 +102,10 @@ public class GameManagerScript : MonoBehaviour
 
     // スキル用敵リスト保存データ
     List<EnemyBase> enemyObjs;
+
+
+    // 敵ボス記録用
+    List<EnemyBossBase> stageBoss;
 
 
     // 実行用関数
@@ -92,6 +121,9 @@ public class GameManagerScript : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // ステージボスを一々検索するのが面倒いので予めステージボスに保存しておく
+        stageBoss = new List<EnemyBossBase>();
     }
 
     // Start is called before the first frame update
@@ -99,7 +131,8 @@ public class GameManagerScript : MonoBehaviour
     {
         // スキル用敵オブジェクトリスト
         enemyObjs = new List<EnemyBase>();
-
+        // 中間地点計算用
+        gameControl.LaneLeftLimit = (actionOption.UplaneEnemyTargetPoint.x + actionOption.RightlaneEnemyTargetPoint.x + actionOption.DownlaneEnemyTargetPoint.x) / 3;
     }
 
     // Update is called once per frame
@@ -116,20 +149,41 @@ public class GameManagerScript : MonoBehaviour
 
 
     // 外部関数
-    // IDで場所の変更をする
-    public float SetPosByLaneNum(int num)
+    // IDで場所の変更をする(どこまで進んだかパーセントで場所を変える)
+    public float GetNowHeightByLaneNum(int num, Vector2 currentPos)
+    {
+        float nowHeight = 0;
+        float roadper = Mathf.InverseLerp(gameControl.LaneRightLimit, gameControl.LaneLeftLimit, currentPos.x);
+        switch (num)
+        {
+            case 0:
+                nowHeight = Mathf.Lerp(enemyStartPosHeight.UpLanePos, actionOption.UplaneEnemyTargetPoint.y, roadper);
+                break;
+            case 1:
+                nowHeight = Mathf.Lerp(enemyStartPosHeight.RightLanePos, actionOption.RightlaneEnemyTargetPoint.y, roadper);
+                break;
+            case 2:
+                nowHeight = Mathf.Lerp(enemyStartPosHeight.DownLanePos, actionOption.DownlaneEnemyTargetPoint.y, roadper);
+                break;
+            default:
+                Debug.Log("ありえないレーンが入力されました");
+                return 0;
+        }
+        return nowHeight;
+    }
+    public Vector3 GetEnemyTargetPosByLaneNum(int num)
     {
         switch (num)
         {
             case 0:
-                return 45;
+                return actionOption.UplaneEnemyTargetPoint;
             case 1:
-                return 0;
+                return actionOption.RightlaneEnemyTargetPoint;
             case 2:
-                return -45;
+                return actionOption.DownlaneEnemyTargetPoint;
             default:
                 Debug.Log("ありえないレーンが入力されました");
-                return 0;
+                return Vector3.zero;
         }
     }
 
@@ -155,11 +209,11 @@ public class GameManagerScript : MonoBehaviour
     }
     public float GetPlayerRightLimit()           // レーンの一番左にある位置
     {
-        return gameControl.playerRightLimit;
+        return gameControl.LaneLeftLimit;
     }
     public void SetPlayerRightLimit(float rightlmt)
     {
-        gameControl.playerRightLimit = rightlmt;
+        gameControl.LaneLeftLimit = rightlmt;
     }
     // 敵をリストに集める
     public int SetEnemyObjects()
@@ -207,6 +261,32 @@ public class GameManagerScript : MonoBehaviour
         return direction;
     }
 
+    // ボス関連
+    public void AddBoss(EnemyBossBase newBoss)
+    {
+        if(newBoss != null) stageBoss.Add(newBoss);
+    }
+    public void PopBoss(EnemyBossBase newBoss)
+    {
+        if(newBoss!= null)
+        {
+            stageBoss.Remove(newBoss);
+        }
+    }
+    public int BossCount()
+    {
+        return stageBoss.Count;
+    }
+
+    public void AttackBoss(int dmg,Action actionStageClear)
+    {
+        if (stageBoss.Count > 0)
+        {
+            stageBoss[0].PlayerDamageBoss(dmg, actionStageClear);
+        }
+        else Debug.Log("GameClear");
+    }
+
 
     //public int KillAllEnemy()
     //{
@@ -220,4 +300,5 @@ public class GameManagerScript : MonoBehaviour
     //    }
     //    return killCount;
     //}
+    
 }

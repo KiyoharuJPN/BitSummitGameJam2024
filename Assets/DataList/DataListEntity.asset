@@ -14,50 +14,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DataList:
   - id: 1
-    charName: A
-    enemyHP: 1
-    chargePower: 5
-    attackPower: 100
-    enemySpeed: 80
-    type: 1
-  - id: 2
-    charName: B
-    enemyHP: 1
-    chargePower: 5
-    attackPower: 100
-    enemySpeed: 150
-    type: 1
-  - id: 3
-    charName: C
+    charName: Test
     enemyHP: 1
     chargePower: 5
     attackPower: 100
     enemySpeed: 200
     type: 1
-  - id: 4
-    charName: Boomer
+  - id: 2
+    charName: SheepNormal
     enemyHP: 1
-    chargePower: 5
+    chargePower: 16
     attackPower: 100
-    enemySpeed: 70
+    enemySpeed: 80
+    type: 1
+  - id: 3
+    charName: Speeder
+    enemyHP: 1
+    chargePower: 16
+    attackPower: 90
+    enemySpeed: 150
+    type: 1
+  - id: 4
+    charName: LaneChanger
+    enemyHP: 1
+    chargePower: 16
+    attackPower: 120
+    enemySpeed: 80
     type: 1
   - id: 5
-    charName: SpeedBooster
+    charName: Ghost
     enemyHP: 1
-    chargePower: 5
+    chargePower: 16
     attackPower: 100
     enemySpeed: 70
     type: 1
   - id: 6
-    charName: LaneChanger
+    charName: SpeedBooster
     enemyHP: 1
-    chargePower: 5
-    attackPower: 100
-    enemySpeed: 70
+    chargePower: 16
+    attackPower: 130
+    enemySpeed: 150
     type: 1
   - id: 7
+    charName: Boomer
+    enemyHP: 1
+    chargePower: 16
+    attackPower: 150
+    enemySpeed: 150
+    type: 1
+  - id: 8
     charName: BlackHole
-    enemyHP: 100
+    enemyHP: 200
+    chargePower: 0
+    attackPower: 0
+    enemySpeed: 0
+    type: 0
+  - id: 9
+    charName: Painter
+    enemyHP: 1000
     chargePower: 0
     attackPower: 0
     enemySpeed: 0

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ActionEnemy
   - Attacker
+  - ActionEnemyBoss
   layers:
   - Default
   - TransparentFX

@@ -9,21 +9,25 @@ public class Attacker : MonoBehaviour
     // 宣言部分
     public int id;
     public SpriteRenderer effectSpriteRenderer;
-    PlayerActionMovement playerAM;
-    Animator animator;
-    private void Awake()
+    protected PlayerActionMovement playerAM;
+    protected Animator animator;
+
+    protected bool enemyEnterArea = false, animationPlayed = false, getHit = false;
+    protected int attackResult = 0;     // 0 none, 1 success, 2 fail
+
+    protected void Awake()
     {
         playerAM = GameObject.Find("Player").GetComponent<PlayerActionMovement>();
         animator = GetComponent<Animator>();
     }
 
     // 実行関数
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected void OnTriggerEnter2D(Collider2D collision)
     {
         playerAM.AddCanAttackObj(id,collision.gameObject);
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    protected void OnTriggerExit2D(Collider2D collision)
     {
         playerAM.RemoveCanAttackObj(id,collision.gameObject);
     }
@@ -33,18 +37,54 @@ public class Attacker : MonoBehaviour
 
 
     // 内部関数
-    void ATAnimFinish()
+    // 再生完了の判断
+    protected void AnimationPlayedTrue()
     {
-        animator.SetBool("isAttack", false);
+        animationPlayed = true;
+        animator.SetBool("AnimationPlayed", true);
+    }
+    protected void AnimationPlayedFalse()
+    {
+        animationPlayed = false;
+        animator.SetBool("AnimationPlayed", false);
+    }
+    // 敵侵入の判断
+    protected void EnemyEnterAreaTrue()
+    {
+        enemyEnterArea = true;
+        animator.SetBool("EnemyEnterArea", true);
+    }
+    protected void EnemyEnterAreaFalse()
+    {
+        enemyEnterArea = false;
+        animator.SetBool("EnemyEnterArea", false);
+    }
+    // 攻撃状態の設定
+    protected void SetAttackResult(int ar)
+    {
+        attackResult = ar;
+        animator.SetInteger("AttackResult", attackResult);
+    }
+    protected void ResetAttackResult()
+    {
+        attackResult = 0;
+        animator.SetInteger("AttackResult", attackResult);
     }
 
     // 外部関数
-    public void PlayATAnimOnce()
+    // 攻撃を受ける判断
+    public void PlayerGetHit()
     {
-        animator.SetBool("isAttack", true);
+        getHit = true;
+        animator.SetBool("GetHit", true);
+    }
+    protected void GetHitFalse()
+    {
+        getHit = false;
+        animator.SetBool("GetHit", false);
     }
 
-    // ゲッターセッター
 
+    // ゲッターセッター
 
 }
