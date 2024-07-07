@@ -12,8 +12,16 @@ public class Attacker : MonoBehaviour
     protected PlayerActionMovement playerAM;
     protected Animator animator;
 
-    protected bool enemyEnterArea = false, animationPlayed = false, getHit = false;
-    protected int attackResult = 0;     // 0 none, 1 success, 2 fail
+    // 攻撃チェック
+    bool canAttack = true;
+
+    // アニメーション関連
+    [SerializeField]
+    protected bool enemyEnterArea = false, getHit = false;
+    //attackresult : 0 none, 1 success, 2 fail,
+    //animationPlayed : 0 Idle, 1 EnemyClose, 2 Failure, 3 GetHit, 4 Success, 5 ECAF, 6 ECAS
+    [SerializeField]
+    protected int attackResult = 0, animationPlayed = -1;     
 
     protected void Awake()
     {
@@ -38,15 +46,11 @@ public class Attacker : MonoBehaviour
 
     // 内部関数
     // 再生完了の判断
-    protected void AnimationPlayedTrue()
+    protected void AnimationPlayed(int animnum)
     {
-        animationPlayed = true;
-        animator.SetBool("AnimationPlayed", true);
-    }
-    protected void AnimationPlayedFalse()
-    {
-        animationPlayed = false;
-        animator.SetBool("AnimationPlayed", false);
+        Debug.Log(animnum);
+        animationPlayed = animnum;
+        animator.SetInteger("AnimationPlayed", animationPlayed);
     }
     // 敵侵入の判断
     protected void EnemyEnterAreaTrue()
@@ -60,7 +64,7 @@ public class Attacker : MonoBehaviour
         animator.SetBool("EnemyEnterArea", false);
     }
     // 攻撃状態の設定
-    protected void SetAttackResult(int ar)
+    public void SetAttackResult(int ar)
     {
         attackResult = ar;
         animator.SetInteger("AttackResult", attackResult);
@@ -75,6 +79,7 @@ public class Attacker : MonoBehaviour
     // 攻撃を受ける判断
     public void PlayerGetHit()
     {
+        if (animationPlayed == 3 || animationPlayed == 103) return;
         getHit = true;
         animator.SetBool("GetHit", true);
     }
@@ -84,7 +89,28 @@ public class Attacker : MonoBehaviour
         animator.SetBool("GetHit", false);
     }
 
+    // 外部動作関連
+    public void AddCantAttackObject(Collider2D collision)
+    {
+        EnemyEnterAreaTrue();
+        SetCanAttack(true);
+        playerAM.AddCantAttackObj(id, collision.gameObject);
+    }
+    public void RemoveCantAttackObject(Collider2D collision)
+    {
+        playerAM.RemoveCantAttackObj(id, collision.gameObject);
+    }
+
+
+
 
     // ゲッターセッター
-
+    public void SetCanAttack(bool b)
+    {
+        canAttack = b;
+    }
+    public bool GetCanAttack()
+    {
+        return canAttack;
+    }
 }

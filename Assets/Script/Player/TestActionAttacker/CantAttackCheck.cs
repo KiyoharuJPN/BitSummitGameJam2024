@@ -7,23 +7,21 @@ using UnityEngine;
 public class CantAttackCheck : MonoBehaviour
 {
     // éŒ¾•”•ª
-    int id;
-    PlayerActionMovement playerAM;
+    Attacker attacker;
     private void Awake()
     {
-        id = GetComponentInParent<Attacker>().id;
-        playerAM = GameObject.Find("Player").GetComponent<PlayerActionMovement>();
+        attacker = GetComponentInParent<Attacker>();
     }
 
     // ÀsŠÖ”
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        playerAM.AddCantAttackObj(id, collision.gameObject);
+        attacker.AddCantAttackObject(collision);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        playerAM.RemoveCantAttackObj(id, collision.gameObject);
+        attacker.RemoveCantAttackObject(collision);
     }
 
 

@@ -233,6 +233,7 @@ public class EnemyBase : MonoBehaviour
     {
         // ボスだったら何もしない（ボスに対する攻撃は他の所で設定するようにしてください）
         if (enemyType == EnemyDataList.ObjectType.Boss) return 0;
+        if(enemyHP<=0)return 0;
         //// 何かされているときに何もしない
         //if(enemyRb.velocity == Vector2.zero) return false;
         //HadDamage(damegespd);

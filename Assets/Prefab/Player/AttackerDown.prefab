@@ -424,7 +424,7 @@ Animator:
   m_GameObject: {fileID: 8127821737457012215}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1843f712ebb99ef458e28b3dbf108c0c, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -474,3 +474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2
   effectSpriteRenderer: {fileID: 1703598113850312837}
+  enemyEnterArea: 0
+  getHit: 0
+  attackResult: 0
+  animationPlayed: -1

@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -149,6 +150,7 @@ public class PlayerActionMovement : MonoBehaviour
         {
             if (GetChargePower() > 0 && GetChargePower() < 130/* && GameManagerScript.instance.SetEnemyObjects() > 0*/)// チャージチェック
             {
+                // ボスに対する攻撃
                 GameManagerScript.instance.AttackBoss((int)Mathf.Round(playerData.attackPower * CalcChargePower()), ActionStageClear);
 
                 // パワーの計算をするのに攻撃してからゼロクリアする必要がある
@@ -180,9 +182,12 @@ public class PlayerActionMovement : MonoBehaviour
     // レーンをidで区別して攻撃する
     void AttackLane(int id)
     {
-        if (canAttackobj[id].Count > 0)
+        if (canAttackobj[id].Count > 0 && attacker[id].GetCanAttack())
         {
             //attacker[id].PlayATAnimOnce();                                  // アニメーションを一回流す
+            attacker[id].SetAttackResult(1);
+            attacker[id].SetCanAttack(false);
+
             int power = (int)(GetBaseHP() * GetLanePower(id));           // 攻撃力を計算する
             // 攻撃可能の全てのオブジェクトに対して攻撃する
             for (int i = 0; i < canAttackobj[id].Count; i++)
@@ -220,8 +225,10 @@ public class PlayerActionMovement : MonoBehaviour
                 }
             }
         }
-        else if (cantAttackobj[id].Count > 0)
+        else if (cantAttackobj[id].Count > 0 && attacker[id].GetCanAttack())
         {
+            attacker[id].SetAttackResult(2);
+            attacker[id].SetCanAttack(false);
             //// 攻撃不可のすべてオブジェクトに対してノックバック
             //for (int i = 0; i < cantAttackobj[id].Count; i++)
             //{
@@ -521,14 +528,14 @@ public class PlayerActionMovement : MonoBehaviour
     // HP計算
     public void GetHit(int dmg, int lane, bool canGuard = true, GameObject enemyObj = null)
     {
-        if (canGuard && ShieldCheck()) return;
-        
         // 攻撃を受ける時のアニメーション
         if (lane != -1)
         {
             attackerGetHit(lane);
         }
 
+        if (canGuard && ShieldCheck()) return;
+        
         AdjustBaseHP(-dmg);
         CalcCameraSize();
         // HPが0以下の時死亡判定で再開する
@@ -622,6 +629,6 @@ public class PlayerActionMovement : MonoBehaviour
     // アタッカーアニメーション用関数
     void attackerGetHit(int lane)
     {
-        
+        attacker[lane].PlayerGetHit();
     }
 }

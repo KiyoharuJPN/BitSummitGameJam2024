@@ -151,12 +151,11 @@ MonoBehaviour:
   id: 8
   enemyObj:
   - {fileID: 2316036051089365859, guid: 425dcdf8ce466624e9f2f1602e459be3, type: 3}
-  - {fileID: 8935414461101791995, guid: e7cd3615f9c98e14d91b4188cc350c54, type: 3}
   EnemySS:
-    duration: 1
+    duration: 0.5
     mindur: 0
     maxdur: 0
-    summonType: 0
+    summonType: 2
     rightPosition: 200
     Timer: 0
     summonPosNext: -1
@@ -165,6 +164,7 @@ MonoBehaviour:
     RightLanePos: 0
     DownLanePos: 0
   BossHPUI: {fileID: 1196535953204211229}
+  hp: 0
 --- !u!95 &1875157100810005860
 Animator:
   serializedVersion: 4
