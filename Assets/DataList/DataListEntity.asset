@@ -23,42 +23,42 @@ MonoBehaviour:
   - id: 2
     charName: SheepNormal
     enemyHP: 1
-    chargePower: 16
+    chargePower: 10
     attackPower: 100
     enemySpeed: 80
     type: 1
   - id: 3
     charName: Speeder
     enemyHP: 1
-    chargePower: 16
+    chargePower: 10
     attackPower: 90
     enemySpeed: 150
     type: 1
   - id: 4
     charName: LaneChanger
     enemyHP: 1
-    chargePower: 16
+    chargePower: 10
     attackPower: 120
     enemySpeed: 80
     type: 1
   - id: 5
     charName: Ghost
     enemyHP: 1
-    chargePower: 16
+    chargePower: 10
     attackPower: 100
     enemySpeed: 70
     type: 1
   - id: 6
     charName: SpeedBooster
     enemyHP: 1
-    chargePower: 16
+    chargePower: 10
     attackPower: 130
     enemySpeed: 150
     type: 1
   - id: 7
     charName: Boomer
     enemyHP: 1
-    chargePower: 16
+    chargePower: 10
     attackPower: 150
     enemySpeed: 150
     type: 1

@@ -160,7 +160,7 @@ MonoBehaviour:
     duration: 1
     mindur: 0
     maxdur: 0
-    summonType: 2
+    summonType: 1
     rightPosition: 200
     Timer: 0
     summonPosNext: -1

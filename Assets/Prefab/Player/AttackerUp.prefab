@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 9000638998373271171}
   m_Layer: 7
   m_Name: AttackerUp
-  m_TagString: Untagged
+  m_TagString: Attacker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -390,10 +390,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   effectSpriteRenderer: {fileID: 5776132177313018520}
-  enemyEnterArea: 0
-  getHit: 0
-  attackResult: 0
-  animationPlayed: -1
 --- !u!1 &6660147839671728690
 GameObject:
   m_ObjectHideFlags: 0
