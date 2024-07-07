@@ -5,6 +5,7 @@ using System.Linq;
 
 [DefaultExecutionOrder(-5)]
 public class SkillManage : MonoBehaviour
+
 {
     List<Skill> AllSkillList; //全スキルのリスト
 

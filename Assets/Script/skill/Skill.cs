@@ -25,6 +25,7 @@ public class Skill
     public Skill(int id, string skillName, string skillexlantion, int cost, int rarity, Sprite sprite)
     {
         this.id = id;
+
         this.skillName = skillName;
         this.skillexlantion = skillexlantion;
         this.cost = cost;
