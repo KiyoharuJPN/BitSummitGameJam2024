@@ -40,6 +40,7 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
     public void SetSkill()
     {
         TradeSkill = skillManage.RandomSelectSkill();
+        if ( TradeSkill == null ) { TradeSkill = NullSkill; } 
         SetEffect();
     }
 
@@ -65,7 +66,7 @@ public class SkillLane : MonoBehaviour ,I_SelectedLane
     {
         Debug.Log(TradeSkill.skillName + "‚ª‘I‚Î‚ê‚Ü‚µ‚½");
         Debug.Log(TradeSkill.cost + "‚ªspped‚©‚çˆø‚©‚ê‚Ü‚·");
-        //DecadeEffect
+        thisEffectAdmi.DicadeEffect();
     }
 
     public void UnDecadedAction() //‘I‚Î‚ê‚È‚©‚Á‚½‚Æ‚«

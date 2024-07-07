@@ -9,6 +9,9 @@ public class ThisEffectAdmi : MonoBehaviour
 {
     [SerializeField] float effectDuration = 0.05f;
 
+    [SerializeField] SlideGameobject SlideGameobject;
+    [SerializeField] FadeInOut FadeInOut;
+
     IUIEffect[] Effects;
 
     private CancellationTokenSource _cancellationTokenSource;
@@ -23,6 +26,18 @@ public class ThisEffectAdmi : MonoBehaviour
     {
         Effects = GetComponents<IUIEffect>();
         thisProgress = start;
+    }
+
+    public async void DicadeEffect()
+    {
+
+        var tasks = new List<Task>();
+        
+        tasks.Add(SlideGameobject.TukeYakiba());
+        //tasks.Add(FadeInOut.AnimateEffect(0, 1, 0.05f,_cancellationTokenSource.Token));
+        
+
+        await Task.WhenAll(tasks.ToArray());
     }
 
     public void ReverseOrMoveBack()
