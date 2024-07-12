@@ -7,8 +7,11 @@ using UnityEngine;
 public class SlideGameobject : MonoBehaviour
 {
 
-    public async Task MoveGameObjectToPosition(Vector2 start, Vector2 end, float duration, CancellationToken cancellationToken = default)
+    public async Task MoveGameObjectToPosition(Vector2 end, float duration, CancellationToken cancellationToken = default)
     {
+        Debug.Log("slide");
+        Vector2 start = transform.position;
+
         float elapsed = 0f;
         while (elapsed < duration)
         {
@@ -26,12 +29,5 @@ public class SlideGameobject : MonoBehaviour
         }
 
         transform.position = end; // ÅIˆÊ’u‚ðŠm’è
-    }
-
-
-    public Task AnimateEffectCancel(Vector2 targetPosition, float duration)
-    {
-        Vector2 nowposi = transform.position;
-        return MoveGameObjectToPosition(nowposi, targetPosition, duration);
     }
 }

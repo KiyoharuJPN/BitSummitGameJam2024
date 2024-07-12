@@ -5,9 +5,8 @@ using System.Threading;
 using UnityEngine;
 using System.Linq;
 
-public class RunTaskList
+public class ThisEffectAdmi
 {
-
     private CancellationTokenSource _cancellationTokenSource;
     private Task[] _currentTasks;
 
@@ -17,7 +16,7 @@ public class RunTaskList
         _cancellationTokenSource?.Cancel();
     }
 
-    async void EffectAnim(List<Task> Effects, List<Task> EffectCancels, CancellationTokenSource cancellation)
+    async void EffectAnim(List<Task> Effects, List<Task> EffectCancels)
     {
         // 既存のアニメーションをキャンセル
         if (_currentTasks != null && !_currentTasks.All(t => t.IsCompleted))
@@ -31,15 +30,14 @@ public class RunTaskList
         else
         {
             _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource = cancellation;
+            _cancellationTokenSource = new CancellationTokenSource();
 
             // 新しいCancellationTokenSourceを作成
             try
             {
                 _currentTasks = Effects.ToArray();
-
                 await Task.WhenAll(_currentTasks);
-;
+                ;
             }
             catch (TaskCanceledException)
             {
@@ -51,6 +49,7 @@ public class RunTaskList
             }
         }
     }
+
 }
 
 
