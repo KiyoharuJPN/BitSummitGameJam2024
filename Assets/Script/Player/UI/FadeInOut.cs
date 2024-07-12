@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class FadeInOut : MonoBehaviour, IUIEffect
+public class FadeInOut : MonoBehaviour
 {
     private TMP_Text fadeTMPText;
     private SpriteRenderer fadeImage;
@@ -70,9 +70,8 @@ public class FadeInOut : MonoBehaviour, IUIEffect
         }
     }
 
-    public Task AnimateEffect(float start, float end, float duration, CancellationToken cancellationToken) => FedeObject(start, end, duration, cancellationToken);
 
-    public Task AnimateEffectCancel(float end, float duration)
+    public Task FedeObjectCancel(float end, float duration)
     {
         float nowAlfa = 0;
         if (fadeTMPText != null)
@@ -88,10 +87,5 @@ public class FadeInOut : MonoBehaviour, IUIEffect
         return FedeObject(nowpoint, end, duration);
     }
 
-    public void StopAnimateEffect()
-    {
-        // 外部からアニメーションをキャンセル
-        //_cancellationTokenSource?.Cancel();
-    }
 }
 
