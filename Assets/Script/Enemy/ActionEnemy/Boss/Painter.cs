@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using System;
 
 public class Painter : EnemyBossBase
 {
@@ -33,17 +33,15 @@ public class Painter : EnemyBossBase
         // アニメーター関連
         //bossPainterState = 0;
         bossPainterState = -1;
+        Debug.Log(gameObject.name);
     }
-
-
     override protected void FixedUpdate()
     {
         if (enemyHP <= 0) return;
 
 
+        // スキルの選択と使用
         UpdateState();
-
-
 
 
         // スキル関連
@@ -100,12 +98,15 @@ public class Painter : EnemyBossBase
                 break;
             case 3:
                 Debug.Log("Skill 1状態です");
+
                 break;
             case 4:
                 Debug.Log("Skill 2状態です");
+
                 break;
             case 5:
                 Debug.Log("Skill 3状態です");
+
                 break;
 
             default:
@@ -114,23 +115,62 @@ public class Painter : EnemyBossBase
         }
     }
 
+
     // ステート遷移関連
     void ChangeIdleState()
     {
         if(bossPainterState != 0) bossPainterState = 0;
+        eAnimator.SetInteger("PainterState", bossPainterState);
     }
     void ChangeSummonState()
     {
         if (bossPainterState != 1 && bossPainterState != 2)
         {
-            bossPainterState = Random.Range(0, 2) + 1;
+            bossPainterState = UnityEngine.Random.Range(0, 2) + 1;
         }
+        eAnimator.SetInteger("PainterState", bossPainterState);
     }
     void ChangeUseSkillState()
     {
-        if (bossPainterState < 0)
+        int newState;                   // 新しい状態
+        if (bossPainterState < 0)       // 状態更新してたら何もしない
         {
+            if(enemyHP > eData.enemyHP * 0.4)               // 敵のHPが40％以上だったらブラックホールなし
+            {
+                // ブラックホールなし
+                newState = UnityEngine.Random.Range(0, 2);              // ランダム生成する
 
+                if (enemySkill[newState * 2].canUse)                    // もしこのスキルが使えるなら
+                {
+                    bossPainterState = (newState * 2) + 3;              // このスキルを使う
+                    eAnimator.SetInteger("PainterState", bossPainterState);    // アニメーション代入
+                }
+                else
+                {                                           // 使えなかったら
+                    if (CheckAvailableSkill(0))             // この二つのスキルに使えるスキルがあるかどうかをチェック
+                        ChangeUseSkillState();              // 使えるスキルがあったら入れ子構造で使えるスキルを取り出す
+                    else
+                        ResetBossPainterState(-1);          // 使えるスキルがなかったら次の状態に移行する
+                }
+            }
+            else                                             // 逆に40％以下だったらブラックホールあり
+            {
+                // ブラックホールあり
+                newState = UnityEngine.Random.Range(0, 3);              // ランダム生成する
+
+                if (enemySkill[newState].canUse)                        // もしこのスキルが使えるなら
+                {
+                    bossPainterState = newState + 3;                    // このスキルを使う
+                    eAnimator.SetInteger("PainterState", bossPainterState);    // アニメーション代入
+                }
+                else
+                {
+                    if(CheckAvailableSkill(1))              // この三つのスキルに使えるスキルがあるかどうかをチェック
+                        ChangeUseSkillState();              // 使えるスキルがあったら入れ子構造で使えるスキルを取り出す
+                    else
+                        ResetBossPainterState(-1);          // 使えるスキルがなかったら次の状態に移行する
+                }
+            }
         }
     }
 
@@ -155,6 +195,8 @@ public class Painter : EnemyBossBase
         {
             Instantiate(enemySkillSummon[0]);
             enemySkill[0].canUse = false;
+            // 次の状態に移行する
+            ResetBossPainterState(-1);
             return true;
         }
         return false;
@@ -163,12 +205,14 @@ public class Painter : EnemyBossBase
     bool SkillSummonWarpHole()
     {
         if (!enemySkill[1].canUse) return false;
+        // スキル使用したのでリセット
+        enemySkill[1].canUse = false;
         // ワープホールをセットで作る
         var warphole = Instantiate(enemySkillSummon[1]);
         // 作るレーンを決める
-        int laneid = Random.Range(0, 3);
+        int laneid = UnityEngine.Random.Range(0, 3);
         // ポジションを決める
-        Vector2 holePos = new Vector2(Random.Range(0,60),0);
+        Vector2 holePos = new Vector2(UnityEngine.Random.Range(0,60),0);
         // ワープホール（入口）の位置を修正する
         warphole.transform.position = new Vector2(holePos.x, GameManagerScript.instance.GetNowHeightByLaneNum(laneid, holePos));
         // ワープホール（出口）のレーンを入口と被らないよう決める
@@ -177,11 +221,13 @@ public class Painter : EnemyBossBase
         warphole.transform.GetChild(0).position = new Vector2(holePos.x, GameManagerScript.instance.GetNowHeightByLaneNum(laneid2, holePos));
         // ワープターゲットのレーンを決める
         warphole.GetComponent<WarpHole>().SetLaneID(laneid2);
+        // 次の状態に移行する
+        ResetBossPainterState(-1);
         return true;
     }
     int CalcOtherLane(int defaultLane)
     {
-        int newlane = Random.Range(0, 3);
+        int newlane = UnityEngine.Random.Range(0, 3);
         if(newlane == defaultLane)
         {
             newlane = CalcOtherLane(defaultLane);
@@ -195,6 +241,8 @@ public class Painter : EnemyBossBase
         {
             Instantiate(enemySkillSummon[2]);
             enemySkill[2].canUse = false;
+            // 次の状態に移行する
+            ResetBossPainterState(-1);
             return true;
         }
         return false;
@@ -220,6 +268,56 @@ public class Painter : EnemyBossBase
             bossPainterState = state;
         else
             Debug.Log("ボスのステートが無効です");
+
+        //eAnimator.SetInteger("PainterState", bossPainterState);
+    }
+    void BossDamagedAnimFinish()
+    {
+        eAnimator.SetBool("DamagedAnim", false);
+        eAnimator.SetInteger("PainterState", bossPainterState);
+    }
+    void BossDown()
+    {
+        eAnimator.SetInteger("PainterState", 1024);
+    }
+
+
+    // ボス死亡
+    // HP計算
+    override public void PlayerDamageBoss(int dmg, Action actionStageClear)
+    {
+        HadDamage(dmg);
+        if (IsBossDead(actionStageClear))
+        {
+            BossHPUI.gameObject.SetActive(false);
+        }
+        else
+        {
+            BossHPUI.SetHPGauge(enemyHP, eData.enemyHP);
+        }
+        Debug.Log("getattack" + enemyHP);
+    }
+    override protected bool IsBossDead(Action actionStageClear)
+    {
+        if (enemyHP <= 0)
+        {
+            GameManagerScript.instance.PopBoss(this);
+            if (GameManagerScript.instance.BossCount() == 0) bossDeadAction = actionStageClear;
+            Debug.Log(GameManagerScript.instance.BossCount());
+            BossDead();
+            eAnimator.SetInteger("PainterState", 101);
+            return true;
+        }
+        Debug.Log(gameObject.name);
+        eAnimator.SetInteger("PainterState", 102);
+        eAnimator.SetBool("DamagedAnim", true);
+        return false;
+    }
+    protected override void BossDead()
+    {
+        GameManagerScript.instance.SetEnemyObjects();
+        GameManagerScript.instance.KillAllEnemy();
+        if (bossDeadAction == null) Destroy(gameObject);
     }
 
 
@@ -251,6 +349,23 @@ public class Painter : EnemyBossBase
                     enemySkill[i].resetTime = resetSkillTime;
                 }
             }
+        }
+    }
+    bool CheckAvailableSkill(int type)// 0はブラックホールなし、1はブラックホールあり
+    {
+        if(type == 0)
+        {
+            if (enemySkill[0].canUse) return true;
+            if (enemySkill[2].canUse) return true;
+            return false;
+        }
+        else
+        {
+            for (int i = 0; i < enemySkill.Length; i++)
+            {
+                if (enemySkill[i].canUse) return true;
+            }
+            return false;
         }
     }
 }

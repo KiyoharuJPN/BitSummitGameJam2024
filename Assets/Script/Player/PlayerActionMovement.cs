@@ -57,6 +57,9 @@ public class PlayerActionMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // 一時的にここでボスを召喚する
+        GameManagerScript.instance.SummonBoss();
+
         // アニメーション関連
         animator = GetComponent<Animator>();
 
@@ -436,6 +439,7 @@ public class PlayerActionMovement : MonoBehaviour
         // testのために削除しておく
         // AdjustBaseHP(500);
         GameManagerScript.instance.SetPlayerData(playerData);
+        GameManagerScript.instance.AdjustClearStage(1);
         SceneManager.LoadScene("TestFinishStage");
     }
     //bool CheckStageClear()

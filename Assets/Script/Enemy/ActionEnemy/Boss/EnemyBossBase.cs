@@ -66,6 +66,9 @@ public class EnemyBossBase : EnemyBase
         laneEndPosition = GameManagerScript.instance.GetPlayerRightLimit();
         laneMidPosition = (laneEndPosition + laneStartPosition) / 2;
 
+        // アニメーション
+        eAnimator = GetComponent<Animator>();
+
 
         // playerActionMovement
         playerAM = GameObject.Find("Player").GetComponent<PlayerActionMovement>();

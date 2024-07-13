@@ -101,6 +101,11 @@ public class GameManagerScript : MonoBehaviour
     public int skillCoolDownKillCount;
 
 
+    // ステージごと設定する敵
+    [SerializeField,Tooltip("ステージごとのボス（一ステージ暫定一ボス）")]
+    GameObject[] StagesBoss;
+
+
     // スキル用敵リスト保存データ
     List<EnemyBase> enemyObjs;
 
@@ -302,6 +307,10 @@ public class GameManagerScript : MonoBehaviour
         gameControl.ClearStage += fixval;
     }
 
+    public void SummonBoss()
+    {
+        Instantiate(StagesBoss[gameControl.ClearStage]);
+    }
 
     //public int KillAllEnemy()
     //{
