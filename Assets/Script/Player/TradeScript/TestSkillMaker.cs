@@ -33,18 +33,18 @@ public class TestSkillMaker : MonoBehaviour
         F_Skill = new Skill(6, "F", "Skill F", 60, 3, F_Image);
 
 
-        SkillManage skillManage = GetComponent<SkillManage>();
+        SkillManager skillManage = GetComponent<SkillManager>();
         if (skillManage == null)
         {
             Debug.Log(this + "に SkillManage をアタッチしてください");
         } else
         {
-            skillManage.AddSkill(A_Skill);
-            skillManage.AddSkill(B_Skill);
-            skillManage.AddSkill(C_Skill);
-            skillManage.AddSkill(D_Skill);
-            skillManage.AddSkill(E_Skill);
-            skillManage.AddSkill(F_Skill);
+            //skillManage.AddSkill(A_Skill);
+            //skillManage.AddSkill(B_Skill);
+            //skillManage.AddSkill(C_Skill);
+            //skillManage.AddSkill(D_Skill);
+            //skillManage.AddSkill(E_Skill);
+            //skillManage.AddSkill(F_Skill);
         }
     }
 

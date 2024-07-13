@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 [DefaultExecutionOrder(-5)]
-public class SkillManage : MonoBehaviour
+public class Old_SkillManage : MonoBehaviour
 
 {
     List<Skill> AllSkillList; //全スキルのリスト

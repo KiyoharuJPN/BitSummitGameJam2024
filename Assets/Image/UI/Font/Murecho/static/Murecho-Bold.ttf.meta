@@ -1,0 +1,31 @@
+fileFormatVersion: 2
+guid: 9eab9321e6b9f7f42bec7f076bee1d12
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Murecho
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 816f100e943155342ab7611119525fb1, type: 3}
+  - {fileID: 12800000, guid: 17926994fe244c449a320338f0f293f5, type: 3}
+  - {fileID: 12800000, guid: 79d95edfaed5b68448a213bb25a8af44, type: 3}
+  - {fileID: 12800000, guid: fbac4b1de85e48f4dafbea24691ad3d8, type: 3}
+  - {fileID: 12800000, guid: 2d2df15e9e7340a4884dbb2336117b33, type: 3}
+  - {fileID: 12800000, guid: 96c4145d0b6f16f459e8349085e8d587, type: 3}
+  - {fileID: 12800000, guid: d28d54e6ea0249245b4cbdd7d3d2826f, type: 3}
+  - {fileID: 12800000, guid: 582d8c92f594daa49872ba2223b01dfd, type: 3}
+  - {fileID: 12800000, guid: 070632078151ee447b6c931159c6d04f, type: 3}
+  - {fileID: 12800000, guid: dc6787f9898ab7249b33b9ecfd2492c7, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

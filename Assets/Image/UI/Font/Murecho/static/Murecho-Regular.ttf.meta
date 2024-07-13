@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 816f100e943155342ab7611119525fb1
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Murecho
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: fbac4b1de85e48f4dafbea24691ad3d8, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
