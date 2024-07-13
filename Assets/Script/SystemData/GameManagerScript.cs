@@ -23,9 +23,10 @@ public struct PlayerData
 public struct GameControl
     
 {
-    public bool isSkill;                // スキル中かどうかの確認
+    public bool  isSkill;                // スキル中かどうかの確認
     public float LaneLeftLimit;         // レーンの最終地の判定
     public float LaneRightLimit;        // 敵のリスポーンポイント
+    public int   ClearStage;
 }
 // Action用構造
 [Serializable]
@@ -288,6 +289,20 @@ public class GameManagerScript : MonoBehaviour
     }
 
 
+    public int GetClearStage()
+    {
+        return gameControl.ClearStage;
+    }
+    void SetClearStage(int i)
+    {
+        gameControl.ClearStage = i;
+    }
+    public void AdjustClearStage(int fixval)
+    {
+        gameControl.ClearStage += fixval;
+    }
+
+
     //public int KillAllEnemy()
     //{
     //    int killCount = 0;
@@ -300,5 +315,5 @@ public class GameManagerScript : MonoBehaviour
     //    }
     //    return killCount;
     //}
-    
+
 }

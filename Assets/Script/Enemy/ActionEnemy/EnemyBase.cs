@@ -282,6 +282,12 @@ public class EnemyBase : MonoBehaviour
     {
         return laneID;
     }
+    public void WarpEnemy(int laneid)
+    {
+        laneID = laneid;
+        transform.position = new Vector2(transform.position.x, GameManagerScript.instance.GetNowHeightByLaneNum(laneID, transform.position));
+        SetSpeed();
+    }
 
     // ゲッターセッター
 
