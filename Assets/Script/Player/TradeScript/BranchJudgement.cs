@@ -24,6 +24,10 @@ public class BranchJudgement : MonoBehaviour
     I_SelectedLane DownLane;
     I_SelectedLane LeftLane;
 
+    SkillLane UpSkillLane;
+    SkillLane RightSkillLane;
+    SkillLane DownSkillLane;
+
 
     SelectState LastSelect; //保持用
     SelectState SelectingLane; //今の選択
@@ -36,6 +40,10 @@ public class BranchJudgement : MonoBehaviour
         RightLane = GRightLane.GetComponent<I_SelectedLane>();
         DownLane = GDownLane.GetComponent<I_SelectedLane>();
         LeftLane = GLeftLane.GetComponent<I_SelectedLane>();
+
+        UpSkillLane = GUpLane.GetComponent<SkillLane>();
+        RightSkillLane = GRightLane.GetComponent<SkillLane>();
+        DownSkillLane = GDownLane.GetComponent<SkillLane>();
 
         LastSelect = SelectState.Neutral; //初期化
 
@@ -50,18 +58,21 @@ public class BranchJudgement : MonoBehaviour
 
     public void SelectUp()
     {
+        if(!UpSkillLane.canSelect) return;
         SelectingLane = SelectState.Up;
         SelectExecute();
     }
 
     public void SelectRight()
     {
+        if(!RightSkillLane.canSelect)return;
         SelectingLane = SelectState.Right;
         SelectExecute();
     }
 
     public void SelectDown()
     {
+        if(!DownSkillLane.canSelect) return;
         SelectingLane = SelectState.Down;
         SelectExecute();
     }    
@@ -78,15 +89,15 @@ public class BranchJudgement : MonoBehaviour
         SetLastSelect();
     }
 
-    void BranchSameSelect()　//同じなら決定 違うなら別を選択
+    void BranchSameSelect()　//前の選択と同じなら決定 違うなら別を選択
     {
-        if (SelectingLane == LastSelect)
+        if (SelectingLane == LastSelect) //同じ
         {
-            StateToSkillLane(SelectingLane).DecadedAction();
-            UnDecadeAction();
+            StateToSkillLane(SelectingLane).DecadedAction(); //そのレーンの決定
+            UnDecadeAction();　//他のレーンは逆の動き
 
-            tradeAdim.DecadeTrade();
-        } else
+            tradeAdim.DecadeTrade();　//フロー管理に渡す
+        } else　//違う
         {
             StateToSkillLane(SelectingLane).SelectedAction();
             if(LastSelect == SelectState.Neutral) return;
@@ -94,9 +105,9 @@ public class BranchJudgement : MonoBehaviour
         }
     }
 
-    void SetLastSelect()
+    void SetLastSelect() //状態保持を行う
     {
-        LastSelect = SelectingLane; //状態保持を行う
+        LastSelect = SelectingLane; 
 
     }
 

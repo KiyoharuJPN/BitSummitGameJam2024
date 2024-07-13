@@ -49,7 +49,7 @@ public class Administer_TradeScene : MonoBehaviour
     {
         playerTradeMovement.CanInput = false;
         //SceneChange—p‚ÌEffect
-        ResetLaneSkill();
+        //ResetLaneSkill();
         Debug.Log("TradeSceneI—¹");
     }
 

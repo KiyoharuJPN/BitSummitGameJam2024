@@ -6,14 +6,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class SkillLane : MonoBehaviour, I_SelectedLane
 {
+    PlayerData playerData;
+
+    public bool canSelect;
+
     Skill TradeSkill; //選択肢用スキルの保持用
     Skill NullSkill; //Error用,空用のスキル
 
-    [SerializeField] SkillManage skillManage;
+    [SerializeField] SkillManager skillManager;
 
     [SerializeField] float effectDuration;
 
@@ -22,82 +27,99 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     SlideGameobject iconSlideSc;
     FadeInOut iconFedeSc;
     Vector2 defaultPosi;
-    [SerializeField] Vector2 unsetDistance;
+    [SerializeField] Vector2 unsetDistance  = new Vector2(0, 40);
     [SerializeField] Vector2 highlightDistance = new Vector2(-72, 0);
     [SerializeField] Vector2 dicadePosi;
 
     [SerializeField] GameObject contextGameObject;
     [SerializeField] GameObject nameGameObject;
+    RectTransform contextRect;
+    RectTransform nameRect;
     TMP_Text contextTMP;
     TMP_Text nameTMP;
-    SlideGameobject contextSlideSc;
-    SlideGameobject nameSlideSc;
+    SlideUIObject contextSlideSc;
+    SlideUIObject nameSlideSc;
     FadeInOut contextFedeSc;
     FadeInOut nameFadeSc;
     Vector2 contextDefaultPosi;
     Vector2 nameDefaultPosi;
-    [SerializeField] Vector2 contextsHighlightDistance;
+    [SerializeField] Vector2 contextsHighlightDistance = new Vector2(0, -40);
 
     [SerializeField] GameObject speedGameObject;
+    RectTransform speedRect;
     TMP_Text speedTMP;
-    SlideGameobject speedSlideSc;
+    SlideUIObject speedSlideSc;
     FadeInOut speedFedeSc;
     Vector2 speedDefaultPosi;
-    [SerializeField] Vector2 speedUnsetDistance;
+    [SerializeField] Vector2 speedUnsetDistance = new Vector2(0, 40);
+
+    [SerializeField] GameObject decadeGameObject;
+    TMP_Text decadeTMP;
+    FadeInOut decadeFadeSc;
 
     RunTaskList RunHighlights;
+    RunTaskList runTaskOther;
 
     List<Func<Task>> SetEffects;
-    List<Func<Task>> SetEffectsCancels;
     List<Func<Task>> HighlightEffects;
-    List<Func<Task>> HighligtEffectsCancels;
     List<Func<Task>> UnHightlightEffects;
-    List<Func<Task>> UnHightlightEffectsCancels;
     List<Func<Task>> DecadeEffects;
-    List<Func<Task>> DecadeEffectsCancels;
     List<Func<Task>> UnSetEffects;
-    List<Func<Task>> UnSetEffectsCancels;
 
     CancellationTokenSource highlightCancellationTokenSource;
 
+    Color cleanness = new Color(255, 255, 255, 0);
+
     void Start()
     {
-        NullSkill = skillManage.NullSkill;
+        playerData = GameManagerScript.instance.GetPlayerData();
+
+        NullSkill = skillManager.NullSkill;
         TradeSkill = NullSkill;
 
         iconSpriteRenderer = iconGameObject.GetComponent<SpriteRenderer>();
         iconSlideSc = iconGameObject.GetComponent<SlideGameobject>();
         iconFedeSc = iconGameObject.GetComponent<FadeInOut>();
         defaultPosi = iconGameObject.transform.position;
-        iconSpriteRenderer.enabled = false;
 
         contextTMP = contextGameObject.GetComponent<TMP_Text>();
         nameTMP = nameGameObject.GetComponent<TMP_Text>();
-        contextSlideSc = contextGameObject.GetComponent<SlideGameobject>();
-        nameSlideSc = nameGameObject.GetComponent<SlideGameobject>();
+        contextRect = contextGameObject.GetComponent<RectTransform>();
+        nameRect = nameGameObject.GetComponent<RectTransform>();
+        contextSlideSc = contextGameObject.GetComponent<SlideUIObject>();
+        nameSlideSc = nameGameObject.GetComponent<SlideUIObject>();
         contextFedeSc = contextGameObject.GetComponent<FadeInOut>();
         nameFadeSc = nameGameObject.GetComponent<FadeInOut>();
-        contextDefaultPosi = contextGameObject.transform.position;
-        nameDefaultPosi = nameGameObject.transform.position;
-        contextTMP.enabled = false;
-        nameTMP.enabled = false;
+        contextDefaultPosi = contextRect.anchoredPosition;
+        nameDefaultPosi = nameRect.anchoredPosition;
 
         speedTMP = speedGameObject.GetComponent<TMP_Text>();
-        speedSlideSc = speedGameObject.GetComponent<SlideGameobject>();
+        speedRect = speedGameObject.GetComponent<RectTransform>();
+        speedSlideSc = speedGameObject.GetComponent<SlideUIObject>();
         speedFedeSc = speedGameObject.GetComponent<FadeInOut>();
-        speedDefaultPosi = speedGameObject.transform.position;
-        speedTMP.enabled = false;
+        speedDefaultPosi = speedRect.anchoredPosition;
+
+        decadeTMP = decadeGameObject.GetComponent<TMP_Text>();
+        decadeFadeSc = decadeGameObject.GetComponent<FadeInOut>();
+
+        Debug.Log("speedDefaultPosi" + speedDefaultPosi);
 
         SetTaskLists();
 
+        SetNutral();
+
         RunHighlights = new RunTaskList();
+        runTaskOther = new RunTaskList();
     }
 
     public void SetSkill()
     {
-        TradeSkill = skillManage.RandomSelectSkill();
+        TradeSkill = skillManager.RandomSelectSkill();
         if (TradeSkill == null) { TradeSkill = NullSkill; }
+        canSelect = playerData.baseHP > TradeSkill.cost;
+        if(TradeSkill == NullSkill) { canSelect = false; }
         SetEffect();
+        if (!canSelect) { cantSelectEffect(); }
     }
 
     public void ReSetSkill()
@@ -121,99 +143,139 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     public void DecadedAction()
     {
         Debug.Log(TradeSkill.skillName + "が選ばれました");
+        playerData.baseHP -= TradeSkill.cost;
         Debug.Log(TradeSkill.cost + "がsppedから引かれます");
         DecadeEffect();
     }
 
     public void UnDecadedAction() //選ばれなかったとき
     {
-        skillManage.ReAddSkill(TradeSkill);
-        //UnDecadeEffext
+        if (TradeSkill != NullSkill) { skillManager.ReAddSkill(TradeSkill); }
+        UnDecadeEffect();
     }
 
     void SetEffect()
     {
-        iconSpriteRenderer.sprite = TradeSkill.Icon;
-        iconSpriteRenderer.enabled = true;
+        SetSkillUI(TradeSkill);
+        runTaskOther.EffectAnim(SetEffects, UnSetEffects);
     }
+
 
     void ReSetEffect()
     {
-        iconSpriteRenderer.sprite = null;
-        iconSpriteRenderer.enabled = false;
+        runTaskOther.EffectAnim(UnSetEffects, SetEffects);
+        //SetNutral();
     }
 
     void HighlightEffect()
     {
         highlightCancellationTokenSource = new CancellationTokenSource();
-        RunHighlights.EffectAnim(GenerateTasks(HighlightEffects), GenerateTasks(HighligtEffectsCancels), highlightCancellationTokenSource);
-        Debug.Log("hili");
+        RunHighlights.EffectAnim(HighlightEffects, UnHightlightEffects, highlightCancellationTokenSource);
     }
 
     void UnHighlightEffect()
     {
         highlightCancellationTokenSource = new CancellationTokenSource();
-        RunHighlights.EffectAnim(GenerateTasks(UnHightlightEffects), GenerateTasks(UnHightlightEffectsCancels), highlightCancellationTokenSource);
+        RunHighlights.EffectAnim(UnHightlightEffects, HighlightEffects, highlightCancellationTokenSource);
     }
 
     void DecadeEffect()
     {
+        runTaskOther.EffectAnim(DecadeEffects, UnSetEffects);
+    }
+
+    void UnDecadeEffect()
+    {
+        runTaskOther.EffectAnim(UnSetEffects, SetEffects);
+    }
+
+    void SetSkillUI(Skill skill)
+    {
+        iconSpriteRenderer.sprite = skill.Icon;
+        nameTMP.SetText(skill.skillName);
+        contextTMP.SetText(skill.skillexlantion);
+        speedTMP.SetText(skill.cost.ToString());
+    }
+
+    void SetNutral()
+    {
+        iconSpriteRenderer.color = cleanness;
+        contextTMP.color = cleanness;
+        nameTMP.color = cleanness;
+        speedTMP.color = cleanness;
+        decadeTMP.color = cleanness;
+
+        iconGameObject.transform.position = defaultPosi + unsetDistance;
+        contextRect.anchoredPosition = contextDefaultPosi + contextsHighlightDistance;
+        nameRect.anchoredPosition = nameDefaultPosi + contextsHighlightDistance;
+        speedRect.anchoredPosition = speedDefaultPosi + speedUnsetDistance;
+
+        TradeSkill = NullSkill;
+
+        SetSkillUI(NullSkill);
+    }
+
+    void cantSelectEffect()
+    {
+        Debug.Log("選べないよ！");
+        speedTMP.color = new Color(255, 0, 0, 255);
     }
 
     void SetTaskLists()
     {
         SetEffects = new List<Func<Task>>()
         {
+            () => iconSlideSc.MoveGameObjectToPosition(defaultPosi, effectDuration),
+            () => iconFedeSc.FedeObject(0, 1, effectDuration),
+            () => speedSlideSc.MoveUIObjectToPosition(speedDefaultPosi, effectDuration),
+            () => speedFedeSc.FedeObject(0, 1, effectDuration)
         };
 
-        SetEffectsCancels = new List<Func<Task>>()
-        {
-        };
 
         HighlightEffects = new List<Func<Task>>()
         {
-            () => iconSlideSc.MoveGameObjectToPosition(defaultPosi + highlightDistance, effectDuration, highlightCancellationTokenSource.Token)
+            () => iconSlideSc.MoveGameObjectToPosition(defaultPosi + highlightDistance, effectDuration, highlightCancellationTokenSource.Token),
+            () => contextSlideSc.MoveUIObjectToPosition(contextDefaultPosi, effectDuration, highlightCancellationTokenSource.Token),
+            () => nameSlideSc.MoveUIObjectToPosition(nameDefaultPosi, effectDuration, highlightCancellationTokenSource.Token),
+            () => contextFedeSc.FedeObject(0, 1, effectDuration, highlightCancellationTokenSource.Token),
+            () => nameFadeSc.FedeObject(0, 1, effectDuration, highlightCancellationTokenSource.Token),
+            () => decadeFadeSc.FedeObject(0, 1, effectDuration, highlightCancellationTokenSource.Token)
         };
 
-        HighligtEffectsCancels = new List<Func<Task>>()
-        {
-            () => iconSlideSc.MoveGameObjectToPosition(defaultPosi, effectDuration, highlightCancellationTokenSource.Token)
-        };
 
         UnHightlightEffects = new List<Func<Task>>()
         {
-            () => iconSlideSc.MoveGameObjectToPosition(defaultPosi, effectDuration, highlightCancellationTokenSource.Token)
+            () => iconSlideSc.MoveGameObjectToPosition(defaultPosi, effectDuration, highlightCancellationTokenSource.Token),
+            () => contextSlideSc.MoveUIObjectToPosition(contextDefaultPosi + contextsHighlightDistance, effectDuration, highlightCancellationTokenSource.Token),
+            () => nameSlideSc.MoveUIObjectToPosition(nameDefaultPosi + contextsHighlightDistance, effectDuration, highlightCancellationTokenSource.Token),
+            () => contextFedeSc.FedeObject(1, 0, effectDuration, highlightCancellationTokenSource.Token),
+            () => nameFadeSc.FedeObject(1, 0, effectDuration, highlightCancellationTokenSource.Token),
+            () => decadeFadeSc.FedeObject(1, 0, effectDuration, highlightCancellationTokenSource.Token)
         };
 
-        UnHightlightEffectsCancels = new List<Func<Task>>()
-        {
-            () => iconSlideSc.MoveGameObjectToPosition(defaultPosi + highlightDistance, effectDuration, highlightCancellationTokenSource.Token)
-        };
+
 
         DecadeEffects = new List<Func<Task>>()
         {
+            () => iconSlideSc.MoveGameObjectToPosition(dicadePosi, effectDuration),
+            () => iconFedeSc.FedeObject(1, 0, effectDuration),
+            () => contextSlideSc.MoveUIObjectToPosition(contextDefaultPosi + contextsHighlightDistance, effectDuration, highlightCancellationTokenSource.Token),
+            () => nameSlideSc.MoveUIObjectToPosition(nameDefaultPosi + contextsHighlightDistance, effectDuration, highlightCancellationTokenSource.Token),
+            () => contextFedeSc.FedeObject(1, 0, effectDuration, highlightCancellationTokenSource.Token),
+            () => nameFadeSc.FedeObject(1, 0, effectDuration, highlightCancellationTokenSource.Token),
+            () => speedSlideSc.MoveUIObjectToPosition(speedDefaultPosi + speedUnsetDistance, effectDuration),
+            () => speedFedeSc.FedeObject(1, 0, effectDuration),
+            () => decadeFadeSc.FedeObject(1, 0, effectDuration)
         };
 
-        DecadeEffectsCancels = new List<Func<Task>>()
-        {
-        };
 
         UnSetEffects = new List<Func<Task>>()
         {
+            () => iconSlideSc.MoveGameObjectToPosition(defaultPosi + unsetDistance, effectDuration),
+            () => iconFedeSc.FedeObject(1, 0, effectDuration),
+            () => speedSlideSc.MoveUIObjectToPosition(speedDefaultPosi + speedUnsetDistance, effectDuration),
+            () => speedFedeSc.FedeObject(1, 0, effectDuration)
         };
 
-        UnSetEffectsCancels = new List<Func<Task>>()
-        {
-        };
-    }
-
-    List<Task> GenerateTasks(List<Func<Task>> taskFactories)
-    {
-        List<Task> tasks = new List<Task>();
-        foreach (var taskFactory in taskFactories)
-        {
-            tasks.Add(taskFactory());
-        }
-        return tasks;
     }
 }
