@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -8,37 +11,42 @@ using UnityEngine.UI;
 public class FadeInOut : MonoBehaviour
 {
     private TMP_Text fadeTMPText;
-    private Image fadeImage;
+    private SpriteRenderer fadeImage;
+
+    //CancellationToken _cancellationTokenSource;
 
     void Start()
     {
         fadeTMPText = GetComponent<TMP_Text>();
-        fadeImage = GetComponent<Image>();
+        fadeImage = GetComponent<SpriteRenderer>();
     }
 
-    public IEnumerator Color_FadeOut(UnityAction callback, bool DoFadeIn, float waitin)
+    async Task FedeObject(float start, float end, float duration, CancellationToken cancellationToken = default)
     {
         if (fadeTMPText != null)
         {
-            fadeTMPText.color = new Color(0f, 0f, 0f, 0f);
+            fadeTMPText.color = new Color(255f, 255f, 255f, 255f* (1- start));
         }
         else if (fadeImage != null)
         {
-            fadeImage.color = new Color(0f, 0f, 0f, 0f);
+            fadeImage.color = new Color(255f, 255f, 255f, 255f * (1- start));
         }
-
-        const float fade_time = 0.5f;
-        const int loop_count = 10;
-        float wait_time = fade_time / loop_count;
-        float alpha_interval = 255.0f / loop_count;
 
         Color new_color = fadeTMPText != null ? fadeTMPText.color : fadeImage.color;
 
-        for (float alpha = 0.0f; alpha <= 255.0f; alpha += alpha_interval)
+        float elapsed = 0f;
+        while (elapsed < duration)
         {
-            yield return new WaitForSeconds(wait_time);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                // キャンセルされた場合に例外を投げる
+                cancellationToken.ThrowIfCancellationRequested();
+            }
 
-            new_color.a = alpha / 255.0f;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float lerpValue = Mathf.Lerp((1 - start), (1 - end), t);
+
+            new_color.a = lerpValue * 255.0f;
             if (fadeTMPText != null)
             {
                 fadeTMPText.color = new_color;
@@ -47,53 +55,37 @@ public class FadeInOut : MonoBehaviour
             {
                 fadeImage.color = new_color;
             }
+
+            elapsed += Time.deltaTime;
+            await Task.Yield(); // フレームの終わりまで待機
         }
 
-        callback();
-        if (DoFadeIn) { StartCoroutine(Color_FadeIn(waitin)); }
+        if (fadeTMPText != null)
+        {
+            fadeTMPText.color = new Color(255f, 255f, 255f, 255f*(1 - end));
+        }
+        else if (fadeImage != null)
+        {
+            fadeImage.color = new Color(255f, 255f, 255f, 255f * (1 - end));
+        }
     }
 
-    public IEnumerator Color_FadeIn(float waitstart)
+
+    public Task FedeObjectCancel(float end, float duration)
     {
+        float nowAlfa = 0;
         if (fadeTMPText != null)
         {
-            fadeTMPText.color = new Color(0f, 0f, 0f, 1f);
+            nowAlfa = fadeTMPText.color.a;
         }
         else if (fadeImage != null)
         {
-            fadeImage.color = new Color(0f, 0f, 0f, 1f);
+            nowAlfa = fadeImage.color.a;
         }
 
-        const float fade_time = 0.5f;
-        const int loop_count = 10;
-        float wait_time = fade_time / loop_count;
-        float alpha_interval = 255.0f / loop_count;
-
-        Color new_color = fadeTMPText != null ? fadeTMPText.color : fadeImage.color;
-
-        yield return new WaitForSeconds(waitstart);
-        for (float alpha = 255.0f; alpha >= 0f; alpha -= alpha_interval)
-        {
-            yield return new WaitForSeconds(wait_time);
-
-            new_color.a = alpha / 255.0f;
-            if (fadeTMPText != null)
-            {
-                fadeTMPText.color = new_color;
-            }
-            else if (fadeImage != null)
-            {
-                fadeImage.color = new_color;
-            }
-        }
-
-        if (fadeTMPText != null)
-        {
-            fadeTMPText.color = new Color(0f, 0f, 0f, 0f);
-        }
-        else if (fadeImage != null)
-        {
-            fadeImage.color = new Color(0f, 0f, 0f, 0f);
-        }
+        float nowpoint = Mathf.Abs((nowAlfa - 255.0f * end) / 255);
+        return FedeObject(nowpoint, end, duration);
     }
+
 }
+

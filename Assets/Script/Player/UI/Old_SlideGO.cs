@@ -7,6 +7,8 @@ using Unity.VisualScripting;
 
 public class Old_SlideGO : MonoBehaviour
 {
+    //Žg‚Á‚Ä‚È‚¢
+
     [SerializeField] Vector2 LocalHighlightPosi;
     [SerializeField] float effectDuration = 0.05f;
 
