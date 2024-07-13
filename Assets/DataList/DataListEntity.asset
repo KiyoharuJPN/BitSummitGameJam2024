@@ -76,3 +76,10 @@ MonoBehaviour:
     attackPower: 0
     enemySpeed: 0
     type: 0
+  - id: 10
+    charName: PainterSummonedEnemy
+    enemyHP: 1
+    chargePower: 10
+    attackPower: 50
+    enemySpeed: 100
+    type: 1

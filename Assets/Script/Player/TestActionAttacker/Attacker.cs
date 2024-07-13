@@ -46,7 +46,7 @@ public class Attacker : MonoBehaviour
     // Ä¶Š®—¹‚Ì”»’f
     protected void AnimationPlayed(int animnum)
     {
-        Debug.Log(animnum);
+        //Debug.Log(animnum);
         animationPlayed = animnum;
         animator.SetInteger("AnimationPlayed", animationPlayed);
     }

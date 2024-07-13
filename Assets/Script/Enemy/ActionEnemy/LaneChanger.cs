@@ -38,9 +38,7 @@ public class LaneChanger : EnemyBase
             {
                 timer = 1.5f;     // タイマーリセット
                 // レーン変更
-                CalcLane();
-                transform.position = new Vector2(transform.position.x, GameManagerScript.instance.GetNowHeightByLaneNum(laneID, transform.position));
-                SetSpeed();
+                WarpEnemy(CalcLane());
             }
             else
             {
@@ -51,13 +49,13 @@ public class LaneChanger : EnemyBase
     }
 
     // 内部関数
-    void CalcLane()
+    int CalcLane()
     {
-        var lanePreb = laneID;
-        laneID = Random.Range(0, 3);
-        if (laneID == lanePreb)
+        var newLane = Random.Range(0, 3);
+        if (laneID == newLane)
         {
-            CalcLane();
+            newLane = CalcLane();
         }
+        return newLane;
     }
 }
