@@ -548,12 +548,15 @@ public class PlayerActionMovement : MonoBehaviour
         }
 
         if (canGuard && ShieldCheck()) return;
-        Debug.Log(dmg);
+        
         AdjustBaseHP(-dmg);
         CalcCameraSize();
-        // HPが0以下の時
-        SoundManager.instance.PlaySE("HPZero");
-        SceneManager.LoadScene("GameOverStage");
+        // HPが0以下の時死亡判定で再開する
+        if (GetBaseHP() <= 0)
+        {
+            SoundManager.instance.PlaySE("HPZero");
+            SceneManager.LoadScene("GameOverStage");
+        }
     }
     // レーンのパワーを低下させる
     public void AdjustLanePowerByScript(int id, float power)
