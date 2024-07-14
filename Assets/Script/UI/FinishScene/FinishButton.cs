@@ -29,7 +29,7 @@ public class FinishButton : MonoBehaviour
     {
         SoundManager.instance.PlaySE("SelectEnter");
         // 次のステージに行くActionシーンに移動
-        if (GameManagerScript.instance.GetClearStage() != 0 && GameManagerScript.instance.GetClearStage() / ClearStageCount == 0)
+        if (GameManagerScript.instance.GetClearStage() != 0 && GameManagerScript.instance.GetClearStage() % GameManagerScript.instance.ClearStageCount == 0)
         {
             //SceneManager.LoadScene("TitleScene");
             SceneManager.LoadScene(TitleSceneName);

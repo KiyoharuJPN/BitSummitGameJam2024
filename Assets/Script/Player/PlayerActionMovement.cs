@@ -441,7 +441,15 @@ public class PlayerActionMovement : MonoBehaviour
         // AdjustBaseHP(500);
         GameManagerScript.instance.SetPlayerData(playerData);
         GameManagerScript.instance.AdjustClearStage(1);
-        SceneManager.LoadScene("TestFinishStage");
+        if (GameManagerScript.instance.ClearStageCount + 1 == GameManagerScript.instance.GetLevelStageBoss())
+        {
+            SceneManager.LoadScene("ClearStage");
+        }
+        else
+        {
+            SceneManager.LoadScene("NakanishiTestStage");
+        }
+            
     }
     //bool CheckStageClear()
     //{
@@ -568,7 +576,7 @@ public class PlayerActionMovement : MonoBehaviour
             if (GetBaseHP() <= 0)
             {
                 SoundManager.instance.PlaySE("HPZero");
-                SceneManager.LoadScene("KiyoharuTestStage");
+                SceneManager.LoadScene("GameOverStage");
             }
                 
         }
