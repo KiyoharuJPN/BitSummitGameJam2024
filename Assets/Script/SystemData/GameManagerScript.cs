@@ -87,7 +87,7 @@ public class GameManagerScript : MonoBehaviour
 
     // プレイヤーのデータを常にGameManagerが持つように
     [SerializeField]
-    public PlayerData playerData = new PlayerData() { baseHP = 1000, attackPower = 1000,
+    public PlayerData playerData = new PlayerData() { baseHP = 2000, attackPower = 1000,
         upLanePower = 1, rightLanePower = 1, downLanePower = 1, bgMoveSpeed = 0.001f,
         skillCoolDownKill = 5, totalKill = 0, shieldCount = 3, targetCamSize = 100,
         ChargeRatio = 1, attackRatio = 1 };
@@ -321,7 +321,7 @@ public class GameManagerScript : MonoBehaviour
     {
         playerData = new PlayerData()
         {
-            baseHP = 1000,
+            baseHP = 2000,
             attackPower = 1000,
             upLanePower = 1,
             rightLanePower = 1,
