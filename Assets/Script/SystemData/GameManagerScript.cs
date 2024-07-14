@@ -331,7 +331,8 @@ public class GameManagerScript : MonoBehaviour
             totalKill = 0,
             shieldCount = 3,
             targetCamSize = 100,
-            ChargeRatio = 1
+            ChargeRatio = 1,
+            attackRatio = 1
         };
         gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f, ClearStage = 0 };
         stageBoss.Clear();
