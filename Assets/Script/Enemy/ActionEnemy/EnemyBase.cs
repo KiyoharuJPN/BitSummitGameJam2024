@@ -81,6 +81,7 @@ public class EnemyBase : MonoBehaviour
 
             // 特殊敵な場合は特殊の処理をする(プレイヤー本体に当たった時)
             HitPlayer(collision);
+            SoundManager.instance.PlaySE("EnemyAttack");
         }
     }
 
@@ -135,6 +136,7 @@ public class EnemyBase : MonoBehaviour
         if (enemyHP <= 0)
         {
             Dead();
+            SoundManager.instance.PlaySE("EnemyDown");
             return true;
         }
         else

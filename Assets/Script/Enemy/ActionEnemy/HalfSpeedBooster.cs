@@ -37,6 +37,7 @@ public class HalfSpeedBooster : EnemyBase
     protected void SpeedBoost()
     {
         enemySpeed *= 2;
+        SoundManager.instance.PlaySE("Enemyboost");
         SetSpeed();
     }
 }

@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2120024065834130397
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2120024065834130387}
+  - component: {fileID: 2120024065834130396}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2120024065834130387
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120024065834130397}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -24.895824, y: 17.821617, z: -4.1710777}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2120024065834130396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120024065834130397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcc27415046968b4aaad379175121a89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dataListEntity: {fileID: 11400000, guid: 26a5c0ce5cf05ef4b9877da831fa9c96, type: 2}
+  playerData:
+    baseHP: 1000
+    attackPower: 100
+    upLanePower: 1
+    rightLanePower: 1
+    downLanePower: 1
+    bgMoveSpeed: 0.0001
+    skillCoolDownKill: 5
+    totalKill: 0
+    shieldCount: 3
+    targetCamSize: 100
+    ChargeRatio: 1
+  actionOption:
+    UplaneEnemyTargetPoint: {x: -64, y: 45, z: 0}
+    RightlaneEnemyTargetPoint: {x: -64, y: 0, z: 0}
+    DownlaneEnemyTargetPoint: {x: -64, y: -45, z: 0}
+  enemyStartPosHeight:
+    UpLanePos: 27
+    RightLanePos: 0
+    DownLanePos: -27
+  skillCoolDownKillCount: 0
+  StagesBoss:
+  - {fileID: 6674616565990888620, guid: 0b6ca819b63268c49a41a8ed004cf107, type: 3}
+  - {fileID: 2539373115221478111, guid: f00616a141cfecf4a8699ec7af1b2b39, type: 3}
+  - {fileID: 2733851282928822845, guid: 519c65490bca90d40bbbce43a32a2536, type: 3}
+  - {fileID: 2156728818565013009, guid: fb098fec3c598024886f1a10db228498, type: 3}
+  - {fileID: 3246950019498679448, guid: f20947c9ae87f3b44b588c4b7aaafc7e, type: 3}
+  - {fileID: 5454117554596790139, guid: ef3fe24c73c0eea4c9cc8bf05370570e, type: 3}
+  - {fileID: 8638685083644242683, guid: b985a7a981f239b498d9fa5a2f0cf93d, type: 3}
+  - {fileID: 1142810929322525231, guid: 74fe3495a2a42d948892d04f072d074d, type: 3}
+  - {fileID: 9032046129962446699, guid: 7614b30b77384c542937bfa82d0ce537, type: 3}
+  - {fileID: 6340516995837615593, guid: b1d0c9387aaf345449b83e1a35a6e2d1, type: 3}
+  - {fileID: 7806419800790569428, guid: ecdad9927133aae49a026a5f285b7011, type: 3}

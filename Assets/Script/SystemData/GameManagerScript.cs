@@ -91,14 +91,14 @@ public class GameManagerScript : MonoBehaviour
         skillCoolDownKill = 5, totalKill = 0, shieldCount = 3, targetCamSize = 100,
         ChargeRatio = 1 };
     // GameManagerControl用
-    GameControl gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f };
+    GameControl gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f, ClearStage = 0 };
 
     public ActionOption actionOption = new ActionOption() { };
 
     public EnemyStartPosHeight enemyStartPosHeight = new EnemyStartPosHeight() {UpLanePos = 45, RightLanePos = 0, DownLanePos = -45 };
 
-    // 調整用コード
-    public int skillCoolDownKillCount;
+    //// 調整用コード
+    //public int skillCoolDownKillCount;
 
 
     // ステージごと設定する敵
@@ -310,6 +310,28 @@ public class GameManagerScript : MonoBehaviour
     public void SummonBoss()
     {
         Instantiate(StagesBoss[gameControl.ClearStage]);
+    }
+
+    // 全部の情報をクリアする
+    public void CleanUpStage()
+    {
+        playerData = new PlayerData()
+        {
+            baseHP = 1000,
+            attackPower = 1000,
+            upLanePower = 1,
+            rightLanePower = 1,
+            downLanePower = 1,
+            bgMoveSpeed = 0.001f,
+            skillCoolDownKill = 5,
+            totalKill = 0,
+            shieldCount = 3,
+            targetCamSize = 100,
+            ChargeRatio = 1
+        };
+        gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f, ClearStage = 0 };
+        stageBoss.Clear();
+        enemyObjs.Clear();
     }
 
     //public int KillAllEnemy()
