@@ -49,6 +49,8 @@ public class StartScene : MonoBehaviour
         optionSlideSc = optionObject.GetComponent<SlideUIObject>();
         optionDefault = optionRect.anchoredPosition;
 
+        // ‰¹‚ð—¬‚·
+        SoundManager.instance.PlayBGM("TitleBGM");
 
         startEffect = new List<Func<Task>>()
         {

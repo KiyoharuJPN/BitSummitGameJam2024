@@ -57,6 +57,7 @@ MonoBehaviour:
     shieldCount: 3
     targetCamSize: 100
     ChargeRatio: 1
+    attackRatio: 1
   actionOption:
     UplaneEnemyTargetPoint: {x: -64, y: 45, z: 0}
     RightlaneEnemyTargetPoint: {x: -64, y: 0, z: 0}
@@ -65,7 +66,6 @@ MonoBehaviour:
     UpLanePos: 27
     RightLanePos: 0
     DownLanePos: -27
-  skillCoolDownKillCount: 0
   StagesBoss:
   - {fileID: 6674616565990888620, guid: 0b6ca819b63268c49a41a8ed004cf107, type: 3}
   - {fileID: 2539373115221478111, guid: f00616a141cfecf4a8699ec7af1b2b39, type: 3}
@@ -78,3 +78,4 @@ MonoBehaviour:
   - {fileID: 9032046129962446699, guid: 7614b30b77384c542937bfa82d0ce537, type: 3}
   - {fileID: 6340516995837615593, guid: b1d0c9387aaf345449b83e1a35a6e2d1, type: 3}
   - {fileID: 7806419800790569428, guid: ecdad9927133aae49a026a5f285b7011, type: 3}
+  ClearStageCount: 5

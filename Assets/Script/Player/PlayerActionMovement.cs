@@ -154,7 +154,7 @@ public class PlayerActionMovement : MonoBehaviour
             if (GetChargePower() > 0 && GetChargePower() < 130/* && GameManagerScript.instance.SetEnemyObjects() > 0*/)// チャージチェック
             {
                 // ボスに対する攻撃
-                GameManagerScript.instance.AttackBoss((int)Mathf.Round(playerData.attackPower * CalcChargePower()), ActionStageClear);
+                GameManagerScript.instance.AttackBoss((int)Mathf.Round(playerData.attackPower * CalcChargePower() * playerData.attackRatio), ActionStageClear);
                 SoundManager.instance.PlaySE("PlayerSkill");
                 // パワーの計算をするのに攻撃してからゼロクリアする必要がある
                 ModifyChargePower(0);                                                   // チャージリセット

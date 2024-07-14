@@ -29,7 +29,8 @@ public class SoundManager : MonoBehaviour
         if(instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject.GetComponentInParent<Transform>().gameObject);
         }
         else
         {
