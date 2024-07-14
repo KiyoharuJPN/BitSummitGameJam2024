@@ -54,6 +54,7 @@ public class SkillManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this);
+
     }
 
 
