@@ -69,6 +69,6 @@ public class Administer_TradeScene : MonoBehaviour
 
     void LoadActionScene()
     {
-        SceneManager.LoadScene("KiyoharuTestStage");
+        SceneManager.LoadScene("ActionStage");
     }
 }

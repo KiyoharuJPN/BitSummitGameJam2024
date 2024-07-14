@@ -68,7 +68,7 @@ public class StartScene : MonoBehaviour
 
     void DecadeStart()
     {
-        SceneManager.LoadScene("KiyoharuTestStage");
+        SceneManager.LoadScene("ActionStage");
     }
 
     void DecadeOption()
