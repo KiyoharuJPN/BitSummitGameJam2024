@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestFinishStage.unity
     guid: 68a3210c3b489fb4cad7dd49ed023b88
+  - enabled: 1
+    path: Assets/Scenes/StartScene.unity
+    guid: d4c985e5012f4b142b0839f2570bb0c8
+  - enabled: 1
+    path: Assets/Scenes/NakanishiTestStage.unity
+    guid: 994d6ad624f46c448933cc9635c9632c
   m_configObjects: {}
