@@ -28,6 +28,7 @@ public class Painter : EnemyBossBase
         base.Awake();
         SoundManager.instance.PlayBGM("BOSSBGM");
 
+
         // ƒXƒLƒ‹ŠÖ˜A
         InitializeSkill();
 

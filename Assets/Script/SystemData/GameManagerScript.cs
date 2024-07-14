@@ -113,6 +113,8 @@ public class GameManagerScript : MonoBehaviour
     // 敵ボス記録用
     List<EnemyBossBase> stageBoss;
 
+    public int ClearStageCount = 5;
+
 
     // 実行用関数
     private void Awake()
@@ -130,7 +132,8 @@ public class GameManagerScript : MonoBehaviour
 
         // ステージボスを一々検索するのが面倒いので予めステージボスに保存しておく
         stageBoss = new List<EnemyBossBase>();
-    }
+        ClearStageCount = StagesBoss.Length - 1;
+}
 
     // Start is called before the first frame update
     void Start()
@@ -332,6 +335,10 @@ public class GameManagerScript : MonoBehaviour
         gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f, ClearStage = 0 };
         stageBoss.Clear();
         enemyObjs.Clear();
+    }
+    public int GetLevelStageBoss()
+    {
+        return StagesBoss.Length;
     }
 
     //public int KillAllEnemy()
