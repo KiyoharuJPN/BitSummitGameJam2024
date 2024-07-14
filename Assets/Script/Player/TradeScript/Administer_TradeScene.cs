@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class Administer_TradeScene : MonoBehaviour
 {
@@ -51,6 +52,8 @@ public class Administer_TradeScene : MonoBehaviour
         //SceneChange用のEffect
         //ResetLaneSkill();
         Debug.Log("TradeScene終了");
+
+        Invoke("LoadActionScene", 0.05f);
     }
 
     void CallBackCanInput() //Effect等のコールバックで操作可能にする
@@ -62,5 +65,10 @@ public class Administer_TradeScene : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         unityAction();
+    }
+
+    void LoadActionScene()
+    {
+        SceneManager.LoadScene("KiyoharuTestStage");
     }
 }

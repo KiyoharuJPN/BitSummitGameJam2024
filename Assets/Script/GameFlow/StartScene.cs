@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 public class StartScene : MonoBehaviour
 {
     enum Select
@@ -67,7 +68,7 @@ public class StartScene : MonoBehaviour
 
     void DecadeStart()
     {
-
+        SceneManager.LoadScene("KiyoharuTestStage");
     }
 
     void DecadeOption()
