@@ -87,10 +87,11 @@ public class GameManagerScript : MonoBehaviour
 
     // プレイヤーのデータを常にGameManagerが持つように
     [SerializeField]
-    public PlayerData playerData = new PlayerData() { baseHP = 2500, attackPower = 1000,
+    public PlayerData defaultPlayerData = new PlayerData() { baseHP = 1000, attackPower = 1000,
         upLanePower = 1, rightLanePower = 1, downLanePower = 1, bgMoveSpeed = 0.001f,
         skillCoolDownKill = 5, totalKill = 0, shieldCount = 3, targetCamSize = 100,
         ChargeRatio = 1, attackRatio = 1 };
+    public PlayerData playerData;
     // GameManagerControl用
     GameControl gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f, ClearStage = 0 };
 
@@ -131,6 +132,8 @@ public class GameManagerScript : MonoBehaviour
             Destroy(gameObject);
         }
 
+        //playerData = default(PlayerData);
+        playerData = defaultPlayerData;
         // ステージボスを一々検索するのが面倒いので予めステージボスに保存しておく
         stageBoss = new List<EnemyBossBase>();
         ClearStageCount = StagesBoss.Length;
@@ -319,21 +322,7 @@ public class GameManagerScript : MonoBehaviour
     // 全部の情報をクリアする
     public void CleanUpStage()
     {
-        playerData = new PlayerData()
-        {
-            baseHP = 2500,
-            attackPower = 1000,
-            upLanePower = 1,
-            rightLanePower = 1,
-            downLanePower = 1,
-            bgMoveSpeed = 0.001f,
-            skillCoolDownKill = 5,
-            totalKill = 0,
-            shieldCount = 3,
-            targetCamSize = 100,
-            ChargeRatio = 1,
-            attackRatio = 1
-        };
+        playerData = defaultPlayerData;
         gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f, ClearStage = 0 };
         stageBoss.Clear();
         enemyObjs.Clear();
