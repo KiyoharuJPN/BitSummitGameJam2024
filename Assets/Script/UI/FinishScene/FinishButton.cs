@@ -28,10 +28,13 @@ public class FinishButton : MonoBehaviour
     public void ContinueGame()
     {
         SoundManager.instance.PlaySE("SelectEnter");
+        Debug.Log(GameManagerScript.instance.GetClearStage());
+        Debug.Log(GameManagerScript.instance.ClearStageCount);
         // 次のステージに行くActionシーンに移動
         if (GameManagerScript.instance.GetClearStage() != 0 && GameManagerScript.instance.GetClearStage() % GameManagerScript.instance.ClearStageCount == 0)
         {
             //SceneManager.LoadScene("TitleScene");
+            GameManagerScript.instance.CleanUpStage();
             SceneManager.LoadScene(TitleSceneName);
         }
         else
