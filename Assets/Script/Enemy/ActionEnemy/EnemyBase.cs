@@ -78,7 +78,10 @@ public class EnemyBase : MonoBehaviour
             isAttack = true;
             eAnimator.SetBool("isAttack", isAttack);
             enemyRb.velocity = Vector3.zero;
-
+            // プレイヤーの攻撃を受けないようにする
+            var player = collision.GetComponent<PlayerActionMovement>();
+            player.RemoveCanAttackObj(laneID, gameObject);
+            player.RemoveCantAttackObj(laneID, gameObject);
             // 特殊敵な場合は特殊の処理をする(プレイヤー本体に当たった時)
             HitPlayer(collision);
             SoundManager.instance.PlaySE("EnemyAttack");

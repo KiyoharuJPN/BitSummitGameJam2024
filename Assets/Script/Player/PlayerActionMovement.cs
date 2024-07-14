@@ -437,11 +437,10 @@ public class PlayerActionMovement : MonoBehaviour
     // ステージクリアの時に自分のデータをゲームマネージャに返還する（今は使われていない）
     void ActionStageClear()
     {
-        // testのために削除しておく
-        // AdjustBaseHP(500);
+        AdjustBaseHP(500);
         GameManagerScript.instance.SetPlayerData(playerData);
         GameManagerScript.instance.AdjustClearStage(1);
-        if (GameManagerScript.instance.GetClearStage() + 1 == GameManagerScript.instance.GetLevelStageBoss())
+        if (GameManagerScript.instance.GetClearStage() == GameManagerScript.instance.GetLevelStageBoss())
         {
             SceneManager.LoadScene("ClearStage");
         }

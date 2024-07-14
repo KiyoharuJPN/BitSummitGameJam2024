@@ -133,7 +133,7 @@ public class GameManagerScript : MonoBehaviour
 
         // ステージボスを一々検索するのが面倒いので予めステージボスに保存しておく
         stageBoss = new List<EnemyBossBase>();
-        ClearStageCount = StagesBoss.Length - 1;
+        ClearStageCount = StagesBoss.Length;
 }
 
     // Start is called before the first frame update
