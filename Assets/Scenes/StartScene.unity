@@ -962,12 +962,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2120024065834130396, guid: 426446566e05f6141a675d9ceff43a6c, type: 3}
-      propertyPath: ClearStageCount
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2120024065834130396, guid: 426446566e05f6141a675d9ceff43a6c, type: 3}
       propertyPath: StagesBoss.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2120024065834130396, guid: 426446566e05f6141a675d9ceff43a6c, type: 3}
       propertyPath: StagesBoss.Array.data[1]
@@ -980,7 +976,7 @@ PrefabInstance:
     - target: {fileID: 2120024065834130396, guid: 426446566e05f6141a675d9ceff43a6c, type: 3}
       propertyPath: StagesBoss.Array.data[3]
       value: 
-      objectReference: {fileID: 7806419800790569428, guid: ecdad9927133aae49a026a5f285b7011, type: 3}
+      objectReference: {fileID: 8638685083644242683, guid: b985a7a981f239b498d9fa5a2f0cf93d, type: 3}
     - target: {fileID: 2120024065834130396, guid: 426446566e05f6141a675d9ceff43a6c, type: 3}
       propertyPath: StagesBoss.Array.data[4]
       value: 

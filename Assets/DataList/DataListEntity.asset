@@ -45,14 +45,14 @@ MonoBehaviour:
     charName: Ghost
     enemyHP: 1
     chargePower: 10
-    attackPower: 100
+    attackPower: 70
     enemySpeed: 70
     type: 1
   - id: 6
     charName: SpeedBooster
     enemyHP: 1
     chargePower: 10
-    attackPower: 130
+    attackPower: 100
     enemySpeed: 150
     type: 1
   - id: 7
