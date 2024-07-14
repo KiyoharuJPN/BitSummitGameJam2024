@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SkillManager : MonoBehaviour
 {
+    public static SkillManager instance;
+
     List<Skill> AllSkillList; //全スキルのリスト
 
     List<List<Skill>> TradeSkillList; //Tradeで出すSkillのList
@@ -21,6 +23,18 @@ public class SkillManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if(instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
+
+
         Rare1_SkillList = new List<Skill>();
         Rare2_SkillList = new List<Skill>();
         Rare3_SkillList = new List<Skill>();
@@ -53,7 +67,6 @@ public class SkillManager : MonoBehaviour
             AddSkill(Iskill.SkillData());
         }
 
-        DontDestroyOnLoad(this);
 
     }
 

@@ -441,7 +441,7 @@ public class PlayerActionMovement : MonoBehaviour
         // AdjustBaseHP(500);
         GameManagerScript.instance.SetPlayerData(playerData);
         GameManagerScript.instance.AdjustClearStage(1);
-        if (GameManagerScript.instance.ClearStageCount + 1 == GameManagerScript.instance.GetLevelStageBoss())
+        if (GameManagerScript.instance.GetClearStage() + 1 == GameManagerScript.instance.GetLevelStageBoss())
         {
             SceneManager.LoadScene("ClearStage");
         }
@@ -548,11 +548,12 @@ public class PlayerActionMovement : MonoBehaviour
         }
 
         if (canGuard && ShieldCheck()) return;
-        
+        Debug.Log(dmg);
         AdjustBaseHP(-dmg);
         CalcCameraSize();
-        // HPが0以下の時死亡判定で再開する
-        if (GetBaseHP() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
+        // HPが0以下の時
+        SoundManager.instance.PlaySE("HPZero");
+        SceneManager.LoadScene("GameOverStage");
     }
     // レーンのパワーを低下させる
     public void AdjustLanePowerByScript(int id, float power)
