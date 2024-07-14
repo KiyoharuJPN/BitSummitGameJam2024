@@ -26,6 +26,7 @@ public class Painter : EnemyBossBase
     override protected void Awake()
     {
         base.Awake();
+        SoundManager.instance.PlayBGM("BOSSBGM");
 
         // スキル関連
         InitializeSkill();
@@ -34,6 +35,12 @@ public class Painter : EnemyBossBase
         //bossPainterState = 0;
         bossPainterState = -1;
         Debug.Log(gameObject.name);
+    }
+    protected override void Start()
+    {
+        base.Start();
+
+        SoundManager.instance.PlaySE("BossAppear");
     }
     override protected void FixedUpdate()
     {
@@ -195,6 +202,7 @@ public class Painter : EnemyBossBase
         {
             Instantiate(enemySkillSummon[0]);
             enemySkill[0].canUse = false;
+            SoundManager.instance.PlaySE("BossSkill1");
             // 次の状態に移行する
             ResetBossPainterState(-1);
             return true;
@@ -221,6 +229,8 @@ public class Painter : EnemyBossBase
         warphole.transform.GetChild(0).position = new Vector2(holePos.x, GameManagerScript.instance.GetNowHeightByLaneNum(laneid2, holePos));
         // ワープターゲットのレーンを決める
         warphole.GetComponent<WarpHole>().SetLaneID(laneid2);
+        // SEを流す
+        SoundManager.instance.PlaySE("BossSkill2");
         // 次の状態に移行する
         ResetBossPainterState(-1);
         return true;
@@ -241,6 +251,7 @@ public class Painter : EnemyBossBase
         {
             Instantiate(enemySkillSummon[2]);
             enemySkill[2].canUse = false;
+            SoundManager.instance.PlaySE("BossSkill3");
             // 次の状態に移行する
             ResetBossPainterState(-1);
             return true;
@@ -306,6 +317,7 @@ public class Painter : EnemyBossBase
             Debug.Log(GameManagerScript.instance.BossCount());
             BossDead();
             eAnimator.SetInteger("PainterState", 101);
+            SoundManager.instance.PlaySE("BossDown");
             return true;
         }
         Debug.Log(gameObject.name);

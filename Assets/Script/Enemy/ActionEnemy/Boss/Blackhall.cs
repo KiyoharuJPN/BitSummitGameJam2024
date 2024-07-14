@@ -10,17 +10,12 @@ public class Blackhall : EnemyBossBase
     // êFââèo
     int blackHoleColorState = 0;
 
-    //protected override void Start()
-    //{
-    //    base.Start();
-    //    if (enemyStartPosHeight.UpLanePos == 0) enemyStartPosHeight.UpLanePos = 45;
-    //    if (enemyStartPosHeight.DownLanePos == 0) enemyStartPosHeight.DownLanePos = -45;
+    protected override void Awake()
+    {
+        base.Awake();
 
-    //    if (EnemySS.duration != 0) { EnemySS.Timer = 0/*EnemySS.duration*/; }
-    //    else { EnemySS.Timer = UnityEngine.Random.Range(EnemySS.mindur, EnemySS.maxdur); }
-    //    if (EnemySS.summonType != 0) { EnemySS.summonPosNext = UnityEngine.Random.Range(0, 2); }
-
-    //}
+        SoundManager.instance.PlayBGM("ActionBGM");
+    }
 
     protected override void FixedUpdate()
     {

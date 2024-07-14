@@ -155,7 +155,7 @@ public class PlayerActionMovement : MonoBehaviour
             {
                 // ボスに対する攻撃
                 GameManagerScript.instance.AttackBoss((int)Mathf.Round(playerData.attackPower * CalcChargePower()), ActionStageClear);
-
+                SoundManager.instance.PlaySE("PlayerSkill");
                 // パワーの計算をするのに攻撃してからゼロクリアする必要がある
                 ModifyChargePower(0);                                                   // チャージリセット
 
@@ -199,6 +199,7 @@ public class PlayerActionMovement : MonoBehaviour
                 if (getCharge != 0)
                 {
                     playerData.totalKill++;                                 // 敵を倒した
+                    SoundManager.instance.PlaySE("PlayerCharge");
                     //// レーンの攻撃力を増やす
                     //float downpower = 0.01f;
                     //AdjustLanePower(id, downpower);
@@ -564,7 +565,12 @@ public class PlayerActionMovement : MonoBehaviour
             AdjustBaseHP(-GetBaseHP());
             CalcCameraSize();
             // HPが0以下の時死亡判定で再開する
-            if (GetBaseHP() <= 0) SceneManager.LoadScene("KiyoharuTestStage");
+            if (GetBaseHP() <= 0)
+            {
+                SoundManager.instance.PlaySE("HPZero");
+                SceneManager.LoadScene("KiyoharuTestStage");
+            }
+                
         }
 
     }

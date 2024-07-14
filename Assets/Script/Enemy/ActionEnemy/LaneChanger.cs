@@ -39,6 +39,7 @@ public class LaneChanger : EnemyBase
                 timer = 1.5f;     // タイマーリセット
                 // レーン変更
                 WarpEnemy(CalcLane());
+                SoundManager.instance.PlaySE("EnemyLaneOver");
             }
             else
             {
