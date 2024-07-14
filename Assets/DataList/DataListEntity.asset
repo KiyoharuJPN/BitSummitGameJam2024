@@ -1,3 +1,91 @@
+<<<<<<< HEAD
 version https://git-lfs.github.com/spec/v1
-oid sha256:73662000f0d605af2f3ebb766d283ad29d09b149db112185097620b8c6b5fd60
-size 1826
+oid sha256:4c76db8eee8d84cf24a9ab4d927e88795630be6f5dc8a0a190f6919a0dd31d9f
+size 1572
+=======
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7da5af94d01a9aa4dbb442f952819216, type: 3}
+  m_Name: DataListEntity
+  m_EditorClassIdentifier: 
+  DataList:
+  - id: 1
+    charName: Test
+    enemyHP: 1
+    chargePower: 5
+    attackPower: 100
+    enemySpeed: 200
+    type: 1
+  - id: 2
+    charName: SheepNormal
+    enemyHP: 1
+    chargePower: 10
+    attackPower: 100
+    enemySpeed: 80
+    type: 1
+  - id: 3
+    charName: Speeder
+    enemyHP: 1
+    chargePower: 10
+    attackPower: 90
+    enemySpeed: 150
+    type: 1
+  - id: 4
+    charName: LaneChanger
+    enemyHP: 1
+    chargePower: 10
+    attackPower: 120
+    enemySpeed: 80
+    type: 1
+  - id: 5
+    charName: Ghost
+    enemyHP: 1
+    chargePower: 10
+    attackPower: 100
+    enemySpeed: 70
+    type: 1
+  - id: 6
+    charName: SpeedBooster
+    enemyHP: 1
+    chargePower: 10
+    attackPower: 130
+    enemySpeed: 150
+    type: 1
+  - id: 7
+    charName: Boomer
+    enemyHP: 1
+    chargePower: 10
+    attackPower: 150
+    enemySpeed: 150
+    type: 1
+  - id: 8
+    charName: BlackHole
+    enemyHP: 200
+    chargePower: 0
+    attackPower: 0
+    enemySpeed: 0
+    type: 0
+  - id: 9
+    charName: Painter
+    enemyHP: 1000
+    chargePower: 0
+    attackPower: 0
+    enemySpeed: 0
+    type: 0
+  - id: 10
+    charName: PainterSummonedEnemy
+    enemyHP: 1
+    chargePower: 10
+    attackPower: 50
+    enemySpeed: 100
+    type: 1
+>>>>>>> c82235c808149baf31392ac16cb06408b99dcaa0
