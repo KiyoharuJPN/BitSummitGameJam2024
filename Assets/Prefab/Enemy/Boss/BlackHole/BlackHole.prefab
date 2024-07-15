@@ -153,7 +153,7 @@ MonoBehaviour:
   - {fileID: 2316036051089365859, guid: 425dcdf8ce466624e9f2f1602e459be3, type: 3}
   - {fileID: 1466642128525136790, guid: 53d82ea1b2dd88a48ae05d5b33e3f841, type: 3}
   EnemySS:
-    duration: 2
+    duration: 1.5
     mindur: 0
     maxdur: 0
     summonType: 1
