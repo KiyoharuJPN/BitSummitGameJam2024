@@ -91,7 +91,7 @@ public class GameManagerScript : MonoBehaviour
         upLanePower = 1, rightLanePower = 1, downLanePower = 1, bgMoveSpeed = 0.001f,
         skillCoolDownKill = 5, totalKill = 0, shieldCount = 3, targetCamSize = 100,
         ChargeRatio = 1, attackRatio = 1 };
-    public PlayerData playerData;
+    PlayerData playerData;
     // GameManagerControl—p
     GameControl gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f, ClearStage = 0 };
 
