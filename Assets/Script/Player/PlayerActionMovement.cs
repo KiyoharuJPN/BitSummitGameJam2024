@@ -547,7 +547,7 @@ public class PlayerActionMovement : MonoBehaviour
         }
 
         if (canGuard && ShieldCheck()) return;
-        
+        SoundManager.instance.PlaySE("PlayerGetHit");
         AdjustBaseHP(-dmg);
         CalcCameraSize();
         // HP‚ª0ˆÈ‰º‚Ì€–S”»’è‚ÅÄŠJ‚·‚é
