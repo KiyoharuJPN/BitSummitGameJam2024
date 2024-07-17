@@ -9,6 +9,11 @@ public class PowerUpSkill : MonoBehaviour, ISkill
     [SerializeField] int skillCost;
     [SerializeField] Sprite skillIcon;
 
+    [SerializeField] float ChargeRatio;
+
+    public int skillLv; //このスキルレベル
+    [SerializeField] float LvRatioConstant; //レベルによる変化比率定数
+
     public Skill SkillData() => new Skill(1, "パワーアッピ", "すえるくうき　の　しつがあがって　パワーアップ", skillCost, 1, skillIcon);
 
     ISkill.SkillType skillType = ISkill.SkillType.StatesUp;
@@ -20,7 +25,7 @@ public class PowerUpSkill : MonoBehaviour, ISkill
 
     public void RunStartActionScene()
     {
-
+        playerData.ChargeRatio = ChargeRatio + LvRatioConstant * skillLv;
     }
 
 }
