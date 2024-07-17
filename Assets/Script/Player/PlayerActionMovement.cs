@@ -549,7 +549,10 @@ public class PlayerActionMovement : MonoBehaviour
 
         if (canGuard && ShieldCheck()) return;
         SoundManager.instance.PlaySE("PlayerGetHit");
-        AdjustBaseHP(-dmg);
+
+        int difendedDmg = (int)Mathf.Round(dmg * playerData.difenceRatio); //受けるダメージの調整s
+
+        AdjustBaseHP(-difendedDmg);
         CalcCameraSize();
         // HPが0以下の時死亡判定で再開する
         if (GetBaseHP() <= 0)
@@ -558,6 +561,8 @@ public class PlayerActionMovement : MonoBehaviour
             SceneManager.LoadScene("GameOverStage");
         }
     }
+
+
     // レーンのパワーを低下させる
     public void AdjustLanePowerByScript(int id, float power)
     {

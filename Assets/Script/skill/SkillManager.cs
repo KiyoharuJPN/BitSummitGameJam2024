@@ -6,16 +6,19 @@ public class SkillManager : MonoBehaviour
 {
     public static SkillManager instance;
 
-    List<Skill> AllSkillList; //全スキルのリスト
+    List<ISkill> PlyaerHaveSkillList;
 
-    List<List<Skill>> TradeSkillList; //Tradeで出すSkillのList
-    List<Skill> Rare1_SkillList;  //SkillListは中でレアリティごとに分けるのでそれ用のList
-    List<Skill> Rare2_SkillList;  //Rareの横の数字がレアリティ
-    List<Skill> Rare3_SkillList;  //
+    List<ISkill> AllSkillList; //全スキルのリスト
+
+    List<List<ISkill>> TradeSkillList; //Tradeで出すSkillのList
+    List<ISkill> Rare1_SkillList;  //SkillListは中でレアリティごとに分けるのでそれ用のList
+    List<ISkill> Rare2_SkillList;  //Rareの横の数字がレアリティ
+    List<ISkill> Rare3_SkillList;  //
 
     int[] RaretyArray;
 
-    public Skill NullSkill; //エラー用のスキル
+    [SerializeField] NullSkill nullskillsc;
+    public ISkill NullSkill; //エラー用のスキル
     [SerializeField] Sprite nullSkillSprite; //それ用のアイコン
 
     ISkill[] getISKill;
@@ -35,19 +38,21 @@ public class SkillManager : MonoBehaviour
         
 
 
-        Rare1_SkillList = new List<Skill>();
-        Rare2_SkillList = new List<Skill>();
-        Rare3_SkillList = new List<Skill>();
+        Rare1_SkillList = new List<ISkill>();
+        Rare2_SkillList = new List<ISkill>();
+        Rare3_SkillList = new List<ISkill>();
+
+        PlyaerHaveSkillList = new List<ISkill>();
 
 
-        TradeSkillList = new List<List<Skill>>
+        TradeSkillList = new List<List<ISkill>>
         {
             Rare1_SkillList,
             Rare2_SkillList,
             Rare3_SkillList,
         };
 
-        AllSkillList = new List<Skill>();
+        AllSkillList = new List<ISkill>();
 
         RaretyArray = new int[]  //確率は個数で決める　数字はレアリティ
         {
@@ -56,7 +61,7 @@ public class SkillManager : MonoBehaviour
             //3,3
         };
 
-        NullSkill = new Skill(0, "Null Skill", "スキルがありません", 0, 0, nullSkillSprite);
+        NullSkill = nullskillsc;
 
 
         getISKill = GetComponents<ISkill>();
@@ -64,19 +69,19 @@ public class SkillManager : MonoBehaviour
         foreach (ISkill Iskill in getISKill)
         {
             Debug.Log(Iskill.SkillData().skillName + "Add");
-            AddSkill(Iskill.SkillData());
+            AddSkill(Iskill);
         }
 
 
     }
 
 
-    public Skill RandomSelectSkill() //ランダムなスキルをセット
+    public ISkill RandomSelectSkill() //ランダムなスキルをセット
     {
 
         int randomIntForRare = Random.Range(0, RaretyArray.Length - 1); //レア度をまず決める
         int Rarity = RaretyArray[randomIntForRare]; //レア度のリストから抽選、レア度確定
-        List<Skill> SelectList = TradeSkillList[Rarity - 1]; //リスト確定
+        List<ISkill> SelectList = TradeSkillList[Rarity - 1]; //リスト確定
         if (SelectList == null)
         {
             Debug.Log(Rarity + "は存在しないレアリティです");
@@ -89,7 +94,7 @@ public class SkillManager : MonoBehaviour
         }
 
         int randomIntForSkill = Random.Range(0, SelectList.Count - 1); //スキル抽選
-        Skill DecadeSkill = SelectList[randomIntForSkill]; //スキル確定
+        ISkill DecadeSkill = SelectList[randomIntForSkill]; //スキル確定
 
         SelectList.Remove(DecadeSkill); //TradeListから取り除く
 
@@ -97,34 +102,39 @@ public class SkillManager : MonoBehaviour
     }
 
 
-    void AddSkill(Skill skill) //他からスキルを受け取り、分類してSkillListに入れる
+    void AddSkill(ISkill skill) //他からスキルを受け取り、分類してSkillListに入れる
     {
         AddTradeSkillList(skill);
         AddAllSkillList(skill);
     }
 
-    public void ReAddSkill(Skill skill)
+    public void ReAddSkill(ISkill skill)
     {
         AddTradeSkillList(skill);
     }
 
-    void AddTradeSkillList(Skill skill)
+    void AddTradeSkillList(ISkill skill)
     {
-        int Rarity = skill.rarity; //引数のレアリティ
+        int Rarity = skill.SkillData().rarity; //引数のレアリティ
         //Debug.Log(string.Join(",",TradeSkillList.Select(obj => obj.ToString())));
 
-        List<Skill> AddedList = TradeSkillList[Rarity - 1];  //レアリティで分類
+        List<ISkill> AddedList = TradeSkillList[Rarity - 1];  //レアリティで分類
         if (!AddedList.Contains(skill)) //重複阻止
         {
             AddedList.Add(skill);　//追加
         }
     }
 
-    void AddAllSkillList(Skill skill)
+    void AddAllSkillList(ISkill skill)
     {
         if (!AllSkillList.Contains(skill)) //重複阻止
         {
             AllSkillList.Add(skill);
         }
+    }
+
+    public void AddDecadedSkill(ISkill Iskill) //選択されたスキル
+    {
+
     }
 }
