@@ -71,7 +71,7 @@ MonoBehaviour:
     type: 0
   - id: 9
     charName: Painter
-    enemyHP: 1000
+    enemyHP: 700
     chargePower: 0
     attackPower: 0
     enemySpeed: 0
