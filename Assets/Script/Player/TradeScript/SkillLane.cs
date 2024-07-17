@@ -15,8 +15,9 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
 
     public bool canSelect;
 
-    Skill TradeSkill; //選択肢用スキルの保持用
-    Skill NullSkill; //Error用,空用のスキル
+
+    ISkill ITradeSkill;
+    ISkill NullSkill; //Error用,空用のスキル
 
     [SerializeField] SkillManager skillManager;
 
@@ -74,8 +75,8 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     {
         playerData = GameManagerScript.instance.GetPlayerData();
 
-        NullSkill = skillManager.NullSkill;
-        TradeSkill = NullSkill;
+        NullSkill = skillManager.NullSkill; //NullSkillを取得
+        ITradeSkill = NullSkill; //nullSkillをＳｅｔして初期化
 
         iconSpriteRenderer = iconGameObject.GetComponent<SpriteRenderer>();
         iconSlideSc = iconGameObject.GetComponent<SlideGameobject>();
@@ -104,59 +105,65 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
 
         Debug.Log("speedDefaultPosi" + speedDefaultPosi);
 
-        SetTaskLists();
+        SetTaskLists(); //Listの内容を入れる
 
-        SetNutral();
+        SetNutral(); //ＵＩなどの状態を初期化
 
         RunHighlights = new RunTaskList();
         runTaskOther = new RunTaskList();
     }
 
+    Skill TradeSkill()
+    {
+        if(ITradeSkill == null) {  return NullSkill.SkillData(); }
+        return ITradeSkill.SkillData();
+    }
+
     public void SetSkill()
     {
-        TradeSkill = skillManager.RandomSelectSkill();
-        if (TradeSkill == null) { TradeSkill = NullSkill; }
-        canSelect = playerData.baseHP > TradeSkill.cost;
-        if(TradeSkill == NullSkill) { canSelect = false; }
+        ITradeSkill = skillManager.RandomSelectSkill(); //ランダムでＳｅｌｅｃｔＬｉｓｔからSkillを所得
+        if (ITradeSkill == null) { ITradeSkill = NullSkill; } //所得できなかったら代わりにNullSkill
+        canSelect = playerData.baseHP > TradeSkill().cost;　//所持スピードとコストを比較して、選択できるか
+        if(ITradeSkill == NullSkill) { canSelect = false; } //nullskillの場合選択できない
         SetEffect();
-        if (!canSelect) { cantSelectEffect(); }
+        if (!canSelect) { cantSelectEffect(); } //視覚的に選択できない状態を作る
     }
 
     public void ReSetSkill()
     {
-        TradeSkill = NullSkill;
+        ITradeSkill = NullSkill;
         ReSetEffect();
     }
 
     public void SelectedAction() //選択された時のAction
     {
         HighlightEffect();
-        Debug.Log(TradeSkill.skillName + "を選択");
+        Debug.Log(TradeSkill().skillName + "を選択");
     }
 
     public void UnSelectedAction()  //選択が外された時のAction
     {
         UnHighlightEffect();
-        Debug.Log(TradeSkill.skillName + "を選択解除");
+        Debug.Log(TradeSkill().skillName + "を選択解除");
     }
 
     public void DecadedAction()
     {
-        Debug.Log(TradeSkill.skillName + "が選ばれました");
-        playerData.baseHP -= TradeSkill.cost;
-        Debug.Log(TradeSkill.cost + "がsppedから引かれます");
+        Debug.Log(TradeSkill().skillName + "が選ばれました");
+        playerData.baseHP -= TradeSkill().cost;
+        Debug.Log(TradeSkill().cost + "がsppedから引かれます");
         DecadeEffect();
     }
 
     public void UnDecadedAction() //選ばれなかったとき
     {
-        if (TradeSkill != NullSkill) { skillManager.ReAddSkill(TradeSkill); }
+        if (ITradeSkill != NullSkill) { skillManager.ReAddSkill(ITradeSkill); }
         UnDecadeEffect();
     }
 
     void SetEffect()
     {
-        SetSkillUI(TradeSkill);
+        SetSkillUI(TradeSkill());
         runTaskOther.EffectAnim(SetEffects, UnSetEffects);
     }
 
@@ -197,7 +204,7 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
         speedTMP.SetText(skill.cost.ToString());
     }
 
-    void SetNutral()
+    void SetNutral() //ＵＩなどの状態を初期化
     {
         iconSpriteRenderer.color = cleanness;
         contextTMP.color = cleanness;
@@ -210,9 +217,9 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
         nameRect.anchoredPosition = nameDefaultPosi + contextsHighlightDistance;
         speedRect.anchoredPosition = speedDefaultPosi + speedUnsetDistance;
 
-        TradeSkill = NullSkill;
+        ITradeSkill = NullSkill;
 
-        SetSkillUI(NullSkill);
+        SetSkillUI(NullSkill.SkillData());
     }
 
     void cantSelectEffect()

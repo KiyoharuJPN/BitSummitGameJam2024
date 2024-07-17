@@ -8,7 +8,7 @@ public interface ISkill
 
     public enum SkillType
     {
-        StatesUp,ChargeUp,ChargeChange
+        StatesUp,ChargeUp,ChargeChange,NullSkill
     }
 
     public void RunStartActionScene();
