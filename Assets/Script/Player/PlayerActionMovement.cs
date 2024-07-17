@@ -22,6 +22,7 @@ public class PlayerActionMovement : MonoBehaviour
     // テスト用のアタッカー関連
     List<GameObject>[] canAttackobj, cantAttackobj;
     public Attacker[] attacker;
+    BoxCollider2D[] lanecol;
 
     // テストスキル用
     float resetIsSkillTimer;
@@ -96,6 +97,14 @@ public class PlayerActionMovement : MonoBehaviour
             canAttackobj[i] = new List<GameObject>();
             cantAttackobj[i] = new List<GameObject>();
         }
+
+        lanecol = new BoxCollider2D[3];
+
+        for(int i = 0; i < lanecol.Length; i++)
+        {
+            lanecol[i] = attacker[i].GetComponent<BoxCollider2D>();
+        }
+
 
         // スキル用タイマー
         resetIsSkillTimer = resetIsSkillTime;
@@ -639,7 +648,15 @@ public class PlayerActionMovement : MonoBehaviour
     }
 
 
-
+    public void ResizeLaneCol() //LaneのColliderのリサイズをします　Skillの実行の後に呼び出します
+    {
+        for (int i = 0; i < lanecol.Length; i++)
+        {
+            Vector3 lanesize = lanecol[i].size;
+            lanesize.x = lanesize.x * playerData.colliderResizeRatio;
+            lanecol[i].size = lanesize;
+        }
+    }
 
 
 
