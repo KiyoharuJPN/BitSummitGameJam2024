@@ -358,6 +358,7 @@ public class PlayerActionMovement : MonoBehaviour
         {
             var rollSpeed = GetBaseHP() * playerData.bgMoveSpeed;
             if (rollSpeed > 10) rollSpeed = 10;
+            if (rollSpeed > 1) rollSpeed = 1;
             if (rollSpeed < 0.1) rollSpeed = 0.1f;
             bgimg.uvRect = new Rect(new Vector2(bgimg.uvRect.x + rollSpeed * Time.deltaTime, bgimg.uvRect.y), new Vector2(bgimg.uvRect.width, bgimg.uvRect.height));
         }
