@@ -43,7 +43,7 @@ public class Old_SkillManage : MonoBehaviour
             3,3
         };
 
-        NullSkill = new Skill(0, "Null Skill", "スキルがありません", 0, 0, nullSkillSprite);
+        //NullSkill = new Skill(0, "Null Skill", "スキルがありません", 0, 0, nullSkillSprite);
     }
 
 

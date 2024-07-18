@@ -135,6 +135,32 @@ public class SkillManager : MonoBehaviour
 
     public void AddDecadedSkill(ISkill Iskill) //選択されたスキル
     {
+        switch(Iskill.SkillData().type)
+        {
+            case Skill.SkillType.NullSkill:
+                Debug.Log("NullSkillが選択されました");
+                return;
+            case Skill.SkillType.StatesUp:
 
+                //LvUpSkillをSelectに入れる
+
+                break;
+            case Skill.SkillType.ChargeChange:
+
+                //他のChargeChageがあれば抜く
+                //LvUoSkillをSelectに入れる
+
+                break;
+            case Skill.SkillType.ChargeUp:
+
+                //他のChargeUpがあれば抜く
+                //制限回数をセット
+
+                break;
+            case Skill.SkillType.LvUpSkill:
+
+                //決まっているスキルのレベルを上げる
+                break;
+        }
     }
 }

@@ -6,10 +6,5 @@ public interface ISkill
 {
     public Skill SkillData();
 
-    public enum SkillType
-    {
-        StatesUp,ChargeUp,ChargeChange,NullSkill
-    }
-
     public void RunStartActionScene();
 }

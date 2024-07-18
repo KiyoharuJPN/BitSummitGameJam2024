@@ -19,10 +19,15 @@ public class Skill
 
     public Sprite Icon;   //ÉAÉCÉRÉì
 
+    public enum SkillType
+    {
+        StatesUp, ChargeUp, ChargeChange, LvUpSkill, NullSkill
+    }
+
+    public SkillType type;
 
 
-
-    public Skill(int id, string skillName, string skillexlantion, int cost, int rarity, Sprite sprite)
+    public Skill(int id, string skillName, string skillexlantion, int cost, int rarity, Sprite sprite, SkillType skillType)
     {
         this.id = id;
 
@@ -31,5 +36,6 @@ public class Skill
         this.cost = cost;
         this.rarity = rarity;
         this.Icon = sprite;  
+        this.type = skillType;
     }
 }

@@ -22,6 +22,7 @@ public class PlayerActionMovement : MonoBehaviour
     // テスト用のアタッカー関連
     List<GameObject>[] canAttackobj, cantAttackobj;
     public Attacker[] attacker;
+    BoxCollider2D[] lanecol;
 
     // テストスキル用
     float resetIsSkillTimer;
@@ -51,6 +52,8 @@ public class PlayerActionMovement : MonoBehaviour
     // UI関連
     SpeedGaugeUI HPGauge;
     float MaxHP = 2000; 
+
+    public IChargeUp chargeUp; //チャージスキルに追加効果を与える用のインターフェイス
 
 
 
@@ -96,6 +99,14 @@ public class PlayerActionMovement : MonoBehaviour
             canAttackobj[i] = new List<GameObject>();
             cantAttackobj[i] = new List<GameObject>();
         }
+
+        lanecol = new BoxCollider2D[3];
+
+        for(int i = 0; i < lanecol.Length; i++)
+        {
+            lanecol[i] = attacker[i].GetComponent<BoxCollider2D>();
+        }
+
 
         // スキル用タイマー
         resetIsSkillTimer = resetIsSkillTime;
@@ -156,6 +167,9 @@ public class PlayerActionMovement : MonoBehaviour
                 // ボスに対する攻撃
                 GameManagerScript.instance.AttackBoss((int)Mathf.Round(playerData.attackPower * CalcChargePower() * playerData.attackRatio), ActionStageClear);
                 SoundManager.instance.PlaySE("PlayerSkill");
+
+                DoLimitSkill(); //回数制限系のスキル実行
+
                 // パワーの計算をするのに攻撃してからゼロクリアする必要がある
                 ModifyChargePower(0);                                                   // チャージリセット
 
@@ -640,9 +654,23 @@ public class PlayerActionMovement : MonoBehaviour
     }
 
 
+    public void ResizeLaneCol() //LaneのColliderのリサイズをします　Skillの実行の後に呼び出します
+    {
+        for (int i = 0; i < lanecol.Length; i++)
+        {
+            Vector3 lanesize = lanecol[i].size;
+            lanesize.x = lanesize.x * playerData.colliderResizeRatio;
+            lanecol[i].size = lanesize;
+        }
+    }
 
+    void DoLimitSkill() //回数制限系を実行
+    {
+        if (playerData.RemainLimitSkill >= 0) return;
+        if (chargeUp == null) return;
 
-
+        chargeUp.DoChargeUp(GetChargePower());
+    }
 
 
 

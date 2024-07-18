@@ -21,6 +21,9 @@ public struct PlayerData
     public float ChargeRatio;           // チャージの比率
     public float attackRatio;           // 攻撃力の比率
     public float difenceRatio;          // 受けるダメージの比率
+    public float colliderResizeRatio;   //Laneのコライダーのリサイズ比率
+    public int RemainLimitSkill;        //回数制限系のスキルの残数
+
 }                                       // Structsに移動する予定。
 // GameManagerControl用構造
 public struct GameControl
@@ -89,10 +92,24 @@ public class GameManagerScript : MonoBehaviour
 
     // プレイヤーのデータを常にGameManagerが持つように
     [SerializeField]
-    public PlayerData defaultPlayerData = new PlayerData() { baseHP = 1000, attackPower = 1000,
-        upLanePower = 1, rightLanePower = 1, downLanePower = 1, bgMoveSpeed = 0.001f,
-        skillCoolDownKill = 5, totalKill = 0, shieldCount = 3, targetCamSize = 100,
-        ChargeRatio = 1, attackRatio = 1 , difenceRatio = 1};
+    public PlayerData defaultPlayerData = new PlayerData()
+    {
+        baseHP = 1000,
+        attackPower = 1000,
+        upLanePower = 1,
+        rightLanePower = 1,
+        downLanePower = 1,
+        bgMoveSpeed = 0.001f,
+        skillCoolDownKill = 5,
+        totalKill = 0,
+        shieldCount = 3,
+        targetCamSize = 100,
+        ChargeRatio = 1,
+        attackRatio = 1,
+        difenceRatio = 1,
+        colliderResizeRatio = 1,
+        RemainLimitSkill = 0
+    };
     PlayerData playerData;
     // GameManagerControl用
     GameControl gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f, ClearStage = 0 };
