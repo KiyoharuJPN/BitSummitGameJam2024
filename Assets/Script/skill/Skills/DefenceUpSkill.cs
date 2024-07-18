@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DefenceUpSkill : MonoBehaviour, ISkill
+public class DefenceUpSkill : MonoBehaviour, ISkill, ILvSkill
 {
     PlayerData playerData;
 
@@ -14,9 +14,8 @@ public class DefenceUpSkill : MonoBehaviour, ISkill
     public int skillLv; //このスキルレベル
     [SerializeField] float LvRatioConstant; //レベルによる変化比率定数
 
-    public Skill SkillData() => new Skill(2, "ディフェンスアッピ", "しつじつごうけん　タフになる", skillCost, 1, skillIcon);
+    public Skill SkillData() => new Skill(2, "ディフェンスアッピ", "しつじつごうけん　タフになる", skillCost, 1, skillIcon, Skill.SkillType.StatesUp);
 
-    ISkill.SkillType skillType = ISkill.SkillType.StatesUp;
 
     void Start()
     {
@@ -26,5 +25,10 @@ public class DefenceUpSkill : MonoBehaviour, ISkill
     public void RunStartActionScene()
     {
         playerData.difenceRatio = difenceRatio + LvRatioConstant * skillLv;
+    }
+
+    public void AddLv(int UpLv)
+    {
+        skillLv += UpLv;
     }
 }

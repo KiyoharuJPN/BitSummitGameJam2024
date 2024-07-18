@@ -16,9 +16,7 @@ public class SpeedChargeSkill : MonoBehaviour, ISkill
     [SerializeField] float chrgeLvRatio; //レベルによる変化比率定数
     [SerializeField] float attackLvRatio;
 
-    public Skill SkillData() => new Skill(3, "コスパコキュウ", "サッと　たまって　スッと　だす", skillCost, 1, skillIcon);
-
-    ISkill.SkillType skillType = ISkill.SkillType.ChargeChange;
+    public Skill SkillData() => new Skill(3, "コスパコキュウ", "サッと　たまって　スッと　だす", skillCost, 1, skillIcon, Skill.SkillType.ChargeChange);
 
     void Start()
     {

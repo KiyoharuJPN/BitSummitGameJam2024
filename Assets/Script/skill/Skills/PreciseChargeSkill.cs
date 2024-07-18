@@ -16,9 +16,7 @@ public class PreciseChargeSkill : MonoBehaviour, ISkill
     [SerializeField] float chrgeLvRatio; //レベルによる変化比率定数
     [SerializeField] float colResizeLvRatio;
 
-    public Skill SkillData() => new Skill(6, "ショクニン", "ためがはやくなる　が　こうげきタイミングは　げんみつに", skillCost, 1, skillIcon);
-
-    ISkill.SkillType skillType = ISkill.SkillType.ChargeChange;
+    public Skill SkillData() => new Skill(6, "ショクニン", "ためがはやくなる　が　こうげきタイミングは　げんみつに", skillCost, 1, skillIcon, Skill.SkillType.ChargeChange);
 
     void Start()
     {

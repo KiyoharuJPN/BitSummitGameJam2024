@@ -13,9 +13,7 @@ public class PowerChargeSkill : MonoBehaviour, ISkill, IChargeUp
 
     [SerializeField] int limitSkillNum; //スキルの回数制限
 
-    public Skill SkillData() => new Skill(9, "キラリティ", "きょうりょくな　いちげき　を　おみまい", skillCost, 1, skillIcon);
-
-    ISkill.SkillType skillType = ISkill.SkillType.ChargeUp;
+    public Skill SkillData() => new Skill(9, "キラリティ", "きょうりょくな　いちげき　を　おみまい", skillCost, 1, skillIcon, Skill.SkillType.ChargeUp);
 
     public void RunStartActionScene()
     {

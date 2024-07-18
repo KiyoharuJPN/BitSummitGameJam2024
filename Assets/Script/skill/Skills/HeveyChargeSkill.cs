@@ -16,9 +16,8 @@ public class HeveyChargeSkill : MonoBehaviour, ISkill
     [SerializeField] float chrgeLvRatio; //レベルによる変化比率定数
     [SerializeField] float attackLvRatio;
 
-    public Skill SkillData() => new Skill(4, "コダワリコキュウ", "いちげきが　でかく　ためはおそい", skillCost, 1, skillIcon);
+    public Skill SkillData() => new Skill(4, "コダワリコキュウ", "いちげきが　でかく　ためはおそい", skillCost, 1, skillIcon, Skill.SkillType.ChargeChange);
 
-    ISkill.SkillType skillType = ISkill.SkillType.ChargeChange;
 
     void Start()
     {
