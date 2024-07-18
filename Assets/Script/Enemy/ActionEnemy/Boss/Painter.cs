@@ -22,6 +22,11 @@ public class Painter : EnemyBossBase
     int bossPainterState;
 
 
+    // 一時追加
+    public bool SummonEveryTime;
+    bool SummonEverytime = true;
+    public EnemySummonStatus PainterHardSummon = new EnemySummonStatus() { rightPosition = 200, summonPosNext = -1 };
+
 
     override protected void Awake()
     {
@@ -40,7 +45,12 @@ public class Painter : EnemyBossBase
     protected override void Start()
     {
         base.Start();
-
+        if(GameManagerScript.instance.GetGameMode() == 0)
+        {
+            enemyHP = eData.enemyHP *= (2 / 3);
+            SummonEverytime = false;
+        }
+        if(!SummonEveryTime)SummonEverytime = false;
         SoundManager.instance.PlaySE("BossAppear");
     }
     override protected void FixedUpdate()
@@ -51,6 +61,11 @@ public class Painter : EnemyBossBase
         // スキルの選択と使用
         UpdateState();
 
+        // 一時追加
+        if(SummonEverytime)
+        {
+            PainterRandomSummon(enemyObject);
+        }
 
         // スキル関連
         ResetCoolDownSkill();
@@ -380,5 +395,109 @@ public class Painter : EnemyBossBase
             }
             return false;
         }
+    }
+
+
+
+    // 一時追加
+    protected void PainterRandomSummon(GameObject[] enemyObj)
+    {
+        if (PainterHardSummon.duration != 0)
+        {
+            if (PainterHardSummon.summonType == 0)
+            {
+                PainterHardSummon.Timer -= Time.deltaTime;
+                if (PainterHardSummon.Timer <= 0)
+                {
+                    switch (PainterHardSummon.summonPosNext)
+                    {
+                        default:
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
+                            PainterHardSummon.summonPosNext += 2;
+                            PainterHardSummon.Timer = SummonCalcDuration();
+                            break;
+                        case 0:
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(PainterHardSummon.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(PainterHardSummon.summonPosNext);
+                            PainterHardSummon.summonPosNext++;
+                            PainterHardSummon.Timer = SummonCalcDuration();
+                            break;
+                        case 1:
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(PainterHardSummon.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(PainterHardSummon.summonPosNext);
+                            PainterHardSummon.summonPosNext++;
+                            PainterHardSummon.Timer = SummonCalcDuration();
+                            break;
+                        case 2:
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(PainterHardSummon.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(PainterHardSummon.summonPosNext);
+                            PainterHardSummon.summonPosNext = 0;
+                            PainterHardSummon.Timer = SummonCalcDuration();
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                PainterHardSummon.Timer -= Time.deltaTime;
+                if (PainterHardSummon.Timer <= 0)
+                {
+                    Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(PainterHardSummon.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(PainterHardSummon.summonPosNext);
+                    PainterHardSummon.summonPosNext = UnityEngine.Random.Range(0, 3);         // 最大値は目標値ですが目標値になることはない、最小値の方はある
+                    PainterHardSummon.Timer = SummonCalcDuration();
+                }
+            }
+        }
+        else
+        {
+            if (PainterHardSummon.summonType == 0)
+            {
+                PainterHardSummon.Timer -= Time.deltaTime;
+                if (PainterHardSummon.Timer <= 0)
+                {
+                    switch (PainterHardSummon.summonPosNext)
+                    {
+                        default:
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(0), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(0);
+                            PainterHardSummon.summonPosNext += 2;
+                            PainterHardSummon.Timer = UnityEngine.Random.Range(PainterHardSummon.mindur, PainterHardSummon.maxdur);
+                            break;
+                        case 0:
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(PainterHardSummon.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(PainterHardSummon.summonPosNext);
+                            PainterHardSummon.summonPosNext++;
+                            PainterHardSummon.Timer = UnityEngine.Random.Range(PainterHardSummon.mindur, PainterHardSummon.maxdur);
+                            break;
+                        case 1:
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(PainterHardSummon.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(PainterHardSummon.summonPosNext);
+                            PainterHardSummon.summonPosNext++;
+                            PainterHardSummon.Timer = UnityEngine.Random.Range(PainterHardSummon.mindur, PainterHardSummon.maxdur);
+                            break;
+                        case 2:
+                            Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(PainterHardSummon.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(PainterHardSummon.summonPosNext);
+                            PainterHardSummon.summonPosNext = 0;
+                            PainterHardSummon.Timer = UnityEngine.Random.Range(PainterHardSummon.mindur, PainterHardSummon.maxdur);
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                PainterHardSummon.Timer -= Time.deltaTime;
+                if (PainterHardSummon.Timer <= 0)
+                {
+                    Instantiate(enemyObj[UnityEngine.Random.Range(0, enemyObj.Length)], GetPosByLaneNum(PainterHardSummon.summonPosNext), Quaternion.identity).GetComponent<EnemyBase>().SetLaneID(PainterHardSummon.summonPosNext);
+                    PainterHardSummon.summonPosNext = UnityEngine.Random.Range(0, 3);
+                    PainterHardSummon.Timer = UnityEngine.Random.Range(PainterHardSummon.mindur, PainterHardSummon.maxdur);
+                }
+            }
+        }
+    }
+    float SummonCalcDuration()
+    {
+        float per, cp = playerAM.GetChargePower();
+
+        if (cp < 50) per = 1;
+        else if (cp < 80) per = 0.9f;
+        else if (cp < 100) per = 0.75f;
+        else per = 0.5f;
+
+        return PainterHardSummon.duration * per;
     }
 }
