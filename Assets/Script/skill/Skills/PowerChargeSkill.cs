@@ -24,4 +24,9 @@ public class PowerChargeSkill : MonoBehaviour, ISkill, IChargeUp
     {
 
     }
+
+    public int LimitSkillTime()
+    {
+        return limitSkillNum;
+    }
 }

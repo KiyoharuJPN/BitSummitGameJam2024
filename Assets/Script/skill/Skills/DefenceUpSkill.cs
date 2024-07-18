@@ -11,10 +11,12 @@ public class DefenceUpSkill : MonoBehaviour, ISkill, ILvSkill
 
     [SerializeField] float difenceRatio;
 
-    public int skillLv; //このスキルレベル
-    [SerializeField] float LvRatioConstant; //レベルによる変化比率定数
+    [SerializeField] int initialSkillLv = 1; // 初期スキルレベル
+    [SerializeField] int MaxLv; // 最大レベル
+    [SerializeField] float LvRatioConstant; // レベルによる変化比率定数
 
-    public Skill SkillData() => new Skill(2, "ディフェンスアッピ", "しつじつごうけん　タフになる", skillCost, 1, skillIcon, Skill.SkillType.StatesUp);
+    [SerializeField] int LvUpSkillCost; // レベルアップスキルのコスト
+    [SerializeField] int LvUpRatio = 1; // 一回でなんぼレベルアップするか
 
 
     void Start()
@@ -22,13 +24,15 @@ public class DefenceUpSkill : MonoBehaviour, ISkill, ILvSkill
         playerData = GameManagerScript.instance.GetPlayerData();
     }
 
-    public void RunStartActionScene()
+    public Skill SkillData() => new Skill(2, "ディフェンスアッピ", "しつじつごうけん　タフになる", skillCost, 1, skillIcon, Skill.SkillType.StatesUp);
+
+    public LvUpSkill LvUpSkillData() => new LvUpSkill(this, LvUpSkillCost, LvUpRatio);
+
+    public SkillLv SkillLvData() => new SkillLv(initialSkillLv, MaxLv);
+
+    public void RunStartActionScene() // ActioSceneが始まったときに呼び出す
     {
-        playerData.difenceRatio = difenceRatio + LvRatioConstant * skillLv;
+        playerData.difenceRatio = difenceRatio + LvRatioConstant * SkillLvData().Lv;
     }
 
-    public void AddLv(int UpLv)
-    {
-        skillLv += UpLv;
-    }
 }

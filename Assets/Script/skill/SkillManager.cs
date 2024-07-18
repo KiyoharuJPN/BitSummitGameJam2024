@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using static Skill;
 
 public class SkillManager : MonoBehaviour
 {
     public static SkillManager instance;
 
-    List<ISkill> PlyaerHaveSkillList;
+    PlayerData playerData;
+
+    List<ISkill> PlayerHaveSkillList;
 
     List<ISkill> AllSkillList; //全スキルのリスト
 
@@ -26,7 +30,9 @@ public class SkillManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(instance == null)
+        playerData = GameManagerScript.instance.GetPlayerData();
+
+        if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
@@ -42,7 +48,7 @@ public class SkillManager : MonoBehaviour
         Rare2_SkillList = new List<ISkill>();
         Rare3_SkillList = new List<ISkill>();
 
-        PlyaerHaveSkillList = new List<ISkill>();
+        PlayerHaveSkillList = new List<ISkill>();
 
 
         TradeSkillList = new List<List<ISkill>>
@@ -135,6 +141,7 @@ public class SkillManager : MonoBehaviour
 
     public void AddDecadedSkill(ISkill Iskill) //選択されたスキル
     {
+
         switch(Iskill.SkillData().type)
         {
             case Skill.SkillType.NullSkill:
@@ -142,25 +149,91 @@ public class SkillManager : MonoBehaviour
                 return;
             case Skill.SkillType.StatesUp:
 
-                //LvUpSkillをSelectに入れる
 
                 break;
             case Skill.SkillType.ChargeChange:
 
-                //他のChargeChageがあれば抜く
-                //LvUoSkillをSelectに入れる
+                RemoveSameTypeSkill(SkillType.ChargeChange);
 
                 break;
             case Skill.SkillType.ChargeUp:
 
-                //他のChargeUpがあれば抜く
-                //制限回数をセット
+                RemoveSameTypeSkill(SkillType.ChargeUp);
+
+                var chargeupskill = Iskill as IChargeUp;
+                if(chargeupskill != null)
+                {
+                    playerData.RemainLimitSkill = chargeupskill.LimitSkillTime();
+                } else
+                {
+                    Debug.Log("IChargeUpがないです");
+                }
 
                 break;
             case Skill.SkillType.LvUpSkill:
+              
+                var lvupskill = Iskill as LvUpSkill; //インターフェースを使うためにキャスト
+                if (lvupskill == null)
+                {
+                    Debug.LogError("Assigned skill does not implement ILvUpSkill");
+                    return;
+                }
 
-                //決まっているスキルのレベルを上げる
-                break;
+                lvupskill.LvUp(); //決まっているスキルのレベルを上げる
+
+                if(lvupskill.lvSkill.SkillLvData().beMaxLv()) return; //レベルMaxなら戻る
+
+                AddTradeSkillList(Iskill); //SelectListに戻す
+
+                return; //HaveにAddしないのでreturn
         }
+
+        DoLvSkill(Iskill); //レベルスキルならSelectにLvUpSkillを入れる
+
+        PlayerHaveSkillList.Add(Iskill); //HaveListに入れる
+    }
+
+    void DoLvSkill(ISkill skill)
+    {
+        ILvSkill lvskill = skill as ILvSkill; //レベルスキルか判定
+        if(lvskill == null) { return; }
+
+        AddTradeSkillList(lvskill.LvUpSkillData()); //レベルアップを追加
+    }
+
+    void RemoveSameTypeSkill(SkillType type)
+    {
+        List<ISkill> skillsToRemove = PlayerHaveSkillList.FindAll(skill => skill.SkillData().type == type);
+        foreach (ISkill skill in skillsToRemove)
+        {
+            PlayerHaveSkillList.Remove(skill);
+            AddTradeSkillList(skill);
+
+            var lvSkill = skill as ILvSkill; //LvSkillはLvUpも取り除かないといけない
+            if (lvSkill == null)
+            {
+                Debug.LogError("Assigned skill does not implement ILvSkill");
+                return;
+            }
+
+            foreach (var tradelist in TradeSkillList)
+            {
+                List<ISkill> lvupskillsToRemove = tradelist.FindAll(tradeskill => LvUpSkill(tradeskill, skill));
+                foreach(ISkill lvupskill in lvupskillsToRemove)
+                {
+                    tradelist.Remove(lvupskill);
+                }
+            }
+        }
+    }
+
+    bool LvUpSkill(ISkill tradeskill, ISkill skill)
+    {
+        if (tradeskill.SkillData().type != SkillType.LvUpSkill) return false; //LvSkillではない
+        var lvupskill = tradeskill as LvUpSkill;
+        if(lvupskill.skill != skill) return false; //目的が抜いたスキルではない
+
+        return true;
+
     }
 }
