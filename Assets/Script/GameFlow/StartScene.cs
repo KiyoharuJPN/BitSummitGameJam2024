@@ -37,6 +37,8 @@ public class StartScene : MonoBehaviour
 
     CancellationTokenSource cancellationTokenSource;
 
+    // mode’Ç‰Á
+    public Button[] startButtons, modeButtons;
 
     // Start is called before the first frame update
     void Start()
@@ -70,13 +72,36 @@ public class StartScene : MonoBehaviour
 
     void DecadeStart()
     {
-        SceneManager.LoadScene("ActionStage");
+        for(int i = 0;i < startButtons.Length; i++)
+        {
+            startButtons[i].gameObject.SetActive(false);
+        }
+        for(int i = 0;i<modeButtons.Length;i++)
+        {
+            modeButtons[i].gameObject.SetActive(true);
+        }
     }
 
     void DecadeOption()
     {
 
     }
+
+    void DecadeModeEasy()
+    {
+        GameManagerScript.instance.SetGameMode(0);
+        SceneManager.LoadScene("ActionStage");
+    }
+    
+    void DecadeModeHard()
+    {
+        GameManagerScript.instance.SetGameMode(1);
+        SceneManager.LoadScene("ActionStage");
+    }
+
+
+
+
 
     public void PushStartButton()
     {
@@ -87,6 +112,16 @@ public class StartScene : MonoBehaviour
     {
         DecadeOption();
     }
+
+    public void PushStartEasyButton()
+    {
+        DecadeModeEasy();
+    }
+    public void PushStartHardButton()
+    {
+        DecadeModeHard();
+    }
+
 
     public void OnUp()
     {

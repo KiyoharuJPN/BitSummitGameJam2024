@@ -29,7 +29,7 @@ public class EnemyBossBase : EnemyBase
 
 
     // Player (ChargeŠÖ˜A)
-    PlayerActionMovement playerAM;
+    protected PlayerActionMovement playerAM;
 
     virtual protected void Awake()
     {

@@ -571,6 +571,7 @@ public class PlayerActionMovement : MonoBehaviour
         // HP‚ª0ˆÈ‰º‚Ì€–S”»’è‚ÅÄŠJ‚·‚é
         if (GetBaseHP() <= 0)
         {
+            GameManagerScript.instance.CleanUpEnemy();
             SoundManager.instance.PlaySE("HPZero");
             SceneManager.LoadScene("GameOverStage");
         }

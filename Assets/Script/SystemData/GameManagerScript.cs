@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // PlayerDataの構造
 [Serializable]
@@ -123,7 +124,7 @@ public class GameManagerScript : MonoBehaviour
 
     // ステージごと設定する敵
     [SerializeField,Tooltip("ステージごとのボス（一ステージ暫定一ボス）")]
-    GameObject[] StagesBoss;
+    GameObject[] StagesBossList;
 
 
     // スキル用敵リスト保存データ
@@ -135,6 +136,12 @@ public class GameManagerScript : MonoBehaviour
 
     public int ClearStageCount = 5;
 
+
+    // 一時追加
+    public Texture bossBackGround;
+    public int gameMode = 0;
+
+    GameObject[] StagesBoss;
 
     // 実行用関数
     private void Awake()
@@ -154,7 +161,6 @@ public class GameManagerScript : MonoBehaviour
         playerData = defaultPlayerData;
         // ステージボスを一々検索するのが面倒いので予めステージボスに保存しておく
         stageBoss = new List<EnemyBossBase>();
-        ClearStageCount = StagesBoss.Length;
 }
 
     // Start is called before the first frame update
@@ -334,20 +340,61 @@ public class GameManagerScript : MonoBehaviour
 
     public void SummonBoss()
     {
+        //　一時追加
+        CheckMode();
+
+        ClearStageCount = StagesBoss.Length;
+        if (gameControl.ClearStage == StagesBoss.Length - 1) GameObject.Find("BackgroundImage").GetComponent<RawImage>().texture = bossBackGround;
+
         Instantiate(StagesBoss[gameControl.ClearStage]);
     }
 
     // 全部の情報をクリアする
     public void CleanUpStage()
     {
+        gameMode = 0;
         playerData = defaultPlayerData;
         gameControl = new GameControl() { isSkill = false, LaneLeftLimit = -70f, LaneRightLimit = 200f, ClearStage = 0 };
+        CleanUpEnemy();
+    }
+    // 敵の情報をすべてクリアする
+    public void CleanUpEnemy()
+    {
         stageBoss.Clear();
         enemyObjs.Clear();
     }
     public int GetLevelStageBoss()
     {
         return StagesBoss.Length;
+    }
+
+    // 一時追加
+    public void SetGameMode(int i)
+    {
+        gameMode = i;
+    }
+    public int GetGameMode()
+    {
+        return gameMode;
+    }
+    void CheckMode()
+    {
+        if(gameMode == 0)
+        {
+            StagesBoss = new GameObject[3];
+            StagesBoss[0] = StagesBossList[0];
+            StagesBoss[1] = StagesBossList[4];
+            StagesBoss[2] = StagesBossList[5];
+        }else if(gameMode == 1)
+        {
+            StagesBoss = new GameObject[StagesBossList.Length];
+            StagesBoss = StagesBossList;
+        }
+        else
+        {
+            StagesBoss = new GameObject[StagesBossList.Length];
+            StagesBoss = StagesBossList;
+        }
     }
 
     //public int KillAllEnemy()
