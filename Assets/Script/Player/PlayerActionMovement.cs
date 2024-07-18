@@ -53,6 +53,8 @@ public class PlayerActionMovement : MonoBehaviour
     SpeedGaugeUI HPGauge;
     float MaxHP = 2000; 
 
+    public IChargeUp chargeUp; //チャージスキルに追加効果を与える用のインターフェイス
+
 
 
     // Start is called before the first frame update
@@ -165,6 +167,9 @@ public class PlayerActionMovement : MonoBehaviour
                 // ボスに対する攻撃
                 GameManagerScript.instance.AttackBoss((int)Mathf.Round(playerData.attackPower * CalcChargePower() * playerData.attackRatio), ActionStageClear);
                 SoundManager.instance.PlaySE("PlayerSkill");
+
+                DoLimitSkill(); //回数制限系のスキル実行
+
                 // パワーの計算をするのに攻撃してからゼロクリアする必要がある
                 ModifyChargePower(0);                                                   // チャージリセット
 
@@ -658,7 +663,13 @@ public class PlayerActionMovement : MonoBehaviour
         }
     }
 
+    void DoLimitSkill() //回数制限系を実行
+    {
+        if (playerData.RemainLimitSkill >= 0) return;
+        if (chargeUp == null) return;
 
+        chargeUp.DoChargeUp(GetChargePower());
+    }
 
 
 
