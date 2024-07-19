@@ -74,6 +74,7 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     void Start()
     {
         playerData = GameManagerScript.instance.GetPlayerData();
+        skillManager = SkillManager.instance;
 
         NullSkill = skillManager.NullSkill; //NullSkill‚ğæ“¾
         ITradeSkill = NullSkill; //nullSkill‚ğ‚r‚…‚”‚µ‚Ä‰Šú‰»
@@ -152,6 +153,7 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
         Debug.Log(TradeSkill().skillName + "‚ª‘I‚Î‚ê‚Ü‚µ‚½");
         playerData.baseHP -= TradeSkill().cost;
         Debug.Log(TradeSkill().cost + "‚ªspped‚©‚çˆø‚©‚ê‚Ü‚·");
+        skillManager.AddDecadedSkill(ITradeSkill);
         DecadeEffect();
     }
 

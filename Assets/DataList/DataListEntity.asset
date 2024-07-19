@@ -16,49 +16,49 @@ MonoBehaviour:
   - id: 1
     charName: Test
     enemyHP: 1
-    chargePower: 5
+    chargePower: 10
     attackPower: 100
     enemySpeed: 200
     type: 1
   - id: 2
     charName: SheepNormal
     enemyHP: 1
-    chargePower: 10
+    chargePower: 15
     attackPower: 100
-    enemySpeed: 80
+    enemySpeed: 70
     type: 1
   - id: 3
     charName: Speeder
     enemyHP: 1
-    chargePower: 10
+    chargePower: 15
     attackPower: 90
     enemySpeed: 150
     type: 1
   - id: 4
     charName: LaneChanger
     enemyHP: 1
-    chargePower: 10
-    attackPower: 120
+    chargePower: 15
+    attackPower: 100
     enemySpeed: 80
     type: 1
   - id: 5
     charName: Ghost
     enemyHP: 1
-    chargePower: 10
+    chargePower: 15
     attackPower: 70
     enemySpeed: 70
     type: 1
   - id: 6
     charName: SpeedBooster
     enemyHP: 1
-    chargePower: 10
+    chargePower: 15
     attackPower: 100
     enemySpeed: 150
     type: 1
   - id: 7
     charName: Boomer
     enemyHP: 1
-    chargePower: 10
+    chargePower: 15
     attackPower: 150
     enemySpeed: 150
     type: 1
@@ -79,7 +79,7 @@ MonoBehaviour:
   - id: 10
     charName: PainterSummonedEnemy
     enemyHP: 1
-    chargePower: 10
+    chargePower: 15
     attackPower: 50
     enemySpeed: 100
     type: 1

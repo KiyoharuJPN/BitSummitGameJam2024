@@ -22,6 +22,7 @@ public class FinishButton : MonoBehaviour
     {
         SoundManager.instance.PlaySE("SelectEnter");
         GameManagerScript.instance.CleanUpStage();
+        SkillManager.instance.CleanUp();
         //SceneManager.LoadScene("TitleScene");
         SceneManager.LoadScene(TitleSceneName);
     }

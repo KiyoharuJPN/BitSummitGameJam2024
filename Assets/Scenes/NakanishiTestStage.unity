@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 122295816}
   - component: {fileID: 122295815}
   m_Layer: 0
-  m_Name: skill
+  m_Name: skillmanager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -406,6 +406,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2136118241}
+  - {fileID: 1122212258}
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -423,6 +424,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nullskillsc: {fileID: 2136118240}
   nullSkillSprite: {fileID: 21300000, guid: 7d777138369b32944bdd4d5c3b635826, type: 3}
+  skillIconset: {fileID: 1122212259}
 --- !u!114 &122295814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -437,6 +439,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillCost: 500
   skillIcon: {fileID: 21300000, guid: d996a8bf458aee64d942042285218c4f, type: 3}
+  ChargeRatio: 1.2
+  initialSkillLv: 1
+  MaxLv: 5
+  LvRatioConstant: 0.8
+  LvUpSkillCost: 250
+  LvUpRatio: 1
 --- !u!114 &122295815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,6 +459,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillCost: 700
   skillIcon: {fileID: 21300000, guid: 43b3f3640ea162b4fa0a9d144fc0314e, type: 3}
+  attackRatio: 0
+  limitSkillNum: 0
 --- !u!114 &122295816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,6 +503,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillCost: 600
   skillIcon: {fileID: 21300000, guid: 5e6ccb00fe67ad04bb1228a1b6fdc44b, type: 3}
+  chargeRatio: 1.4
+  colResizeRatio: 0.9
+  initialSkillLv: 1
+  MaxLv: 5
+  chrgeLvRatio: 0.8
+  colResizeLvRatio: 0.8
+  LvUpSkillCost: 200
+  LvUpRatio: 1
 --- !u!114 &122295819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,6 +525,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillCost: 600
   skillIcon: {fileID: 21300000, guid: b77c38563f5008a42b43d272dd6b5d28, type: 3}
+  chargeRatio: 1.2
+  attackRatio: 1.2
+  initialSkillLv: 1
+  MaxLv: 5
+  chrgeLvRatio: 0.8
+  attackLvRatio: 0.8
+  LvUpSkillCost: 200
+  LvUpRatio: 1
 --- !u!114 &122295820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -521,6 +547,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillCost: 600
   skillIcon: {fileID: 21300000, guid: b69dfa7a237c28846a2bcb593c6de4fe, type: 3}
+  chargeRatio: 0.8
+  attackRatio: 0.8
+  initialSkillLv: 1
+  MaxLv: 5
+  chrgeLvRatio: 0.8
+  attackLvRatio: 0.8
+  LvUpSkillCost: 200
+  LvUpRatio: 1
 --- !u!114 &122295821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -535,6 +569,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillCost: 500
   skillIcon: {fileID: 21300000, guid: ee390c218fb861244ad7eb087e06e7fe, type: 3}
+  difenceRatio: 0.8
+  initialSkillLv: 1
+  MaxLv: 5
+  LvRatioConstant: 0.8
+  LvUpSkillCost: 200
+  LvUpRatio: 1
 --- !u!1 &395455801
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,7 +1343,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -731, y: -278}
+  m_AnchoredPosition: {x: -698, y: -257}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1022818241
@@ -1431,6 +1471,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022818239}
   m_CullTransparentMesh: 1
+--- !u!1 &1122212257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1122212258}
+  - component: {fileID: 1122212259}
+  m_Layer: 0
+  m_Name: HaveSkillIcon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1122212258
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122212257}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 122295812}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1122212259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122212257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c66f90a1fdcdd846a9ac324758a4900, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstposi: {x: -134, y: -67, z: 0}
+  scale: 0.75
+  thisobject: {fileID: 1122212257}
 --- !u!1 &1123974989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1521,7 +1608,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1123974989}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -118.3, y: -1.5, z: -1.0998931}
+  m_LocalPosition: {x: -130.7, y: -67.9, z: -1.0998931}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2614,7 +2701,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Need Speed
+  m_text: "Requirer\n Speed"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3e576d15772ebf143929eaef545ceaef, type: 2}
   m_sharedMaterial: {fileID: 7002324943457303759, guid: 3e576d15772ebf143929eaef545ceaef, type: 2}
@@ -4550,7 +4637,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 20, y: 20}
+    oldSize: {x: 26.666666, y: 26.666666}
     newSize: {x: 1, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

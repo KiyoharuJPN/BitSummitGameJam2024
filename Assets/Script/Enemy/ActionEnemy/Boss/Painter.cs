@@ -16,7 +16,7 @@ public class Painter : EnemyBossBase
     BossSkill[] enemySkill;
     float resetSkillTime = 20;
 
-    float stateTimer = 0, stateSojournTime = 6;
+    float stateTimer = 0, stateSojournTime = 2;
 
     // アニメーター関連
     int bossPainterState;

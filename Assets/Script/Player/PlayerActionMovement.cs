@@ -2,8 +2,10 @@ using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Experimental.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -55,7 +57,7 @@ public class PlayerActionMovement : MonoBehaviour
 
     public IChargeUp chargeUp; //チャージスキルに追加効果を与える用のインターフェイス
 
-
+    [SerializeField] SpriteRenderer bom;
 
     // Start is called before the first frame update
     void Start()
@@ -118,6 +120,7 @@ public class PlayerActionMovement : MonoBehaviour
         //LanePerformanceReset();
 
         // UI関連
+        bom.color = new Color(255, 255, 255, 0);
         HPGauge = GetComponentInChildren<SpeedGaugeUI>();
         MaxHP = GetBaseHP();
         SetHPUI();
@@ -164,6 +167,8 @@ public class PlayerActionMovement : MonoBehaviour
         {
             if (GetChargePower() > 0 && GetChargePower() < 130/* && GameManagerScript.instance.SetEnemyObjects() > 0*/)// チャージチェック
             {
+                StartCoroutine(BOMEffect());
+
                 // ボスに対する攻撃
                 GameManagerScript.instance.AttackBoss((int)Mathf.Round(playerData.attackPower * CalcChargePower() * playerData.attackRatio), ActionStageClear);
                 SoundManager.instance.PlaySE("PlayerSkill");
@@ -672,7 +677,12 @@ public class PlayerActionMovement : MonoBehaviour
         chargeUp.DoChargeUp(GetChargePower());
     }
 
-
+    IEnumerator BOMEffect()
+    {
+        bom.color = new Color(255, 255, 255, 255);
+        yield return new WaitForSeconds(1);
+        bom.color = new Color(255, 255, 255, 0);
+    }
 
 
 

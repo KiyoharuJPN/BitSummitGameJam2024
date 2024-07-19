@@ -10,7 +10,7 @@ public class SkillManager : MonoBehaviour
 
     PlayerData playerData;
 
-    List<ISkill> PlayerHaveSkillList;
+    public List<ISkill> PlayerHaveSkillList;
 
     List<ISkill> AllSkillList; //全スキルのリスト
 
@@ -27,9 +27,16 @@ public class SkillManager : MonoBehaviour
 
     ISkill[] getISKill;
 
+    [SerializeField] SkillIconSet skillIconset;
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
+        CleanUp();
+    }
+    public void CleanUp()
+    {
+        Debug.Log("CleanUo");
         playerData = GameManagerScript.instance.GetPlayerData();
 
         if (instance == null)
@@ -78,8 +85,9 @@ public class SkillManager : MonoBehaviour
             AddSkill(Iskill);
         }
 
-
+        instance = this;
     }
+
 
 
     public ISkill RandomSelectSkill() //ランダムなスキルをセット
@@ -191,12 +199,20 @@ public class SkillManager : MonoBehaviour
         DoLvSkill(Iskill); //レベルスキルならSelectにLvUpSkillを入れる
 
         PlayerHaveSkillList.Add(Iskill); //HaveListに入れる
+
+        foreach(var skill in PlayerHaveSkillList)
+        {
+            Debug.Log(skill.SkillData().skillName);
+        }
+
+        skillIconset.SetHaveSkillIcon(PlayerHaveSkillList);
     }
 
     void DoLvSkill(ISkill skill)
     {
         ILvSkill lvskill = skill as ILvSkill; //レベルスキルか判定
         if(lvskill == null) { return; }
+
 
         AddTradeSkillList(lvskill.LvUpSkillData()); //レベルアップを追加
     }
@@ -231,9 +247,17 @@ public class SkillManager : MonoBehaviour
     {
         if (tradeskill.SkillData().type != SkillType.LvUpSkill) return false; //LvSkillではない
         var lvupskill = tradeskill as LvUpSkill;
-        if(lvupskill.skill != skill) return false; //目的が抜いたスキルではない
+        if(lvupskill.targetskill != skill) return false; //目的が抜いたスキルではない
 
         return true;
 
+    }
+
+    public void SetSkillActionScene()
+    {
+        foreach(var havelist in PlayerHaveSkillList)
+        {
+            havelist.RunStartActionScene();
+        }
     }
 }

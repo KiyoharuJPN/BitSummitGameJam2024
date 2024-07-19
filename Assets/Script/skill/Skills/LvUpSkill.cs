@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class LvUpSkill :ISkill
 {
-    public ISkill skill; //レベルアップするスキル
+    public ISkill targetskill; //レベルアップするスキル
     public ILvSkill lvSkill;
     int skillcost;
     int LvUpRatio; //一回でどのくらいLvUpするか
 
-    public Skill SkillData() => new Skill(10, "レベルアップ", skill.SkillData().skillName + " を　ひとつレベルアップ", skillcost, 1, skill.SkillData().Icon, Skill.SkillType.LvUpSkill);
+    public Skill SkillData() => new Skill(10, "レベルアップ", targetskill.SkillData().skillName + " を　ひとつレベルアップ", skillcost, 1, targetskill.SkillData().Icon, Skill.SkillType.LvUpSkill);
 
     public void RunStartActionScene()
     {
         Debug.Log("LvUpスキルがHaveにつけられてます");
     }
 
-    public LvUpSkill(ISkill skill, int skillcost, int LvUpRatio)
+    public LvUpSkill(ISkill targetskill, int skillcost, int LvUpRatio)
     {
-        this.skill = skill;
+        this.targetskill = targetskill;
         this.skillcost = skillcost;
         this.LvUpRatio = LvUpRatio;
 
-        lvSkill = skill as ILvSkill;
+        lvSkill = targetskill as ILvSkill;
         if (lvSkill == null)
         {
             Debug.LogError("Assigned skill does not implement ILvSkill");

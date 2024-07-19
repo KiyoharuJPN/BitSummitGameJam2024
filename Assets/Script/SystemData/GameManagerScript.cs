@@ -383,7 +383,7 @@ public class GameManagerScript : MonoBehaviour
         {
             StagesBoss = new GameObject[2];
             StagesBoss[0] = StagesBossList[0];
-            StagesBoss[1] = StagesBossList[4];
+            StagesBoss[1] = StagesBossList[3];
         
         }else if(gameMode == 1)
         {
