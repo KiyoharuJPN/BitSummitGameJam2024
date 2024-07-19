@@ -381,10 +381,10 @@ public class GameManagerScript : MonoBehaviour
     {
         if(gameMode == 0)
         {
-            StagesBoss = new GameObject[3];
+            StagesBoss = new GameObject[2];
             StagesBoss[0] = StagesBossList[0];
             StagesBoss[1] = StagesBossList[4];
-            StagesBoss[2] = StagesBossList[5];
+        
         }else if(gameMode == 1)
         {
             StagesBoss = new GameObject[StagesBossList.Length];
