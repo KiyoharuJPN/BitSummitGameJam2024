@@ -29,16 +29,8 @@ public class SkillManager : MonoBehaviour
 
     [SerializeField] SkillIconSet skillIconset;
 
-    // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
-        CleanUp();
-    }
-    public void CleanUp()
-    {
-        Debug.Log("CleanUo");
-        playerData = GameManagerScript.instance.GetPlayerData();
-
         if (instance == null)
         {
             instance = this;
@@ -47,16 +39,32 @@ public class SkillManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
-        
+    }
 
+    // Start is called before the first frame update
+    private void Start()
+    {
+        CleanUp();
+    }
+
+    public void CleanUp()
+    {
+        Debug.Log("CleanUp");
+        playerData = GameManagerScript.instance.GetPlayerData();
+
+        if (instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         Rare1_SkillList = new List<ISkill>();
         Rare2_SkillList = new List<ISkill>();
         Rare3_SkillList = new List<ISkill>();
 
         PlayerHaveSkillList = new List<ISkill>();
-
 
         TradeSkillList = new List<List<ISkill>>
         {
@@ -67,7 +75,7 @@ public class SkillManager : MonoBehaviour
 
         AllSkillList = new List<ISkill>();
 
-        RaretyArray = new int[]  //確率は個数で決める　数字はレアリティ
+        RaretyArray = new int[]
         {
             1,1,1,1,1,1,
             //2,2,2,2,
@@ -76,7 +84,6 @@ public class SkillManager : MonoBehaviour
 
         NullSkill = nullskillsc;
 
-
         getISKill = GetComponents<ISkill>();
 
         foreach (ISkill Iskill in getISKill)
@@ -84,15 +91,10 @@ public class SkillManager : MonoBehaviour
             Debug.Log(Iskill.SkillData().skillName + "Add");
             AddSkill(Iskill);
         }
-
-        instance = this;
     }
 
-
-
-    public ISkill RandomSelectSkill() //ランダムなスキルをセット
+    public ISkill RandomSelectSkill()
     {
-
         int randomIntForRare = Random.Range(0, RaretyArray.Length - 1); //レア度をまず決める
         int Rarity = RaretyArray[randomIntForRare]; //レア度のリストから抽選、レア度確定
         List<ISkill> SelectList = TradeSkillList[Rarity - 1]; //リスト確定
@@ -115,7 +117,6 @@ public class SkillManager : MonoBehaviour
         return DecadeSkill;
     }
 
-
     void AddSkill(ISkill skill) //他からスキルを受け取り、分類してSkillListに入れる
     {
         AddTradeSkillList(skill);
@@ -130,12 +131,10 @@ public class SkillManager : MonoBehaviour
     void AddTradeSkillList(ISkill skill)
     {
         int Rarity = skill.SkillData().rarity; //引数のレアリティ
-        //Debug.Log(string.Join(",",TradeSkillList.Select(obj => obj.ToString())));
-
-        List<ISkill> AddedList = TradeSkillList[Rarity - 1];  //レアリティで分類
+        List<ISkill> AddedList = TradeSkillList[Rarity - 1]; //レアリティで分類
         if (!AddedList.Contains(skill)) //重複阻止
         {
-            AddedList.Add(skill);　//追加
+            AddedList.Add(skill); //追加
         }
     }
 
@@ -149,37 +148,30 @@ public class SkillManager : MonoBehaviour
 
     public void AddDecadedSkill(ISkill Iskill) //選択されたスキル
     {
-
-        switch(Iskill.SkillData().type)
+        switch (Iskill.SkillData().type)
         {
             case Skill.SkillType.NullSkill:
                 Debug.Log("NullSkillが選択されました");
                 return;
             case Skill.SkillType.StatesUp:
-
-
                 break;
             case Skill.SkillType.ChargeChange:
-
                 RemoveSameTypeSkill(SkillType.ChargeChange);
-
                 break;
             case Skill.SkillType.ChargeUp:
-
                 RemoveSameTypeSkill(SkillType.ChargeUp);
 
                 var chargeupskill = Iskill as IChargeUp;
-                if(chargeupskill != null)
+                if (chargeupskill != null)
                 {
                     playerData.RemainLimitSkill = chargeupskill.LimitSkillTime();
-                } else
+                }
+                else
                 {
                     Debug.Log("IChargeUpがないです");
                 }
-
                 break;
             case Skill.SkillType.LvUpSkill:
-              
                 var lvupskill = Iskill as LvUpSkill; //インターフェースを使うためにキャスト
                 if (lvupskill == null)
                 {
@@ -189,7 +181,7 @@ public class SkillManager : MonoBehaviour
 
                 lvupskill.LvUp(); //決まっているスキルのレベルを上げる
 
-                if(lvupskill.lvSkill.SkillLvData().beMaxLv()) return; //レベルMaxなら戻る
+                if (lvupskill.lvSkill.SkillLvData().beMaxLv()) return; //レベルMaxなら戻る
 
                 AddTradeSkillList(Iskill); //SelectListに戻す
 
@@ -200,7 +192,7 @@ public class SkillManager : MonoBehaviour
 
         PlayerHaveSkillList.Add(Iskill); //HaveListに入れる
 
-        foreach(var skill in PlayerHaveSkillList)
+        foreach (var skill in PlayerHaveSkillList)
         {
             Debug.Log(skill.SkillData().skillName);
         }
@@ -211,8 +203,7 @@ public class SkillManager : MonoBehaviour
     void DoLvSkill(ISkill skill)
     {
         ILvSkill lvskill = skill as ILvSkill; //レベルスキルか判定
-        if(lvskill == null) { return; }
-
+        if (lvskill == null) { return; }
 
         AddTradeSkillList(lvskill.LvUpSkillData()); //レベルアップを追加
     }
@@ -235,7 +226,7 @@ public class SkillManager : MonoBehaviour
             foreach (var tradelist in TradeSkillList)
             {
                 List<ISkill> lvupskillsToRemove = tradelist.FindAll(tradeskill => LvUpSkill(tradeskill, skill));
-                foreach(ISkill lvupskill in lvupskillsToRemove)
+                foreach (ISkill lvupskill in lvupskillsToRemove)
                 {
                     tradelist.Remove(lvupskill);
                 }
@@ -247,15 +238,14 @@ public class SkillManager : MonoBehaviour
     {
         if (tradeskill.SkillData().type != SkillType.LvUpSkill) return false; //LvSkillではない
         var lvupskill = tradeskill as LvUpSkill;
-        if(lvupskill.targetskill != skill) return false; //目的が抜いたスキルではない
+        if (lvupskill.targetskill != skill) return false; //目的が抜いたスキルではない
 
         return true;
-
     }
 
     public void SetSkillActionScene()
     {
-        foreach(var havelist in PlayerHaveSkillList)
+        foreach (var havelist in PlayerHaveSkillList)
         {
             havelist.RunStartActionScene();
         }
