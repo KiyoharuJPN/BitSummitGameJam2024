@@ -193,7 +193,7 @@ MonoBehaviour:
   - {fileID: 4853868982304490348, guid: 67e5bffc3871f3b4db05fc2e10fbc053, type: 3}
   - {fileID: 1427132468844961879, guid: 97a971db715886d4285bddf6591b8ed7, type: 3}
   - {fileID: 5106203657262017115, guid: b663c3ad8d79c324f8bb0e0deff96781, type: 3}
-  SummonEveryTime: 1
+  SummonEveryTime: 0
   PainterHardSummon:
     duration: 0
     mindur: 0
