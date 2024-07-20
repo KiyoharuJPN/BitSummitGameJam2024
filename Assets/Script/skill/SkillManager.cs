@@ -91,6 +91,8 @@ public class SkillManager : MonoBehaviour
             Debug.Log(Iskill.SkillData().skillName + "Add");
             AddSkill(Iskill);
         }
+
+        skillIconset.DestroyIcon();
     }
 
     public ISkill RandomSelectSkill()

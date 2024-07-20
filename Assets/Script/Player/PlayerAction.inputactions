@@ -186,17 +186,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f16f8f7c-0b08-4cac-92f5-247c0ed17340",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Down",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "a9a1ddfc-b10a-47da-a034-228991fafe2b",
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
@@ -252,12 +241,12 @@
                 },
                 {
                     "name": "",
-                    "id": "02b2384e-e1ff-43c9-a0b2-b917b16fe345",
-                    "path": "<Keyboard>/d",
+                    "id": "5ed1e750-f17b-4a69-8f96-ad5ee06b6bf6",
+                    "path": "<Keyboard>/x",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Right",
+                    "action": "Down",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -309,6 +298,17 @@
                     "name": "",
                     "id": "f6b52ba5-6073-47af-afc7-2f67798a2b2d",
                     "path": "<XInputController>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "01952963-5cd6-4e9a-9703-0bdfcce21e16",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

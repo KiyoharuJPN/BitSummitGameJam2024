@@ -36,6 +36,7 @@ public class FinishButton : MonoBehaviour
         {
             //SceneManager.LoadScene("TitleScene");
             GameManagerScript.instance.CleanUpStage();
+            SkillManager.instance.CleanUp();
             SceneManager.LoadScene(TitleSceneName);
         }
         else

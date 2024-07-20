@@ -22,6 +22,8 @@ public class SkillIconSet : MonoBehaviour
 
     public void SetHaveSkillIcon(List<ISkill> iconlist)
     {
+        DestroyIcon();
+
         thisobject = GameObject.Find("skillmanager").transform.Find("HaveSkillIcon").gameObject;
         iconSeter = new List<GameObject>();
         iconrenderer = new List<SpriteRenderer>();
@@ -30,8 +32,8 @@ public class SkillIconSet : MonoBehaviour
         Vector3 iconseterposi = firstposi;
         foreach (ISkill Iskill in iconlist)
         {
-            iconseterposi.x = iconseterposi.x + width * num + 5;
-            Debug.Log(num + "num");
+            iconseterposi.x = iconseterposi.x + width + 5;
+            Debug.Log(width + "width");
             Debug.Log(iconseterposi + "posi");
 
             //Debug.Log(iconwdth);
@@ -59,6 +61,17 @@ public class SkillIconSet : MonoBehaviour
             //if(num == 0) { iconwdth = Iskill.SkillData().Icon.bounds.size.x; }
 
 
+            num++;
+        }
+    }
+
+    public void DestroyIcon()
+    {
+        int num = 0;
+        foreach(GameObject gameObject in iconSeter)
+        {
+            Destroy(gameObject);
+            Destroy(iconrenderer[num]);
             num++;
         }
     }

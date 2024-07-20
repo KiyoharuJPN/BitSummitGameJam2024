@@ -53,11 +53,14 @@ public class PlayerActionMovement : MonoBehaviour
 
     // UI関連
     SpeedGaugeUI HPGauge;
-    float MaxHP = 2000; 
+    float MaxHP = 2000;
+
+    [SerializeField] GameObject[] Arrow;
 
     public IChargeUp chargeUp; //チャージスキルに追加効果を与える用のインターフェイス
 
     [SerializeField] SpriteRenderer bom;
+    SpriteRenderer playerSprite;
 
     // Start is called before the first frame update
     void Start()
@@ -67,6 +70,7 @@ public class PlayerActionMovement : MonoBehaviour
 
         // アニメーション関連
         animator = GetComponent<Animator>();
+        playerSprite = GetComponent<SpriteRenderer>();
 
         // カメラワーク(スムーズにさせる)
         cam = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -204,9 +208,12 @@ public class PlayerActionMovement : MonoBehaviour
     // レーンをidで区別して攻撃する
     void AttackLane(int id)
     {
+
         if (canAttackobj[id].Count > 0 && attacker[id].GetCanAttack())
         {
-            //attacker[id].PlayATAnimOnce();                                  // アニメーションを一回流す
+            //attacker[id].PlayATAnimOnce();                             // アニメーションを一回流す
+            StartCoroutine(ArrowSizeUp(Arrow[id]));
+
             attacker[id].SetAttackResult(1);
             attacker[id].SetCanAttack(false);
 
@@ -684,7 +691,13 @@ public class PlayerActionMovement : MonoBehaviour
         bom.color = new Color(255, 255, 255, 0);
     }
 
-
+    IEnumerator ArrowSizeUp(GameObject circle)
+    {
+        Vector3 defaultsize = circle.transform.localScale;
+        circle.transform.localScale = defaultsize * 1.2f;
+        yield return new WaitForSeconds(0.25f);
+        circle.transform.localScale = defaultsize;
+    }
 
 
 
