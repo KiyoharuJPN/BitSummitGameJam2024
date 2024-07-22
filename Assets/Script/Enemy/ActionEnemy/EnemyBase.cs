@@ -39,6 +39,8 @@ public class EnemyBase : MonoBehaviour
     protected Animator eAnimator;
     protected bool isDead = false, isAttack = false;
 
+    DeathEffect deatheffect;
+
     // ゲーム終了関連
     protected Action bossDeadAction;
 
@@ -68,6 +70,8 @@ public class EnemyBase : MonoBehaviour
 
         // アニメーション
         eAnimator = GetComponent<Animator>();
+
+        deatheffect = GameObject.Find("enmeydeath").GetComponent<DeathEffect>();
     }
 
     virtual protected void OnTriggerEnter2D(Collider2D collision)

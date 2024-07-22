@@ -32,8 +32,7 @@ public class SkillIconSet : MonoBehaviour
         Vector3 iconseterposi = firstposi;
         foreach (ISkill Iskill in iconlist)
         {
-            iconseterposi.x = iconseterposi.x + width + 5;
-            Debug.Log(width + "width");
+            Debug.Log(width + "num");
             Debug.Log(iconseterposi + "posi");
 
             //Debug.Log(iconwdth);
@@ -48,7 +47,9 @@ public class SkillIconSet : MonoBehaviour
                     iconSeter[num].transform.position = firstposi;
                 } else
                 {
-                    iconSeter[num].transform.position = iconseterposi;
+                iconseterposi.x = iconseterposi.x + width + 2.5f;
+
+                iconSeter[num].transform.position = iconseterposi;
                 }
 
                 iconSeter[num].transform.localScale = Vector3.one * scale;
@@ -68,6 +69,9 @@ public class SkillIconSet : MonoBehaviour
     public void DestroyIcon()
     {
         int num = 0;
+
+        if(iconSeter == null) return;
+
         foreach(GameObject gameObject in iconSeter)
         {
             Destroy(gameObject);

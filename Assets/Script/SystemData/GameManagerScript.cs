@@ -23,6 +23,7 @@ public struct PlayerData
     public float difenceRatio;          // 受けるダメージの比率
     public float colliderResizeRatio;   //Laneのコライダーのリサイズ比率
     public int RemainLimitSkill;        //回数制限系のスキルの残数
+    public IChargeUp haveChargeUp;      //プレイヤーが今持ってるチャージ攻撃変化スキル
 
 }                                       // Structsに移動する予定。
 // GameManagerControl用構造

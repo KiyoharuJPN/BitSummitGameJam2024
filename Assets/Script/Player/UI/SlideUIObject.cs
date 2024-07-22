@@ -15,7 +15,7 @@ public class SlideUIObject : MonoBehaviour
 
     public async Task MoveUIObjectToPosition(Vector2 end, float duration, CancellationToken cancellationToken = default)
     {
-        Debug.Log("Slide to " + end);
+        //Debug.Log("Slide to " + end);
         Vector2 start = rectTransform.anchoredPosition;
 
         float elapsed = 0f;

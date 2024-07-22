@@ -39,6 +39,9 @@ public class PlayerActionMovement : MonoBehaviour
     public float minLaneEffectPower = 1.1f;
     float maxLaneEffectPower;
 
+    //チャージ系
+    float maxcharge = 130;
+
     // レーンステータス
     int upLaneKill, rightLaneKill, downLaneKill;         // 上、右、下レーンがキルした敵の総数
 
@@ -55,12 +58,13 @@ public class PlayerActionMovement : MonoBehaviour
     SpeedGaugeUI HPGauge;
     float MaxHP = 2000;
 
-    [SerializeField] GameObject[] Arrow;
-
-    public IChargeUp chargeUp; //チャージスキルに追加効果を与える用のインターフェイス
+    [SerializeField] GameObject[] Arrow; //アニメーションで拡大
+    Vector3 defaultsize; //アニメーション拡大用
+    [SerializeField] ChargeUI chargeUI; //ChargeBar
 
     [SerializeField] SpriteRenderer bom;
     SpriteRenderer playerSprite;
+    [SerializeField] ChargeAttackUI chargeAttackUI; //攻撃アニメーション
 
     // Start is called before the first frame update
     void Start()
@@ -129,6 +133,7 @@ public class PlayerActionMovement : MonoBehaviour
         MaxHP = GetBaseHP();
         SetHPUI();
 
+        defaultsize = Arrow[0].transform.localScale; //アニメーション用
     }
 
     // Update is called once per frame
@@ -150,6 +155,8 @@ public class PlayerActionMovement : MonoBehaviour
 
         // カメラの大きさ調整
         FixCameraSize();
+
+        UpdateChargeUI();
     }
 
 
@@ -169,15 +176,18 @@ public class PlayerActionMovement : MonoBehaviour
         }
         if (left.WasPressedThisFrame())
         {
-            if (GetChargePower() > 0 && GetChargePower() < 130/* && GameManagerScript.instance.SetEnemyObjects() > 0*/)// チャージチェック
+            if (GetChargePower() > 0 && GetChargePower() < maxcharge/* && GameManagerScript.instance.SetEnemyObjects() > 0*/)// チャージチェック
             {
-                StartCoroutine(BOMEffect());
+                var attackpow = playerData.attackPower * CalcChargePower() * playerData.attackRatio;
 
-                // ボスに対する攻撃
-                GameManagerScript.instance.AttackBoss((int)Mathf.Round(playerData.attackPower * CalcChargePower() * playerData.attackRatio), ActionStageClear);
-                SoundManager.instance.PlaySE("PlayerSkill");
+                StartCoroutine(BOMEffect());
+                chargeAttackUI.StartChargeAttackAnim(attackpow);
 
                 DoLimitSkill(); //回数制限系のスキル実行
+
+                // ボスに対する攻撃
+                GameManagerScript.instance.AttackBoss((int)Mathf.Round(attackpow), ActionStageClear);
+                SoundManager.instance.PlaySE("PlayerSkill");
 
                 // パワーの計算をするのに攻撃してからゼロクリアする必要がある
                 ModifyChargePower(0);                                                   // チャージリセット
@@ -212,6 +222,7 @@ public class PlayerActionMovement : MonoBehaviour
         if (canAttackobj[id].Count > 0 && attacker[id].GetCanAttack())
         {
             //attacker[id].PlayATAnimOnce();                             // アニメーションを一回流す
+
             StartCoroutine(ArrowSizeUp(Arrow[id]));
 
             attacker[id].SetAttackResult(1);
@@ -257,6 +268,7 @@ public class PlayerActionMovement : MonoBehaviour
         }
         else if (cantAttackobj[id].Count > 0 && attacker[id].GetCanAttack())
         {
+
             attacker[id].SetAttackResult(2);
             attacker[id].SetCanAttack(false);
             //// 攻撃不可のすべてオブジェクトに対してノックバック
@@ -421,7 +433,7 @@ public class PlayerActionMovement : MonoBehaviour
             var val = chargePower - 80;
             res = Mathf.Lerp(0.5f, 1f, val / 20f);
         }
-        else if (chargePower < 129)
+        else if (chargePower < maxcharge - 1)
         {
             var val = chargePower - 100;
             res = Mathf.Lerp(1f, 1.1f, val / 29);
@@ -434,8 +446,8 @@ public class PlayerActionMovement : MonoBehaviour
     void AdjustChargePower(float incrementChangePower)             // 追加されるデータが元のデータに加算される
     {
         chargePower += incrementChangePower;
-        if(chargePower > 129)
-            chargePower = 130;  // 最大チャージに超えないように
+        if(chargePower > maxcharge - 1)
+            chargePower = maxcharge;  // 最大チャージに超えないように
         // アニメーターに更新
         animator.SetFloat("ChargeValue", chargePower);
     }
@@ -679,9 +691,10 @@ public class PlayerActionMovement : MonoBehaviour
     void DoLimitSkill() //回数制限系を実行
     {
         if (playerData.RemainLimitSkill >= 0) return;
-        if (chargeUp == null) return;
+        if (playerData.haveChargeUp == null) return;
+        playerData.RemainLimitSkill--;
 
-        chargeUp.DoChargeUp(GetChargePower());
+        playerData.haveChargeUp.DoChargeUp(GetChargePower());
     }
 
     IEnumerator BOMEffect()
@@ -693,13 +706,15 @@ public class PlayerActionMovement : MonoBehaviour
 
     IEnumerator ArrowSizeUp(GameObject circle)
     {
-        Vector3 defaultsize = circle.transform.localScale;
         circle.transform.localScale = defaultsize * 1.2f;
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.1f);
         circle.transform.localScale = defaultsize;
     }
 
-
+    void UpdateChargeUI()
+    {
+        chargeUI.SetChargecolor(GetChargePower(), maxcharge);
+    }
 
 
 

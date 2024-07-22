@@ -67,14 +67,14 @@ public class FadeInOut : MonoBehaviour
             Color finalColor = fadeTMPText.color;
             finalColor.a = end;
             fadeTMPText.color = finalColor;
-            Debug.Log("endFade: " + fadeTMPText.color);
+            //Debug.Log("endFade: " + fadeTMPText.color);
         }
         else if (fadeImage != null)
         {
             Color finalColor = fadeImage.color;
             finalColor.a = end;
             fadeImage.color = finalColor;
-            Debug.Log("endFade: " + fadeImage.color);
+            //Debug.Log("endFade: " + fadeImage.color);
         }
     }
 }

@@ -9,7 +9,7 @@ public class SlideGameobject : MonoBehaviour
 
     public async Task MoveGameObjectToPosition(Vector2 end, float duration, CancellationToken cancellationToken = default)
     {
-        Debug.Log("slide for" + end);
+        //Debug.Log("slide for" + end);
         Vector2 start = transform.position;
 
         float elapsed = 0f;

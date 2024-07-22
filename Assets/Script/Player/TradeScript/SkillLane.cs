@@ -104,7 +104,6 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
         decadeTMP = decadeGameObject.GetComponent<TMP_Text>();
         decadeFadeSc = decadeGameObject.GetComponent<FadeInOut>();
 
-        Debug.Log("speedDefaultPosi" + speedDefaultPosi);
 
         SetTaskLists(); //Listの内容を入れる
 
@@ -139,13 +138,13 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     public void SelectedAction() //選択された時のAction
     {
         HighlightEffect();
-        Debug.Log(TradeSkill().skillName + "を選択");
+
     }
 
     public void UnSelectedAction()  //選択が外された時のAction
     {
         UnHighlightEffect();
-        Debug.Log(TradeSkill().skillName + "を選択解除");
+
     }
 
     public void DecadedAction()
