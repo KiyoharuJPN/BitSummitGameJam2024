@@ -585,49 +585,18 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
-  m_Sprite: {fileID: 0}
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: 94b277ee1f081e34893c1fc175ca3d86, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 40, y: 40}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &736845541
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 736845542}
-  m_Layer: 0
-  m_Name: enemydeath
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &736845542
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 736845541}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &761111868
 GameObject:
   m_ObjectHideFlags: 0
@@ -957,7 +926,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389523598}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -199.6, y: 123.94, z: 0.50749433}
+  m_LocalPosition: {x: -280.5, y: -7.3, z: 0.50749433}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1122,7 +1091,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: f6a301d615aeacb4fbcfd5c745c7200d, type: 3}
     - target: {fileID: 8786148300393312708, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
       propertyPath: duration
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8786148300393312708, guid: d41315f61692e484390c9fd2653abd4c, type: 3}
       propertyPath: endposi.x
@@ -1232,16 +1201,16 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 21300000, guid: 3ab561fbeafca0342b5cb5b8b85f119e, type: 3}
+  m_Color: {r: 0.8301887, g: 0.8301887, b: 0.8301887, a: 0.84705883}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 40, y: 40}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1001 &2020842091
@@ -1379,7 +1348,7 @@ Transform:
   m_GameObject: {fileID: 2133296655}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -142.2, y: 28.1, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1.2}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1439,14 +1408,14 @@ MonoBehaviour:
   topSR: {fileID: 1831579788}
   bottomSR: {fileID: 648670189}
   buttunSP:
-  - {fileID: 21300000, guid: 196e9cba4c092a347b38c6030b029cc1, type: 3}
-  - {fileID: 21300000, guid: 7996758738d8a64469971d35246d9851, type: 3}
+  - {fileID: 21300000, guid: 6dc58d35f41ecb047b2c417bf782b876, type: 3}
+  - {fileID: 21300000, guid: 94b277ee1f081e34893c1fc175ca3d86, type: 3}
   buttunpushSP:
-  - {fileID: 21300000, guid: 196e9cba4c092a347b38c6030b029cc1, type: 3}
-  - {fileID: 21300000, guid: 7996758738d8a64469971d35246d9851, type: 3}
-  MaxColor: {r: 1, g: 0.48991776, b: 0.1641509, a: 0.89411765}
+  - {fileID: 21300000, guid: 3ab561fbeafca0342b5cb5b8b85f119e, type: 3}
+  - {fileID: 21300000, guid: 51ed12f89b1469740b25bbe7341136ce, type: 3}
+  MaxColor: {r: 1, g: 0.5626501, b: 0.16470587, a: 0.7882353}
   MinColor: {r: 0.8631388, g: 0.9339623, b: 0.66434675, a: 0.65882355}
-  AnimPeriod: 2
+  AnimPeriod: 1.2
 --- !u!223 &1133787207648375880
 Canvas:
   m_ObjectHideFlags: 0

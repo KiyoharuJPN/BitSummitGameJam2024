@@ -19,7 +19,6 @@ public class ChargeAttackUI : MonoBehaviour
 
     float animhigh = 20;
 
-
     public void StartChargeAttackAnim(float attackpower)
     {
         EffectGameObject = new GameObject("ChargeAttackEffect");
@@ -30,24 +29,24 @@ public class ChargeAttackUI : MonoBehaviour
         EffectGameObject.transform.localScale = EffectGameObject.transform.localScale * attackpower / scaleRatio;
         EffectGameObject.transform.parent = this.transform;
 
-        StartCoroutine(AttckAnim(EffectGameObject));
+        StartCoroutine(AttackAnim(EffectGameObject));
     }
 
-    IEnumerator AttckAnim(GameObject gameObject)
+    IEnumerator AttackAnim(GameObject gameObject)
     {
         Vector3 posi;
-        for(float i = 0 - Time.deltaTime ; i < duration; i += Time.deltaTime)
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
         {
-
-            posi= Vector3.Slerp(startposi,endposi, i / duration);
-            posi.y = animhigh * Mathf.Sin(i * Mathf.PI / duration);
+            posi = Vector3.Slerp(startposi, endposi, elapsedTime / duration);
+            posi.y = animhigh * Mathf.Sin(elapsedTime * Mathf.PI / duration);
             gameObject.transform.position = posi;
-            gameObject.transform.rotation = Quaternion.Euler(Vector3.Lerp(startrotate, endrotate, i / duration));
+            gameObject.transform.rotation = Quaternion.Euler(Vector3.Lerp(startrotate, endrotate, elapsedTime / duration));
 
-            Debug.Log(i + "i");
+            elapsedTime += Time.deltaTime;
 
-            yield return new WaitForSeconds(0.01f);
-            
+            yield return null; // ŽŸ‚ÌƒtƒŒ[ƒ€‚Ü‚Å‘Ò‹@
         }
 
         Destroy(gameObject);

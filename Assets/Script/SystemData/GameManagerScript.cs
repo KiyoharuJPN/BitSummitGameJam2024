@@ -45,6 +45,8 @@ public struct ActionOption
     public Vector3 RightlaneEnemyTargetPoint;
     [Tooltip("DownLane‚É“’B‚³‚¹‚½‚¢êŠ")]
     public Vector3 DownlaneEnemyTargetPoint;
+    [Tooltip("€–SƒAƒjƒ[ƒVƒ‡ƒ“‚É“¾’…‚³‚¹‚½‚¢‚Æ‚±‚ë")]
+    public Vector3 EnemyDeathTargetPoint;
 }
 
 // “Kƒ|ƒWƒVƒ‡ƒ“ŒvZ—p\‘¢
@@ -57,6 +59,7 @@ public struct EnemyStartPosHeight       // ‰¡’¼ü‚ÅˆÚ“®‚·‚é‚Æ‚«‚Í45AÎ‚ßˆÚ“®‚Ì
     public float RightLanePos;          // Default 0
     [Tooltip("Default ‰¡‚ÌF-45 Î‚ß‚ÌF-27")]
     public float DownLanePos;           // Default ‰¡‚ÌF-45 Î‚ß‚ÌF-27
+
 }
 
 public class GameManagerScript : MonoBehaviour

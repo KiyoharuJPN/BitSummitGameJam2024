@@ -168,3 +168,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 7
+  DeathObject: {fileID: 7368318529869979491, guid: f0ea0ba4c61c5cd419e5050d09013d38, type: 3}

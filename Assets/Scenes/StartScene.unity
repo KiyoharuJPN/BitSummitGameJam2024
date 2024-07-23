@@ -1470,6 +1470,10 @@ PrefabInstance:
       propertyPath: defaultPlayerData.attackPower
       value: 200
       objectReference: {fileID: 0}
+    - target: {fileID: 2120024065834130396, guid: 426446566e05f6141a675d9ceff43a6c, type: 3}
+      propertyPath: actionOption.EnemyDeathTargetPoint.x
+      value: -140
+      objectReference: {fileID: 0}
     - target: {fileID: 2120024065834130397, guid: 426446566e05f6141a675d9ceff43a6c, type: 3}
       propertyPath: m_Name
       value: GameManager

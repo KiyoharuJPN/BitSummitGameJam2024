@@ -39,7 +39,8 @@ public class EnemyBase : MonoBehaviour
     protected Animator eAnimator;
     protected bool isDead = false, isAttack = false;
 
-    DeathEffect deatheffect;
+    [SerializeField] GameObject DeathObject;  //死亡アニメーションオブジェクト
+
 
     // ゲーム終了関連
     protected Action bossDeadAction;
@@ -71,7 +72,6 @@ public class EnemyBase : MonoBehaviour
         // アニメーション
         eAnimator = GetComponent<Animator>();
 
-        deatheffect = GameObject.Find("enmeydeath").GetComponent<DeathEffect>();
     }
 
     virtual protected void OnTriggerEnter2D(Collider2D collision)
@@ -158,6 +158,8 @@ public class EnemyBase : MonoBehaviour
         isDead = true;
         eAnimator.SetBool("isDead", isDead);
         enemyRb.velocity = Vector3.zero;
+
+        Instantiate(DeathObject, gameObject.transform.position, Quaternion.identity);
     }
     // 死亡アニメーション
     protected void DestroySelf()

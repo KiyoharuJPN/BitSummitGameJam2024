@@ -67,6 +67,8 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     List<Func<Task>> DecadeEffects;
     List<Func<Task>> UnSetEffects;
 
+    [SerializeField] blinkingEffect blinkingeffect;
+
     CancellationTokenSource highlightCancellationTokenSource;
 
     Color cleanness = new Color(255, 255, 255, 0);
@@ -112,6 +114,7 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
         RunHighlights = new RunTaskList();
         runTaskOther = new RunTaskList();
     }
+
 
     Skill TradeSkill()
     {
