@@ -84,25 +84,24 @@ public class StartScene : MonoBehaviour
 
     void DecadeOption()
     {
-
+        SceneManager.LoadScene("CreditScene");
     }
 
     void DecadeModeEasy()
     {
         GameManagerScript.instance.SetGameMode(0);
-        SceneManager.LoadScene("ActionStage");
+        SceneManager.LoadScene("HowToPlayScene");
     }
     
     void DecadeModeHard()
     {
         GameManagerScript.instance.SetGameMode(1);
-        SceneManager.LoadScene("ActionStage");
+        SceneManager.LoadScene("HowToPlayScene");
     }
 
 
 
-
-
+    //UI‚Ìƒ{ƒ^ƒ“‚©‚çŒÄ‚Î‚ê‚é‚æ‚¤
     public void PushStartButton()
     {
         DecadeStart();
@@ -112,6 +111,7 @@ public class StartScene : MonoBehaviour
     {
         DecadeOption();
     }
+
 
     public void PushStartEasyButton()
     {
@@ -123,24 +123,25 @@ public class StartScene : MonoBehaviour
     }
 
 
-    public void OnUp()
-    {
-        select = Select.start;
-        cancellationTokenSource = new CancellationTokenSource();
-        runTaskList.EffectAnim(startEffect, optionEffect, cancellationTokenSource);
+    //InputSystem‚©‚çŒÄ‚Î‚ê‚é—p
+    //public void OnUp()
+    //{
+    //    select = Select.start;
+    //    cancellationTokenSource = new CancellationTokenSource();
+    //    runTaskList.EffectAnim(startEffect, optionEffect, cancellationTokenSource);
 
-    }
+    //}
 
-    public void OnDown()
-    {
-        select = Select.option;
-        cancellationTokenSource = new CancellationTokenSource();
-        runTaskList.EffectAnim(optionEffect, startEffect, cancellationTokenSource);
-    }
-    public void OnDecade()
-    {
-        if (select == default) return;
-        if (select == Select.start) { DecadeStart(); return; } 
-        if (select == Select.option) {  DecadeOption(); return; }
-    }
+    //public void OnDown()
+    //{
+    //    select = Select.option;
+    //    cancellationTokenSource = new CancellationTokenSource();
+    //    runTaskList.EffectAnim(optionEffect, startEffect, cancellationTokenSource);
+    //}
+    //public void OnDecade()
+    //{
+    //    if (select == default) return;
+    //    if (select == Select.start) { DecadeStart(); return; } 
+    //    if (select == Select.option) {  DecadeOption(); return; }
+    //}
 }

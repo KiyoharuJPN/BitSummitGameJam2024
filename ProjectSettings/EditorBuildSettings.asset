@@ -23,4 +23,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/KiyoharuTestStage.unity
     guid: b91dab57ddc7343449d6b5d3e12da43e
+  - enabled: 1
+    path: Assets/Scenes/HowToPlayScene.unity
+    guid: 5e537709130cf4046ab3f2c1cf2a6b9f
+  - enabled: 1
+    path: Assets/Scenes/CreditScene.unity
+    guid: b9b344d12b8b1354785c81f506e0c95a
   m_configObjects: {}

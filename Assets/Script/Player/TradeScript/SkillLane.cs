@@ -58,6 +58,9 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     TMP_Text decadeTMP;
     FadeInOut decadeFadeSc;
 
+    [SerializeField] blinkingEffect blinkingeffect;
+    bool selecting;
+
     RunTaskList RunHighlights;
     RunTaskList runTaskOther;
 
@@ -66,8 +69,6 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     List<Func<Task>> UnHightlightEffects;
     List<Func<Task>> DecadeEffects;
     List<Func<Task>> UnSetEffects;
-
-    [SerializeField] blinkingEffect blinkingeffect;
 
     CancellationTokenSource highlightCancellationTokenSource;
 
@@ -128,6 +129,7 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
         if (ITradeSkill == null) { ITradeSkill = NullSkill; } //所得できなかったら代わりにNullSkill
         canSelect = playerData.baseHP > TradeSkill().cost;　//所持スピードとコストを比較して、選択できるか
         if(ITradeSkill == NullSkill) { canSelect = false; } //nullskillの場合選択できない
+        selecting = true;
         SetEffect();
         if (!canSelect) { cantSelectEffect(); } //視覚的に選択できない状態を作る
     }
@@ -135,19 +137,21 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     public void ReSetSkill()
     {
         ITradeSkill = NullSkill;
+        selecting = false;
+        canSelect = false;
         ReSetEffect();
     }
 
     public void SelectedAction() //選択された時のAction
     {
+        selecting = true;
         HighlightEffect();
-
     }
 
     public void UnSelectedAction()  //選択が外された時のAction
     {
+        selecting = false;
         UnHighlightEffect();
-
     }
 
     public void DecadedAction()
@@ -156,18 +160,23 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
         playerData.baseHP -= TradeSkill().cost;
         Debug.Log(TradeSkill().cost + "がsppedから引かれます");
         skillManager.AddDecadedSkill(ITradeSkill);
+        selecting = false;
+        canSelect = false;
         DecadeEffect();
     }
 
     public void UnDecadedAction() //選ばれなかったとき
     {
         if (ITradeSkill != NullSkill) { skillManager.ReAddSkill(ITradeSkill); }
+        selecting = false;
+        canSelect = false;
         UnDecadeEffect();
     }
 
     void SetEffect()
     {
         SetSkillUI(TradeSkill());
+        SelectBlink();
         runTaskOther.EffectAnim(SetEffects, UnSetEffects);
     }
 
@@ -175,29 +184,39 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
     void ReSetEffect()
     {
         runTaskOther.EffectAnim(UnSetEffects, SetEffects);
+        SelectBlink();
         //SetNutral();
     }
 
     void HighlightEffect()
     {
+        SelectBlink();
         highlightCancellationTokenSource = new CancellationTokenSource();
         RunHighlights.EffectAnim(HighlightEffects, UnHightlightEffects, highlightCancellationTokenSource);
     }
 
     void UnHighlightEffect()
     {
+        SelectBlink();
         highlightCancellationTokenSource = new CancellationTokenSource();
         RunHighlights.EffectAnim(UnHightlightEffects, HighlightEffects, highlightCancellationTokenSource);
     }
 
     void DecadeEffect()
     {
+        SelectBlink();
         runTaskOther.EffectAnim(DecadeEffects, UnSetEffects);
     }
 
     void UnDecadeEffect()
     {
+        SelectBlink();
         runTaskOther.EffectAnim(UnSetEffects, SetEffects);
+    }
+
+    void SelectBlink()
+    {
+        blinkingeffect.blinking = canSelect && selecting;
     }
 
     void SetSkillUI(Skill skill)
@@ -231,6 +250,7 @@ public class SkillLane : MonoBehaviour, I_SelectedLane
         Debug.Log("選べないよ！");
         speedTMP.color = new Color(255, 0, 0, 255);
     }
+
 
     void SetTaskLists()
     {

@@ -69,9 +69,9 @@ MonoBehaviour:
   - name: PlayerSkill
     audioClip: {fileID: 8300000, guid: ab8a429a7d872f14abeefa36abf25698, type: 3}
   - name: PlayerCharge
-    audioClip: {fileID: 8300000, guid: e0070a2b93c636c418b80ca8200e8437, type: 3}
-  - name: EnemyAttack
     audioClip: {fileID: 8300000, guid: 9255256ea9e08714e91f3171e19b1034, type: 3}
+  - name: EnemyAttack
+    audioClip: {fileID: 8300000, guid: f9deed2ca412e9b438f83ed0dd9e712b, type: 3}
   - name: EnemyHit
     audioClip: {fileID: 8300000, guid: 5cf562169f244884e94a9cdd32075c36, type: 3}
   - name: EnemyDown

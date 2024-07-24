@@ -22,6 +22,8 @@ public class DecadeLane : MonoBehaviour, I_SelectedLane
     [SerializeField] Vector2 highlightDistance;
     [SerializeField] Vector2 decadeDistance;
 
+    [SerializeField] blinkingEffect blinkingeffect;
+
     RunTaskList runhlTaskList;
     RunTaskList runTaskList;
 
@@ -46,11 +48,14 @@ public class DecadeLane : MonoBehaviour, I_SelectedLane
         runhlTaskList = new RunTaskList();
         runTaskList = new RunTaskList();
 
+        blinkingeffect.blinking = true;
+
         SetTaskLists();
     }
 
     public void SelectedAction()
     {
+        blinkingeffect.blinking = true;
         highlightCancellationTokenSource = new CancellationTokenSource();
         runhlTaskList.EffectAnim(HighlightEffects, UnHightlightEffects, highlightCancellationTokenSource);
         Debug.Log("DecadeLaneを選択");
@@ -58,6 +63,7 @@ public class DecadeLane : MonoBehaviour, I_SelectedLane
 
     public void UnSelectedAction()
     {
+        blinkingeffect.blinking = false;
         highlightCancellationTokenSource = new CancellationTokenSource();
         runhlTaskList.EffectAnim(UnHightlightEffects, HighlightEffects, highlightCancellationTokenSource);
         Debug.Log("DecadeLaneを選択解除");
@@ -65,12 +71,14 @@ public class DecadeLane : MonoBehaviour, I_SelectedLane
 
     public void DecadedAction()
     {
+        blinkingeffect.blinking = false ;
         runTaskList.EffectAnim(DecadeEffects, UnHightlightEffects);
         Debug.Log("Skill選択なしで続行");
     }
 
     public void UnDecadedAction()
     {
+        blinkingeffect.blinking = false ;
         runTaskList.EffectAnim(UnHightlightEffects, DecadeEffects);
     }
 
